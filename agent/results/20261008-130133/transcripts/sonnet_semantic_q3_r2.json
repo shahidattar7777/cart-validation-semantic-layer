@@ -1,0 +1,282 @@
+{
+ "model": "sonnet",
+ "condition": "semantic",
+ "qid": "q3",
+ "run": 2,
+ "score": 0.8,
+ "recall": 0.667,
+ "precision": 1.0,
+ "missed": [
+  "EMS after-hours escalation broken by CC-26-011"
+ ],
+ "extra": [],
+ "answer_ids": [
+  "CAPA-26-008",
+  "CAPA-26-016",
+  "CAPA-26-012",
+  "CAPA-26-015"
+ ],
+ "id_source": "json",
+ "tool_calls": 10,
+ "sql_errors": 0,
+ "turns": 4,
+ "hit_turn_limit": false,
+ "stop_reason": "end_turn",
+ "seconds": 28.8,
+ "cost_usd": 0.0727,
+ "tok_input": 12,
+ "tok_output": 3887,
+ "tok_cache_write": 9308,
+ "tok_cache_read": 105148,
+ "final_answer": "Yes. Two pairs of CAPAs trace back to the same upstream cause, and in both pairs the recorded root causes differ.\n\n**1. FRZ-80-02 compressor failure \u2192 CAPA-26-008 and CAPA-26-016**\n- **CAPA-26-008** comes from DEV-26-021, the FRZ-80-02 high-temperature alarm. Its recorded root cause is an age-related compressor failure.\n- **CAPA-26-016** comes from DEV-26-027, low %CAR+ in ENG26-01 and ENG26-02. Its recorded root cause is \"suspected donor variability (low CD3%)\".\n- **What FRZ-80-02 held:** viral vector lot LV25-118, plus IL-2 lots.\n- **Excursion:** it ran from 20 Apr 2026 and reached about -36 \u00b0C. The deviation assessed it as low risk, and no lots were put on hold.\n- **%CAR+ before the excursion:** all LV25-118 batches up to 15 Apr gave about 35\u201341%.\n- **%CAR+ after the excursion:**\n  - From PD26-024 on 22 Apr, every LV25-118 batch dropped to about 12\u201320%.\n  - That includes PD26-024 to PD26-027, ENG26-01, ENG26-02 and ENG26-03.\n- **Donor explanation doesn't hold:** these batches had normal apheresis CD3% of about 51\u201365%.\n- **MOI:** the target was unchanged at 5.0, so the drop fits the vector losing potency. The semantic layer notes that a potency loss doesn't show in the transduction record (uo04), because vector volume is calculated from the CoA titer.\n- **Shared cause:** the FRZ-80-02 failure and its thaw excursion degraded LV25-118. Donor variability is unlikely to be the cause.\n- **Cleanup gaps:** LV25-118 is still marked RELEASED. ENG26-03 is also low but isn't named in the deviation.\n\n**2. INC-03 door switch \u2192 CAPA-26-012 and CAPA-26-015**\n- **CAPA-26-012** comes from DEV-26-011, the OQ test incident where the INC-03 door-open alarm fired at 142 s against a limit of 60 s or less. Its recorded root cause is a misaligned door switch.\n- **CAPA-26-015** comes from DEV-26-033, where PPQ26-02 harvest viability fell below the 80% criterion. Its recorded root cause is an operator not confirming the door latch.\n- **Shared cause:** both centre on the INC-03 door and its faulty door-open detection.\n  - The door switch replacement, CC-26-019, was approved in Feb 2026 but is still \"APPROVED \u2013 NOT IMPLEMENTED\".\n  - PPQ26-02 therefore ran on INC-03 with the known switch problem unfixed.\n  - CAPA-26-012 is still open and past its due date. CAPA-26-015 closed with its effectiveness check pending.\n- **How firm this link is:** it is an inference from the shared equipment and the unimplemented change. The deviation records don't state that the switch fault caused the unlatched door.\n\nThe other linked CAPA, CAPA-26-019 (tubing set weld defect from a supplier), doesn't share a cause with any of these.\n\n```json\n{\"answer_ids\": [\"CAPA-26-008\", \"CAPA-26-016\", \"CAPA-26-012\", \"CAPA-26-015\"]}\n```",
+ "transcript": [
+  {
+   "role": "user",
+   "content": "CAPAs have been raised from several different deviations. Do any of them trace back to the same upstream cause, even where the recorded root causes differ? Name the CAPAs and the shared cause."
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "signature": "CAQSyQUKEAgSGAI4AUIIdGhpbmtpbmcSDPDd+Le+qr4I1vNqUxoMDVQvAeBXo+J4d8gdIjBEID0F2CxEEzXsYhn0JBFN8Yt43jgsPvXDGvMWTqvse3TSWbpkd7XTcLT3Lw0tExMq5gRgfj/OSmd0R/ZrEzu9ejSh5XfgS5zSx9RJ59KPsB+lwHBSbUwZwzA2GkVpIImtJJrGMMvSh7krOY9FfYqTPVpRPP0fS6abcV6Xs3zUoyNZep0x1iZMXDmTxThOr12dGEvpromOSFVKcrFzWhynLVDvEPa+UXAh0og/wLE+iNXHvXYo5AgH3kO/izRBRqNyMgw4CsfHXp0n0OtumGzcpIGlurAWLQUj1j3QFHGkm1tCC6zYkODVHTyf2w35Kj961cuF1HYu4onJ/9ZIE+QwWUVvq57a/mUKd2lYj8vKDCYu/Obckgh1eCsdSmfXmkGXJi3EuFvznVS0V3lWkZ9KtkLmJapnEiNO+vltHw3U8mBVTGzC1FMHWO5pkNeYI3UAtKmONBeNNCY3DhyZUwD20mYt0b3r1FontB+BE+sb8rFARU1QhIVkeMa8A1LLJ+Xa+PM+9fuLfoUau3MQeVYT86aHazMaWK/eVzPBJvbfuHg5LbaLQAeTQyysFkadINeUycXUSLe/pgTYMstpoJfulkBfWb8gSYj3T2GAt0n12Ya7p8A0u8Rws89f8uEnOhrGCPCv+fN9sVvg4wgNjBf2IL0AdyEga84n0inCnZNUHEe8r5PeVsXKVs0orKgw2OL+EhhM0qB4pCtfylKU3mu7LwKdVVMByLoiBTt3TmSJkeJi7QAin/KwByd/96CshFRzFGFTt+DH+v4Vw5SKVvZcPgQEAhU4q+c6nEAAyF5mMVvJee4Q/6V0xp4ICFM/vd7bsQYq9ivct5bpYJrQtAmY4uJIXHz2yGK8+B4B5XwuriigKb+37jI+JBgB",
+     "thinking": "",
+     "type": "thinking"
+    },
+    {
+     "id": "toolu_01RXuMwvRceKExT8RSNqfyTD",
+     "caller": {
+      "type": "direct"
+     },
+     "input": {
+      "query": "select l.src_id dev, l.tgt_id capa, d.record_type, d.dev_class, d.title, d.rc_category, d.root_cause, c.status, c.action_desc from pd.trace_link l join pd.qms_deviation d on d.dev_no=l.src_id join pd.qms_capa c on c.capa_no=l.tgt_id where l.src_type='DEV' and l.tgt_type='CAPA' order by 2,1"
+     },
+     "name": "run_sql",
+     "type": "tool_use"
+    },
+    {
+     "id": "toolu_014jZgi1Umy21VMSL4EQuhee",
+     "caller": {
+      "type": "direct"
+     },
+     "input": {
+      "query": "select l.src_id dev, l.link_type, l.tgt_type, l.tgt_id from pd.trace_link l where l.src_type='DEV' and l.tgt_type<>'CAPA' order by 1"
+     },
+     "name": "run_sql",
+     "type": "tool_use"
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "toolu_01RXuMwvRceKExT8RSNqfyTD",
+     "content": "dev | capa | record_type | dev_class | title | rc_category | root_cause | status | action_desc\nDEV-26-021 | CAPA-26-008 | DEVIATION | MAJOR | FRZ-80-02 high temperature alarm | EQUIPMENT - COMPRESSOR FAILURE | Compressor failure (age-related). | CLOSED | Replace FRZ-80-02 compressor and verify pull-down.\nDEV-26-011 | CAPA-26-012 | TEST_INCIDENT | MINOR | OQ test incident: INC-03 door-open alarm late | EQUIPMENT - COMPONENT | Door switch misaligned. | OPEN | Replace INC-03 door switch and re-execute TC-OQ-INC-04.\nDEV-26-033 | CAPA-26-015 | PROTOCOL_DEVIATION | MAJOR | PPQ26-02 harvest viability below PPQ acceptance criterion | HUMAN ERROR - PROCEDURE NOT FOLLOWED | Operator did not confirm door latch per SOP-MFG-105. | CLOSED | Retrain Suite 2 operators on incubator door latch check (SOP-MFG-105).\nDEV-26-027 | CAPA-26-016 | ATYPICAL_RESULT | MINOR | Low %CAR+ in engineering runs ENG26-01 and ENG26-02 | STARTING MATERIAL - DONOR VARIABILITY | Suspected donor-related variability (low CD3% at apheresis). | OPEN | Evaluate minimum CD3% acceptance criterion at apheresis receipt.\nDEV-26-041 | CAPA-26-019 | DEVIATION | MINOR | PPQ26-05 Prodigy tubing set leak at sampling port | SUPPLIER - MATERIAL DEFECT | Sampling port weld defect (supplier). | OPEN | Supplier corrective action request for tubing set sampling port.\n(5 rows)",
+     "is_error": false
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "toolu_014jZgi1Umy21VMSL4EQuhee",
+     "content": "dev | link_type | tgt_type | tgt_id\nDEV-26-011 | RELATED | EQUIP | INC-03\nDEV-26-011 | RELATED | PROTOCOL | OQ-INC-01\nDEV-26-021 | RELATED | EQUIP | FRZ-80-02\nDEV-26-027 | RELATED | BATCH | ENG26-01\nDEV-26-027 | RELATED | BATCH | ENG26-02\nDEV-26-033 | RELATED | BATCH | PPQ26-02\nDEV-26-033 | RELATED | PROTOCOL | PPQ-001\nDEV-26-033 | RELATED | EQUIP | INC-03\nDEV-26-038 | RELATED | BATCH | PPQ26-04\nDEV-26-041 | RELATED | BATCH | PPQ26-05\nDEV-26-041 | RELATED | EQUIP | PRDG-01\n(11 rows)",
+     "is_error": false
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "signature": "CAQS8QcKEAgSGAI4AUIIdGhpbmtpbmcSDAAisAO42ct4t0aFzBoMTJrtIU/CXsADCy4FIjDlFdlsn5lhWNbL395HWREeowGdt2OmyaHu/gEqwD4O9ZrAFAptEin7E8sFovsySd0qjgfWzYVbXqfpQunP61wlgysAdrV1QhjYRB6nTBGi8wf2NWupyM+wI8i9WenYqtEgggfby6UMZCnkjNMqjR9Cejx/oI69ZvT3TuRSwRCSboc+bCivDlMZTRaWY7IchI+GkG8T+He+1P/MisRJu9Xmg0kqc/Skcy/SRwWPomAVvIPXaagWrNOkOP6Puxr6EGvigDNdmv1igrNfQLjpvqIgEtEnhKPtfb/BXvPVjbZezsAjgA9V8cY4r8aJR5rsf2i1s24MQwUqQdB0GfNOONKMJQ8XWU07ggqho9lXQYAJXhi60BHyaX2mnfCEw956ABDqbDu6p/xQl2GFOyf+1a056FP9ruWunyWz+Hgt10T7riT1PypLyZhwULo+rUm1gQUAyYq8XnPa1VjwZ2uB0tuSG+ADyOLNElXIJE1f3NBQ3Olw8Cn7NRUDXwJkZK/E9FGt19bx/TCLoB3sQSGbJJ32pQfaFqNTCpRuaa4ZiMzCJ2240JhSVynH0QL2NIRdpbYB1Cb9bNcIZaFN/+L53wrhUgSErIKqEf00jdC2gtlkfdOwyFFR4r45ybNHhMcTEXEM38h934ku1ROdnvel64Vt1rtzL81yRS9FJLBxnhCM0BIV16+QTyDkJKAEvG7609yNZ+xMveG870NTPJj4Ur9LaKjdqYJs2h1ZvrKsWILnn6eSRRTg+1z3KAe7hnJmc/HR0hncIatluGyCrSFfpQQbASnUOSEIeAW1e/itOny5XNSXCsxzIp9gwbtRAOYcJCFlNGN5OwxQrSDpv3lZG22Be3dte7mvuiioPUmcYbKQ5doD2MhzW8uF08A06uwzyD/Gm/R5XOVvd7iKg5NqPkcLQTnGC8yHMLxKyKlUyPQh289RTX6HjPqkCCHhLFaPXS3vmDJ5b4st+wGuZYqlr31fxeoCNXTa8jMTka9ebMxhEhEnbkFGwe5eaI4u8GEHVMl2scE045w4bemHDeyKdZlCmsd5P9C1xq9Gc1GreciT/8/pVp4O1h+Ra6YuTwOBGMc441wJVjm64yRvco1nX+1SHajkMAlGzceN6pQ09BLLohpKG+QNVmp03xQim19XnyVvdGpuak0mQqYQK0xZkEZ4w9w4YY8+X9wLiRwVsrP+N6GOUvNR+ZFYPLo/aKECA6VBsD+h8qeNkrrtbDniypFz/fLjppxHFEVPJVDHeRbzWSWSsBZ1oTY3l4/Zu9uEdGU3GAE=",
+     "thinking": "",
+     "type": "thinking"
+    },
+    {
+     "id": "toolu_01PKcXQXAB5WPes5qFsQm8CJ",
+     "caller": {
+      "type": "direct"
+     },
+     "input": {
+      "query": "select dev_no, event_ts, title, description, impact_assessment, root_cause from pd.qms_deviation where dev_no in ('DEV-26-011','DEV-26-021','DEV-26-027','DEV-26-033','DEV-26-038','DEV-26-041')"
+     },
+     "name": "run_sql",
+     "type": "tool_use"
+    },
+    {
+     "id": "toolu_01T9kUvZV1NpkbxRXHuMetZ5",
+     "caller": {
+      "type": "direct"
+     },
+     "input": {
+      "query": "select * from pd.trace_link where (src_type in ('CAPA','CC') or tgt_type in ('CAPA')) order by 1"
+     },
+     "name": "run_sql",
+     "type": "tool_use"
+    },
+    {
+     "id": "toolu_014V7Eca1iFshbT8jMcnQTpg",
+     "caller": {
+      "type": "direct"
+     },
+     "input": {
+      "query": "select lot_no, matl_code, matl_desc, storage_loc, lot_status from pd.material_lot where storage_loc='FRZ-80-02'"
+     },
+     "name": "run_sql",
+     "type": "tool_use"
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "toolu_01PKcXQXAB5WPes5qFsQm8CJ",
+     "content": "dev_no | event_ts | title | description | impact_assessment | root_cause\nDEV-26-011 | NULL | OQ test incident: INC-03 door-open alarm late | During execution of TC-OQ-INC-04 on INC-03 the door-open alarm activated at 142 s (criterion <= 60 s). INC-01, INC-02 and INC-04 passed. | Qualification test incident. INC-03 door alarm function not verified. | Door switch misaligned.\nDEV-26-021 | NULL | FRZ-80-02 high temperature alarm | FRZ-80-02 high temperature alarm acknowledged by warehouse staff at 14:40. Compressor found not running. Contents (viral vector and cytokine lots) relocated to FRZ-80-01 at 15:30. Maximum recorded chamber temperature before relocation approx. -36 C. | Materials remained frozen. Supplier stability statement supports storage at <= -65 C; short excursion assessed as low risk. No lots placed on hold. | Compressor failure (age-related).\nDEV-26-027 | NULL | Low %CAR+ in engineering runs ENG26-01 and ENG26-02 | FC-CAR results for ENG26-01 and ENG26-02 below the 20% target. Transduction performed per SOP-MFG-104; MOI 5.0 TU/cell. | Engineering runs, not for clinical use. No impact to released product. | Suspected donor-related variability (low CD3% at apheresis).\nDEV-26-033 | NULL | PPQ26-02 harvest viability below PPQ acceptance criterion | Harvest viability for PPQ26-02 below the PPQ-001 acceptance criterion of 80%. INC-03 door found not fully latched on the morning of 11-Jun; door alarm acknowledged 07:50. | PPQ26-02 does not meet PPQ-001 criterion 6. Release testing within specification. | Operator did not confirm door latch per SOP-MFG-105.\nDEV-26-038 | NULL | PPQ26-04 label printer error | Bag labels misprinted (truncated text). Labels reprinted and reconciled. | No product impact. | Printer ribbon misfeed.\nDEV-26-041 | NULL | PPQ26-05 Prodigy tubing set leak at sampling port | Small leak at sampling port observed during priming, before product contact. Tubing set replaced. | No product contact. Sterility results pending at time of assessment. | Sampling port weld defect (supplier).\n(6 rows)",
+     "is_error": false
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "toolu_01T9kUvZV1NpkbxRXHuMetZ5",
+     "content": "link_id | src_type | src_id | link_type | tgt_type | tgt_id\n157 | DEV | DEV-26-011 | RELATED | CAPA | CAPA-26-012\n159 | DEV | DEV-26-021 | RELATED | CAPA | CAPA-26-008\n162 | DEV | DEV-26-027 | RELATED | CAPA | CAPA-26-016\n166 | DEV | DEV-26-033 | RELATED | CAPA | CAPA-26-015\n170 | DEV | DEV-26-041 | RELATED | CAPA | CAPA-26-019\n171 | CAPA | CAPA-26-008 | RELATED | CC | CC-26-014\n172 | CAPA | CAPA-26-012 | RELATED | CC | CC-26-019\n173 | CC | CC-26-004 | IMPACTS | SOP | SOP-MFG-103\n174 | CC | CC-26-004 | IMPACTS | SOP | SOP-MFG-105\n175 | CC | CC-26-004 | IMPACTS | SOP | SOP-MFG-106\n176 | CC | CC-26-004 | IMPACTS | RA | RA-PFMEA-001\n177 | CC | CC-26-011 | IMPACTS | SPEC | CS-EMS-03\n178 | CC | CC-26-014 | IMPACTS | EQUIP | FRZ-80-02\n179 | CC | CC-26-014 | RELATED | EXEC | TX-0091\n180 | CC | CC-26-014 | RELATED | EXEC | TX-0092\n181 | CC | CC-26-019 | IMPACTS | EQUIP | INC-03\n182 | CC | CC-26-022 | IMPACTS | SOP | SOP-MFG-104\n(17 rows)",
+     "is_error": false
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "toolu_014V7Eca1iFshbT8jMcnQTpg",
+     "content": "lot_no | matl_code | matl_desc | storage_loc | lot_status\nLV25-118 | LVV-CD19-BBZ | Lentiviral vector, anti-CD19 CAR (4-1BB/CD3z) | FRZ-80-02 | RELEASED\nIL2-25K11 | CYT-IL2 | IL-2, GMP grade | FRZ-80-02 | RELEASED\nIL2-26A03 | CYT-IL2 | IL-2, GMP grade | FRZ-80-02 | RELEASED\n(3 rows)",
+     "is_error": false
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "signature": "CAQShggKEAgSGAI4AUIIdGhpbmtpbmcSDFOF8pyyXl4qjrnFexoMHiPBcoFNgAmaHQYsIjBO4jsuzr+0Y9wlFh43Bw5GIXpvinM/MWjT8wkMo5ijOURf8pcVl5rfGZP3VUO7w6gqowdcN4hTNKdpdv66/bqLhYE+ucIFWaQU7B7abIb9ABEAPYDsJ1KZXT1XgeprZc3z+d7Vuz+el6ikNtItA6pqt5Agaflffbk5wjYAG5YBKVRVZH+8uPJl5MyZ8PutU+0SHJScaSF/XtZ2CzX9RPQan2k9MvL9tBLp4x7ebAnaI6SLVQkhO10nrjxr/p4u14T2OGCi7KoysbKN3klAkXLpLhDA2SRDzqtBlpQCt3jGjR2FzJLoQtEFlnvGtC2828L6dp5Tujjbx9p4v+O1ug1WaJrUjlgrFoQlopfpwSlBws67y3byfO+Ydm/vnQ77E0boM8TnMEbOIzQ6TiWoBvlCRYeQ7R+vfpT3k0vRxLpiYE5BvZzMvenq7YEoKOonAdBFdCcY50HGNLNXKCjzNG8f8vrTmqLXPshysUenoXRN5iuBpnATvmmV13c3QVF9q+IaeC/91LIgOO72pHBQhavz6t7RPeDMTWQr0rumNvMKM0lECnptZi1sRR6B35VkH4uqcSwCwNiGMfCCw498EMkFiUYORpkuhyOPXESPvxEahRyllcnrun7Sun7dYBT56ah3mMuzp8/o5KIVVAztTj+xlvT8VoRd6Xekq/aDFE1WJp8bmmPBOQfMGAkTgpJUYuYArerHB9zNfRa50l3rSABH7d8zcWc3wroAJX+v4wRoRKWBsNJicv+fMizhrXvBCff9tffZ8idVXymz3t6RdxpQEUU8XEE8kxcPehT9/0nnMSdDlpFvck7VAQPstks1QdEHNbAJlfNgnWztC50JeU9YDkJlGcZZ/15fttiLcEw56KS+FYrgZs8XJWSHylcltqYEcfb+vuWSadFDxzY6/XoXIrJADtKmi7O4rt0jCzQKBSMSvH+1v2tgJN17WrMCoCMOKZVQHg43pXzeaJsNFUGe6W83Qt5MtGWpcd+XQ6mPZiS7RhlsxSbYCHNMlUtDO9GRbRGwFOGAuNf+6PzXkywTzKQRcRsNNQL/uuRB4fLm4/W6A8G8/+c301FuoRXYVYfFb/3/vDJV4+Q68hSjra8Q/P51s2TMHopAUYLKk6F8wB2GrerK1yhYAg7derz3fyP12p5q5Ry2O5jMHSEuTLTNW9UQ/4AGe69+ortJte3zrHWuub4FbsJhl9noz3GVt7j7e6m1U69MJkvQ4yotLtR+ZDSCLHpSc0ZOl30s58sOk64EjTEtUbAfIP+43o2CoN0nM4eBhB1MC/nwY0tXZNgxGSc8SKalGAE=",
+     "thinking": "",
+     "type": "thinking"
+    },
+    {
+     "id": "toolu_01TmnPTnhKf6UFgyVmgB5Ra8",
+     "caller": {
+      "type": "direct"
+     },
+     "input": {
+      "query": "select t.batch_id, b.run_type, t.vec_lot, t.moi_tgt, t.td_ts, (select result_val from pd.qc_rel_results q where q.batch_id=t.batch_id and test_code='FC-CAR') car, (select cd3_pct from pd.uo01_aph_receipt a where a.batch_id=t.batch_id) aph_cd3 from pd.uo04_transduction t join pd.batch_master b using(batch_id) order by t.td_ts"
+     },
+     "name": "run_sql",
+     "type": "tool_use"
+    },
+    {
+     "id": "toolu_018NM9YgEiZYZE2qyDkZpZqi",
+     "caller": {
+      "type": "direct"
+     },
+     "input": {
+      "query": "select * from pd.material_coa where lot_no like 'LV25%' order by 1,2"
+     },
+     "name": "run_sql",
+     "type": "tool_use"
+    },
+    {
+     "id": "toolu_01N7z2bN9KpjS5VpsxEmHzmY",
+     "caller": {
+      "type": "direct"
+     },
+     "input": {
+      "query": "select equip_id,event_type,alarm_code,start_ts,ack_ts,end_ts,event_desc from pd.equipment_event where equip_id in ('FRZ-80-02','FRZ-80-01') order by start_ts"
+     },
+     "name": "run_sql",
+     "type": "tool_use"
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "toolu_01TmnPTnhKf6UFgyVmgB5Ra8",
+     "content": "batch_id | run_type | vec_lot | moi_tgt | td_ts | car | aph_cd3\nPD26-002 | PD | LV25-104 | 5.0 | 2026-01-14 18:47:05 | 39.5 | 32.1\nPD26-001 | PD | LV25-104 | 5.0 | 2026-01-14 19:23:58 | 37.5 | 31.7\nPD26-003 | PD | LV25-104 | 5.0 | 2026-01-21 12:14:02 | 39.2 | 65.5\nPD26-004 | PD | LV25-104 | 5.0 | 2026-01-28 15:33:05 | 40.4 | 59.7\nPD26-005 | PD | LV25-104 | 5.0 | 2026-02-04 13:32:59 | 39.0 | 54.8\nPD26-007 | PD | LV25-104 | 5.0 | 2026-02-11 12:00:53 | 40.4 | 51.6\nPD26-006 | PD | LV25-104 | 5.0 | 2026-02-11 15:06:04 | 37.9 | 50.3\nPD26-011 | PD | LV25-104 | 15.0 | 2026-02-18 13:13:17 | 75.6 | 64.1\nPD26-010 | PD | LV25-104 | 10.0 | 2026-02-18 14:20:20 | 63.4 | 62.3\nPD26-008 | PD | LV25-104 | 2.5 | 2026-02-18 14:22:03 | 22.9 | 65.0\nPD26-009 | PD | LV25-104 | 5.0 | 2026-02-18 14:44:07 | 39.0 | 61.0\nPD26-012 | PD | LV25-104 | 5.0 | 2026-02-25 14:04:55 | 36.7 | 63.4\nPD26-013 | PD | LV25-104 | 5.0 | 2026-02-25 15:21:18 | 37.2 | 63.5\nPD26-014 | PD | LV25-118 | 5.0 | 2026-03-05 11:48:56 | 34.5 | 30.7\nPD26-015 | PD | LV25-118 | 5.0 | 2026-03-05 14:28:30 | 36.0 | 31.1\nPD26-017 | PD | LV25-118 | 5.0 | 2026-03-11 12:50:01 | 38.7 | 60.4\nPD26-016 | PD | LV25-118 | 5.0 | 2026-03-11 14:20:22 | 36.4 | 60.7\nPD26-018 | PD | LV25-118 | 5.0 | 2026-03-18 13:37:04 | 39.6 | 64.5\nPD26-019 | PD | LV25-118 | 5.0 | 2026-03-18 19:24:52 | 38.9 | 62.9\nPD26-021 | PD | LV25-118 | 5.0 | 2026-03-27 12:57:44 | 39.7 | 49.6\nPD26-020 | PD | LV25-118 | 5.0 | 2026-03-27 14:02:27 | 41.3 | 51.3\nPD26-022 | PD | LV25-118 | 5.0 | 2026-04-08 13:51:38 | 41.3 | 59.5\nPD26-023 | PD | LV25-118 | 5.0 | 2026-04-15 14:27:20 | 35.1 | 65.0\nPD26-024 | PD | LV25-118 | 5.0 | 2026-04-22 14:30:27 | 17.3 | 62.8\nPD26-025 | PD | LV25-118 | 5.0 | 2026-04-22 19:56:55 | 14.9 | 64.8\nPD26-027 | PD | LV25-118 | 5.0 | 2026-04-29 12:49:59 | 16.0 | 57.8\nPD26-026 | PD | LV25-118 | 5.0 | 2026-04-29 13:21:01 | 16.3 | 57.4\nENG26-01 | ENG | LV25-118 | 5.0 | 2026-05-06 15:22:44 | 19.8 | 65.3\nENG26-02 | ENG | LV25-118 | 5.0 | 2026-05-13 16:03:38 | 11.9 | 63.8\nENG26-03 | ENG | LV25-118 | 5.0 | 2026-05-20 15:58:12 | 13.9 | 50.9\nPD26-028 | PD | LV26-007 | 5.0 | 2026-05-27 13:55:23 | 38.0 | 33.2\nPPQ26-01 | PPQ | LV26-007 | 5.0 | 2026-06-03 13:33:56 | 44.6 | 59.2\nPPQ26-02 | PPQ | LV26-007 | 5.0 | 2026-06-05 13:25:29 | 39.2 | 66.2\nPPQ26-03 | PPQ | LV26-007 | 5.0 | 2026-06-10 11:17:43 | 36.1 | 64.9\nPD26-029 | PD | LV26-007 | 5.0 | 2026-06-17 13:40:53 | 38.7 | 63.7\nPD26-030 | PD | LV26-007 | 5.0 | 2026-06-24 12:24:47 | 37.8 | 60.5\nPD26-031 | PD | LV26-007 | 5.0 | 2026-06-24 15:00:39 | 38.7 | 59.2\nPD26-032 | PD | LV26-007 | 5.0 | 2026-07-01 07:54:23 | 27.6 | 65.5\nPD26-033 | PD | LV26-007 | 5.0 | 2026-07-01 11:48:17 | 37.2 | 65.3\nPD26-034 | PD | LV26-007 | 2.5 | 2026-07-08 12:45:27 | 19.4 | 65.9\nPD26-036 | PD | LV26-007 | 10.0 | 2026-07-08 13:20:36 | 68.2 | 64.7\nPD26-035 | PD | LV26-007 | 5.0 | 2026-07-08 13:29:46 | 37.8 | 63.9\nPD26-037 | PD | LV26-007 | 15.0 | 2026-07-08 14:17:08 | 76.3 | 65.6\nPD26-038 | PD | LV26-007 | 5.0 | 2026-07-10 19:52:19 | 38.7 | 65.2\nPPQ26-04 | PPQ | LV26-021 | 5.0 | 2026-07-15 11:32:55 | 38.9 | 50.1\nPD26-040 | PD | LV26-021 | 5.0 | 2026-07-16 11:26:05 | 41.8 | 49.5\nPD26-039 | PD | LV26-021 | 5.0 | 2026-07-16 14:21:09 | 43.4 | 50.8\nPD26-041 | PD | LV26-021 | 5.0 | 2026-07-22 14:39:15 | 37.0 | 31.7\nPD26-043 | PD | LV26-021 | 5.0 | 2026-07-29 13:58:38 | 39.6 | 64.0\nPD26-042 | PD | LV26-021 | 2.5 | 2026-07-29 14:46:47 | 23.8 | 65.2\nPD26-044 | PD | LV26-021 | 10.0 | 2026-07-29 15:04:41 | 64.8 | 66.3\nPD26-045 | PD | LV26-021 | 15.0 | 2026-07-29 17:26:19 | 77.1 | 66.0\nPPQ26-05 | PPQ | LV26-021 | 5.0 | 2026-08-05 12:20:56 | 37.3 | 58.6\nPD26-046 | PD | LV26-021 | 5.0 | 2026-08-13 12:58:09 | 44.4 | 65.0\nPD26-047 | PD | LV26-021 | 5.0 | 2026-08-20 08:08:58 | 34.7 | 70.2\n(55 rows)",
+     "is_error": false
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "toolu_018NM9YgEiZYZE2qyDkZpZqi",
+     "content": "lot_no | test_code | result_val | result_txt | uom\nLV25-104 | ENDO | 0.59 | NULL | EU/mL\nLV25-104 | FT_TU_ML | 121000000.0 | NULL | TU/mL\nLV25-104 | P24_NG_ML | 1487.0 | NULL | ng/mL\nLV25-104 | RCL | NULL | NOT DETECTED | NULL\nLV25-104 | STER | NULL | NO GROWTH | NULL\nLV25-118 | ENDO | 0.28 | NULL | EU/mL\nLV25-118 | FT_TU_ML | 104000000.0 | NULL | TU/mL\nLV25-118 | P24_NG_ML | 1563.0 | NULL | ng/mL\nLV25-118 | RCL | NULL | NOT DETECTED | NULL\nLV25-118 | STER | NULL | NO GROWTH | NULL\n(10 rows)",
+     "is_error": false
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "toolu_01N7z2bN9KpjS5VpsxEmHzmY",
+     "content": "equip_id | event_type | alarm_code | start_ts | ack_ts | end_ts | event_desc\nFRZ-80-01 | ALARM | ALM-TEMP-HI | 2026-02-07 03:40:00 | 2026-02-07 03:58:00 | 2026-02-07 04:20:00 | High temp alarm during defrost cycle; cleared.\nFRZ-80-02 | ALARM | ALM-TEMP-HI | 2026-04-20 03:20:00 | 2026-04-20 14:40:00 | 2026-04-23 10:00:00 | High temperature alarm. Compressor not running. Contents relocated to FRZ-80-01.\nFRZ-80-02 | MAINTENANCE | NULL | 2026-04-21 09:00:00 | NULL | 2026-04-23 10:00:00 | Compressor replaced (like-for-like). Pull-down verified.\nFRZ-80-01 | ALARM | ALM-TEMP-HI | 2026-08-15 04:02:00 | 2026-08-15 09:55:00 | 2026-08-15 04:30:00 | High temp alarm during defrost cycle; self-cleared.\n(4 rows)",
+     "is_error": false
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "signature": "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",
+     "thinking": "",
+     "type": "thinking"
+    },
+    {
+     "id": "toolu_01Qmr19sAmvBhjCuDR8qnbNY",
+     "caller": {
+      "type": "direct"
+     },
+     "input": {
+      "query": "select cc_no, open_dt, title, impl_dt, status from pd.qms_change_control where cc_no in ('CC-26-014','CC-26-019')"
+     },
+     "name": "run_sql",
+     "type": "tool_use"
+    },
+    {
+     "id": "toolu_012oZen8s4bhy56sq1rtW5h9",
+     "caller": {
+      "type": "direct"
+     },
+     "input": {
+      "query": "select capa_no, open_dt, due_dt, status, closed_dt, eff_check from pd.qms_capa where capa_no in ('CAPA-26-008','CAPA-26-012','CAPA-26-015','CAPA-26-016')"
+     },
+     "name": "run_sql",
+     "type": "tool_use"
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "toolu_01Qmr19sAmvBhjCuDR8qnbNY",
+     "content": "cc_no | open_dt | title | impl_dt | status\nCC-26-014 | 2026-04-21 | FRZ-80-02 compressor replacement | 2026-04-23 | CLOSED\nCC-26-019 | 2026-02-24 | INC-03 door switch replacement | NULL | APPROVED - NOT IMPLEMENTED\n(2 rows)",
+     "is_error": false
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "toolu_012oZen8s4bhy56sq1rtW5h9",
+     "content": "capa_no | open_dt | due_dt | status | closed_dt | eff_check\nCAPA-26-008 | 2026-04-21 | 2026-05-29 | CLOSED | 2026-05-27 | EFFECTIVE - no recurrence 24-Apr to 26-May\nCAPA-26-012 | 2026-02-24 | 2026-03-31 | OPEN | NULL | NULL\nCAPA-26-015 | 2026-06-15 | 2026-07-01 | CLOSED | 2026-07-03 | PENDING\nCAPA-26-016 | 2026-05-28 | 2026-09-30 | OPEN | NULL | NULL\n(4 rows)",
+     "is_error": false
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "signature": "CAQSlQoKEAgSGAI4AUIIdGhpbmtpbmcSDHRfr5lCh6fqAkahnxoMCfhjKt66KtpElOKzIjA3trC30pPySVcUOjU2gxKHRqUFEQboykLiNHwr/RVtUZToAM60yD3K2YNUYFWw+HEqsglqBMuJtEp91G8E2GY7nXWFifunuIZJTSPGO4iJUnKbZJw3C8+IhjJ8gfLAsCl6SYutV9rU4PRBkv6ZCLoBG23ihuHw93EA2pAbtq1eui4g3xEi/weGakAz4fmDOSF48VPuojUtc8nzWA++BrHHybNmsfIlgqBeJO2YFdqsZPwP1d34nFNeTgx1eX2toILpeeSMPpDro2RXd+q6jE/rHeC5JnCuwkmsedgwg6Bf183uZ/Y7ikd8Zmv7+t7uV8dLw8RC9dW4WINWa9Q6dkEmkARSoN3lObf4HdZBthsjw1M/CTUtlrG3tNW6mJsjao10oyYctQQ6KkuxAFaqAYcUG6lZjm6EjGnatRVdegHlhsvfKRibre3p3iEtyMr12oNZhla2/WQRfEh8o626vysD14IcZBc2z95YHNZ5bLxzJHFOmGDfPuAiEvkHfhZJmvPUF/DAl8vwPUK3sKwWpoKvntW2cP1BcYOrPANtoO9TvV4HvVioaNBR7qM45wqMSg/gpCfDUSef36nZ/kOryI1XmKgiJWejtlkk/1PvzVSpoXr5Z9bbCf1FkWdpzUGxuolTJMFTbhG3UZzl207tYnyqt3bhXK32W0z2DjnWIkxWmwo/OrGeK92m+kXcsSOpOkKo7YmJzKVoAWJUwAOpRHbOnBeYTFFCzL1sNIgSzK8hM6h0vrwEMWYOJHBl7b+jNlyldTrLmAWtcyVUN+B6GP+oJ0l/FXfDWos6Zjz8i/U1mG0uMDtDShIU4RzfHCkPxriS3beAo24GdpwfGPONoEXPSYAqk5Q6hldt1kapS/qJmftTpLBZ8NPT42lnd5c7C4A9d3jNSE6FvuIonN/rJE0XtPXTcRU9iP7SEgGiXo7dkhlYH1XQS41XM19NaD3tsRtr3ymIqEuDK+jvqfynUiGJPNJjxQ5CAzPPHadSn/f6/lXotBB1F/46oZzPh5mCc0yKgF2NihcSFRzuLcshUynbyVBhyCMQ6zS9MkoCnBiGJtwCImzlW8h840svMPqH1wflk3XlDgWXdNXcpm9wZsEl6TxYEac4UI3ZJoZVR57/ucEpRzs6SwE0MBAmCRPayX8P2o0PektNCXVB7JLb51LSsgWhjwb0kGqkkJPuN6mgxQRUv94nzUyr5HIAEiPJ+KWX6KyQG0STNu1W3MxepMe/amyt+8HNzhDrnn4YW4RccpKWMK5lFRIgtT1b9EDWbaM+WSnTOKjhUpJD2pIB7FTbrQqY3nkklUjAzeB0RMdngUvnXtBaxP+Ve+ldNkRRJL0KhXUhOMpJIMDapUAQ3xdxPUZc3Oj0sKnmfGSbgq4e1JZsueYENe7x5AEc8P7IsoupIqBNTuobsfw8oyP67oOaP6jkUBwkU7bc0IrDVATGX3pMX2YmPZ45XMx3/PJPKI4mIF3+sD+tGZWGWLW3wYVUqLWFSpURwTJm0ly87Zr7zKvrOCdVZ0GyNQ3gWphWoAnacWLHgFPeJ16MK8WQHA9MESmBg9AviiINLa1H3JgrTYEXA1lpbNrWy4kjvjTqwJZCaW4RNOtNORVYmluL0o1bh/cFM6olnFFXN8WnCoyA8KVekchQ0UI6erZGGcs0+6hOBqJprBgB",
+     "thinking": "",
+     "type": "thinking"
+    },
+    {
+     "text": "Yes. Two pairs of CAPAs trace back to the same upstream cause, and in both pairs the recorded root causes differ.\n\n**1. FRZ-80-02 compressor failure \u2192 CAPA-26-008 and CAPA-26-016**\n- **CAPA-26-008** comes from DEV-26-021, the FRZ-80-02 high-temperature alarm. Its recorded root cause is an age-related compressor failure.\n- **CAPA-26-016** comes from DEV-26-027, low %CAR+ in ENG26-01 and ENG26-02. Its recorded root cause is \"suspected donor variability (low CD3%)\".\n- **What FRZ-80-02 held:** viral vector lot LV25-118, plus IL-2 lots.\n- **Excursion:** it ran from 20 Apr 2026 and reached about -36 \u00b0C. The deviation assessed it as low risk, and no lots were put on hold.\n- **%CAR+ before the excursion:** all LV25-118 batches up to 15 Apr gave about 35\u201341%.\n- **%CAR+ after the excursion:**\n  - From PD26-024 on 22 Apr, every LV25-118 batch dropped to about 12\u201320%.\n  - That includes PD26-024 to PD26-027, ENG26-01, ENG26-02 and ENG26-03.\n- **Donor explanation doesn't hold:** these batches had normal apheresis CD3% of about 51\u201365%.\n- **MOI:** the target was unchanged at 5.0, so the drop fits the vector losing potency. The semantic layer notes that a potency loss doesn't show in the transduction record (uo04), because vector volume is calculated from the CoA titer.\n- **Shared cause:** the FRZ-80-02 failure and its thaw excursion degraded LV25-118. Donor variability is unlikely to be the cause.\n- **Cleanup gaps:** LV25-118 is still marked RELEASED. ENG26-03 is also low but isn't named in the deviation.\n\n**2. INC-03 door switch \u2192 CAPA-26-012 and CAPA-26-015**\n- **CAPA-26-012** comes from DEV-26-011, the OQ test incident where the INC-03 door-open alarm fired at 142 s against a limit of 60 s or less. Its recorded root cause is a misaligned door switch.\n- **CAPA-26-015** comes from DEV-26-033, where PPQ26-02 harvest viability fell below the 80% criterion. Its recorded root cause is an operator not confirming the door latch.\n- **Shared cause:** both centre on the INC-03 door and its faulty door-open detection.\n  - The door switch replacement, CC-26-019, was approved in Feb 2026 but is still \"APPROVED \u2013 NOT IMPLEMENTED\".\n  - PPQ26-02 therefore ran on INC-03 with the known switch problem unfixed.\n  - CAPA-26-012 is still open and past its due date. CAPA-26-015 closed with its effectiveness check pending.\n- **How firm this link is:** it is an inference from the shared equipment and the unimplemented change. The deviation records don't state that the switch fault caused the unlatched door.\n\nThe other linked CAPA, CAPA-26-019 (tubing set weld defect from a supplier), doesn't share a cause with any of these.\n\n```json\n{\"answer_ids\": [\"CAPA-26-008\", \"CAPA-26-016\", \"CAPA-26-012\", \"CAPA-26-015\"]}\n```",
+     "type": "text"
+    }
+   ]
+  }
+ ]
+}

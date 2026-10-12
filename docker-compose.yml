@@ -1,0 +1,24 @@
+# Postgres 18 + Apache AGE 1.8.0 (official image, pinned).
+#   docker compose up -d
+# Data lives in a named Docker volume (not in this folder), so OneDrive
+# sync never touches the database files.
+services:
+  db:
+    image: apache/age:release_PG18_1.8.0
+    container_name: cart-age-db
+    environment:
+      POSTGRES_USER: ${PGUSER:-cart}
+      POSTGRES_PASSWORD: ${PGPASSWORD:-cart}
+      POSTGRES_DB: ${PGDATABASE:-cartpd}
+    ports:
+      - "${PGPORT:-5455}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql
+      - ./db/init/00_extensions.sql:/docker-entrypoint-initdb.d/10_extensions.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${PGUSER:-cart} -d ${PGDATABASE:-cartpd}"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+volumes:
+  pgdata:

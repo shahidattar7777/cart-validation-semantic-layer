@@ -1,0 +1,82 @@
+# Evaluation questions and answer key for the agent comparison.
+# The agent sees only `question`. Scoring uses the rest.
+#
+#   required   IDs a correct answer must contain
+#   optional   IDs that are acceptable to include (not counted as wrong)
+#   prefixes   only answer IDs with these prefixes are scored (other IDs the
+#              agent mentions are ignored, so citing evidence isn't penalised)
+#   score      f1 (precision and recall), recall (open-ended questions), or
+#              clusters (several valid answers: each cluster is a group of CAPAs
+#              sharing a cause; a cluster counts when all its CAPAs, and one of
+#              its cause IDs if listed, appear in the answer)
+questions:
+  q1:
+    title: Unverified high-risk requirements
+    question: >
+      Which high-risk user requirements are not currently verified? For each one,
+      give the requirement ID and the reason.
+    required: [URS-EBR-009, URS-EMS-014, URS-INC-004]
+    # Defensible extras: their requirement text has a part the only test doesn't
+    # cover (representative load; purity). A QA reviewer could raise them too.
+    optional: [URS-CRF-001, URS-PRDG-002]
+    prefixes: [URS-]
+    score: f1
+  q2:
+    title: MOI change impact (CC-26-022)
+    question: >
+      Change control CC-26-022 proposes raising the transduction target MOI from
+      5.0 to 8.0 TU/cell. What has to be revised, re-assessed, re-tested or
+      revalidated? Give the item IDs and the action for each, and say which of
+      them the change control's own impact assessment is missing.
+    required: [SOP-MFG-104, FM-05, FM-06, URS-EBR-009, CS-EBR-03, PPQ-001]
+    optional: [URS-EBR-007, CS-EBR-02, TC-OQ-EBR-04, AM-FC-CAR, AM-VCN, AM-POT, AMV-FC-CAR-01, AMV-VCN-01,
+               AMV-POT-01, RA-PFMEA-001, OQ-EBR-01, SYS-EBR, CC-26-022]
+    score: recall
+  q3:
+    title: CAPAs with a shared upstream cause
+    question: >
+      CAPAs have been raised from several different deviations. Do any of them
+      trace back to the same upstream cause, even where the recorded root causes
+      differ? Name the CAPAs and the shared cause.
+    # Three clusters exist in the data. The first version of this key had only
+    # the EMS one; the first agent run found the other two, which are real.
+    clusters:
+      - label: EMS after-hours escalation broken by CC-26-011
+        capas: [CAPA-26-008, CAPA-26-015]
+        cause_any: [CC-26-011, CS-EMS-03, URS-EMS-014]
+      - label: FRZ-80-02 failure degraded vector lot LV25-118 (DEV-26-027 blames donors)
+        capas: [CAPA-26-008, CAPA-26-016]
+      - label: INC-03 door switch / latch (DEV-26-011 and DEV-26-033)
+        capas: [CAPA-26-012, CAPA-26-015]
+    required: [CAPA-26-008, CAPA-26-015, CAPA-26-016, CAPA-26-012, CC-26-011]
+    score: clusters
+  q4:
+    title: Traceability chain for %CAR+
+    question: >
+      Give me the full traceability chain for %CAR+: the process parameters that
+      drive it, the risks that threaten it, the controls and test evidence for
+      those risks (including any gaps), how it is measured and validated, how it
+      performed in PPQ, and any related deviations and what connects them.
+    # URS-EBR-009 (MOI hard stop) controls FM-05, MOI *above* target, whose effect is
+    # high VCN rather than low %CAR+. Listing it is fine; leaving it out is defensible.
+    required: [FM-06, FM-07, FM-08, AM-FC-CAR, PPQ-001, DEV-26-021, DEV-26-027, LV25-118]
+    optional: [URS-EBR-009]
+    score: recall
+  q5:
+    title: High-criticality risks with OQ but no PQ
+    question: >
+      Which high-criticality FMEA risks have OQ test coverage but no PQ coverage,
+      where PQ evidence would be expected?
+    required: [FM-02, FM-13]
+    optional: []
+    prefixes: [FM-]
+    score: f1
+  q6:
+    title: CPP excursions during PPQ
+    question: >
+      Did any PPQ batch have a critical process parameter outside its PPQ
+      acceptance range? For each, was a deviation raised?
+    required: [PPQ26-02, PPQ26-03]
+    optional: []
+    prefixes: [PPQ26-]
+    score: f1

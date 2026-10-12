@@ -1,0 +1,472 @@
+{
+ "model": "haiku",
+ "condition": "semantic",
+ "qid": "q6",
+ "run": 1,
+ "score": 1.0,
+ "recall": 1.0,
+ "precision": 1.0,
+ "missed": [],
+ "extra": [],
+ "answer_ids": [
+  "PPQ26-02",
+  "PPQ26-03",
+  "DEV-26-033",
+  "CAPA-26-015"
+ ],
+ "id_source": "json",
+ "tool_calls": 17,
+ "sql_errors": 0,
+ "turns": 7,
+ "hit_turn_limit": false,
+ "stop_reason": "end_turn",
+ "seconds": 32.4,
+ "cost_usd": 0.0094,
+ "tok_input": 18,
+ "tok_output": 7425,
+ "tok_cache_write": 31632,
+ "tok_cache_read": 168605,
+ "final_answer": "Yes. One incubator excursion put two PPQ batches outside a CPP limit, and only one of them has a deviation, which does not cite the temperature criterion.\n\n**The excursion.** Culture temperature is the CPP \"Incubator temperature during expansion\", with a PPQ-001 limit of 36.5\u201337.5 \u00b0C (criterion 3). I checked the other four CPPs against their limits (MOI 5.0 in 4\u20136; seeding density 0.47\u20130.54 in 0.4\u20130.6; culture duration 8 days in 7\u20139; time to transduction 21.9\u201323.7 h in 20\u201330). All were in range for all five batches. Culture temperature came from the EMS historian (tag INC03.TEMP.PV), excluding BAD-quality rows. For PPQ26-01, -04 and -05 (INC-01, INC-02, INC-04) every reading was within limits. INC-03 went out of range on 10\u201311 June 2026, from 22:00 to 08:00, reaching a minimum of 33.53 \u00b0C, with 11 readings below 36.5 \u00b0C. That window falls inside the expansion period for both batches that ran in INC-03 at the time:\n\n- **PPQ26-02** (transduction 5 June) and **PPQ26-03** (transduction 10 June) both shared INC-03 during that window, which is why the historian shows identical readings for both.\n\n**Was a deviation raised?**\n\n- **PPQ26-02:** Yes, DEV-26-033 (PROTOCOL_DEVIATION, MAJOR, closed). It is framed as harvest viability of 75.2% falling below the 80% limit (criterion 6), with the root cause recorded as a door not fully latched on INC-03 (human error, SOP-MFG-105). It does not mention the culture temperature excursion or criterion 3, and its impact assessment only cites criterion 6. The deviation is linked to CAPA-26-015 (operator retraining on the door latch check, closed, effectiveness check still pending).\n- **PPQ26-03:** No. There is no deviation linked to this batch, and no record mentions its temperature excursion. Its harvest viability was 93.8%, so it did not trigger the viability deviation either.\n\nSo the excursion appears to have been captured only as a viability/door-latch event for PPQ26-02. The culture temperature criterion was not addressed as a CPP excursion for either batch. Batch PPQ26-03 has no deviation at all, which is a gap to review. CC-26-019 also lists INC-03 as impacted, but I did not assess it.\n\n```json\n{\"answer_ids\": [\"PPQ26-02\", \"PPQ26-03\", \"DEV-26-033\", \"CAPA-26-015\"]}\n```",
+ "transcript": [
+  {
+   "role": "user",
+   "content": "Did any PPQ batch have a critical process parameter outside its PPQ acceptance range? For each, was a deviation raised?"
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "signature": "CAQSkAcKEAgSGAI4AUIIdGhpbmtpbmcSDOeiF16UW+4nERNHghoM2X3lVvHV9pSUv3usIjBZ/ayAxbmp6oRj0txDROTafZPReYFxhs8YbwRBGH9DLkPBHq5ZuUcBO+TJ4rbCgQ0qrQYikbuDfi6vXSM0ZNKJka9lQ/gOU0zymm7HPMpaysITUyaVYl5E38JVDYX4+hZlmECC+nSe09uPYvYGNJm8wN3uJJpELPRzj2sy0j1dh1A3oBCUaR9Oa7sPar7+g3Wol1Sxk9NfN0yxsg52ZPhBlHfscayvL10c1WY1MSUa4YqOwntoskZcDxw0KyhS9NzSJLzbcumrrDJ9EdcJIp/edgGUrbsXv01wNrUqPZtqYPiF3kTlJUQ8XI0GRO9igsApE3VPDyog+FbQBN7NKcwV4TO1/+mOj11js86PvyD9IyY7Yf5k/iYUQ+yjgS9PPqAXXzGcP381V2UAHIq4zo4BrfZ3SP4KSrR5bkWtaSQ2EkaCC9fW3b9Rrhe2vyETU3smHNzZvZOPM0HaELhbY2egBiPP1oEIxYaD5x5OTiBkOMRM63HiDobwZ2ItPHx/waMUdYjI5F5wJAZ/wMTlB1RetBpUtu5GBu33M7FDukAL4HzkHJnWWJpBG1I2d/sKlyErtG6kc+ao4n2nALNRHmL1CvlEwTdP0h7182Z+ytcNoTM8A1xToRDqShD7fg8NV0w9rqNxohvLSq6rvCZ7qPyVb28AYaJ7uNjTQog4WnlCfTM8gg3Nd9AspXq1X/sWt/daiY/kvUxFtJArT6hIjpdAI0Lio3E2CfraAKntRK4BAQTsLO7O8NjoLz3/jLvqsbvwphT3FpwdZbm7k5hrdQhktolN4Er63ub9AN6OkDvrezr3Q0R6XTDlHbTLQnawqUEimILa14IqEzBZY4FeSm7xUndm/QhHlWvpsl4Fp0SMAzbKBgSDhqiWEkuNIpmO5BQkSVr5LKmX/NSY7qPl/RRzMWyqJt3jJBnOJfHWn2tm+QPOzxZbHnYOItHHQKpXXYZ0vzJIuFCzH7QtN2qCQSnen0/lfC9NYvUAtR139DpE7NoDFDIKuKL7BllfiWgHveZ1/Mskj1KzcKONGTMA4YOQnF5Mi5Egfhp+UdlzXJzbcG28uU5bQ3KHZUFSjVHJwcZq69Heb3dJjcLKmOXYEeuG7w8/Ot6PxSOuhOhznkwXnZt3HxPx80irUVCeYdO4xFMYAQ==",
+     "thinking": "",
+     "type": "thinking"
+    },
+    {
+     "text": "I'll start by finding the PPQ batches, the PPQ-001 acceptance criteria, and how the CPPs are linked to them.",
+     "type": "text"
+    },
+    {
+     "id": "toolu_01Ea1xhtUtzVniWbZ84i16t3",
+     "caller": {
+      "type": "direct"
+     },
+     "input": {
+      "query": "SELECT b.batch_id, b.run_type, b.proc_ver, b.run_purpose, b.batch_status, b.start_dt FROM pd.batch_master b WHERE b.run_type='PPQ' ORDER BY 1;"
+     },
+     "name": "run_sql",
+     "type": "tool_use"
+    },
+    {
+     "id": "toolu_01MKRvhzy6ia5V1kuzP9Yx6B",
+     "caller": {
+      "type": "direct"
+     },
+     "input": {
+      "query": "SELECT c.* FROM pd.val_ppq_criterion c ORDER BY protocol_id, crit_no;"
+     },
+     "name": "run_sql",
+     "type": "tool_use"
+    },
+    {
+     "id": "toolu_011cd43ra9rqndnuZ2EskAqH",
+     "caller": {
+      "type": "direct"
+     },
+     "input": {
+      "query": "SELECT * FROM pd.val_protocol WHERE ptype='PPQ' OR protocol_id LIKE 'PPQ%';"
+     },
+     "name": "run_sql",
+     "type": "tool_use"
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "toolu_01Ea1xhtUtzVniWbZ84i16t3",
+     "content": "batch_id | run_type | proc_ver | run_purpose | batch_status | start_dt\nPPQ26-01 | PPQ | PV2.0 | Process performance qualification | COMPLETE | 2026-06-02\nPPQ26-02 | PPQ | PV2.0 | Process performance qualification | COMPLETE | 2026-06-04\nPPQ26-03 | PPQ | PV2.0 | Process performance qualification | COMPLETE | 2026-06-09\nPPQ26-04 | PPQ | PV2.0 | Process performance qualification | COMPLETE | 2026-07-14\nPPQ26-05 | PPQ | PV2.0 | Process performance qualification | COMPLETE | 2026-08-04\n(5 rows)",
+     "is_error": false
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "toolu_01MKRvhzy6ia5V1kuzP9Yx6B",
+     "content": "protocol_id | crit_no | crit_class | attribute_txt | lo | hi | uom\nPPQ-001 | 1 | CPP | MOI (TU/cell) | 4.0 | 6.0 | TU/cell\nPPQ-001 | 2 | CPP | Seeding density (x10^6 cells/mL) | 0.4 | 0.6 | x10^6/mL\nPPQ-001 | 3 | CPP | Incubator temperature during expansion | 36.5 | 37.5 | C\nPPQ-001 | 4 | CPP | Culture duration (days) | 7 | 9 | days\nPPQ-001 | 5 | CPP | Time from activation to transduction | 20 | 30 | h\nPPQ-001 | 6 | IPC | Viability at harvest | 80 | NULL | %\nPPQ-001 | 7 | PERFORMANCE | Fold expansion | 8 | NULL | fold\nPPQ-001 | 8 | CQA | CAR expression (% CAR+ of CD3+) | 20 | NULL | % of CD3+\nPPQ-001 | 9 | CQA | Vector copy number (per CAR+ cell) | NULL | 5.0 | copies/CAR+ cell\nPPQ-001 | 10 | CQA | Viability (release) | 70 | NULL | %\nPPQ-001 | 11 | CQA | CD3+ purity | 80 | NULL | %\nPPQ-001 | 12 | CQA | Potency (IFN-g release) | 1000 | NULL | pg/mL\n(12 rows)",
+     "is_error": false
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "toolu_011cd43ra9rqndnuZ2EskAqH",
+     "content": "protocol_id | ptype | title | sys_id | method_id | doc_ver | approved_dt | status\nPPQ-001 | PPQ | Process performance qualification, CAR-T process PV2.0 | NULL | NULL | 1.0 | 2026-05-22 | EXECUTION COMPLETE - REPORT PENDING\n(1 rows)",
+     "is_error": false
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "signature": "CAQSoQYKEAgSGAI4AUIIdGhpbmtpbmcSDBrkVpQ6ij13+/jTqxoMMRrwsVk//Y5pFPZ5IjBebCZt2dRiiugQpOxIk/LEH+Z40jzTg0LgRCAU1uDVwE+Y4NuMvL3C7teT0tfe2zMqvgXf04wI2OYhOtT5YnE9Y8jCjUoGXrhuSIZFqejEmDfkoqJIV6k/xRQad8EEwl5eIH/LRsJgVaWtjDcZtd6nq+20/f/k1t/0GRT56Etx9sgaQC2WtN8Fl1nuLsUb11EmMU1+HSwpo0vRqtdi4lH9xlKhTOEhsvSNjw9fsB8fM7t1raoV2+5absYe+yvTMW6KvCeBzbZs7WtkfPiOzPUIr+POb1nndFIvKzbzd7Q3HoiGULvaFFjPXD+u0Fw1NkMNT39YVsQLs/NjQCXDjMyDU1HrwxeGdCmY9PtbHsNOiDF2JkI9bks1e3nZ+QSl/6OYJqeXoaYths+h/74nQoZ6bZssVzBKSMKSDzjMnvzyVOIUPnv+IsCi/7+bCxg1JXm5IJoct4lQ95wZEN9WR4D/XZXVoQ+Lyo5CKoDTDVo8Iz088VuSNbNtHYLQI61ifi8scpMuDwADfOTWUmo29aQr2Ew6S53Qy8CimUNPkyyIXM98HHnw1oe9AXWI3l0WYC7ncWqDbK4BrojL1i8sNqwvF0w7R35GnKuBakK6iOmiQAB7++Db0xiV/9fUEM886RKlvf75QKDaTjhFw2rhsyqNMrWR4UWQFbcWezDfCH+L9BS6JPBuCIks9n3Q43ugFAYpDx1ALfZ+CXM9SIKOFlXDcy0Fzp11mXaSMKCeZmBSKFd2DCLrhwONbIKm5rNewGG6OEGi2+XU0XoSp/OTBYyQDK05e3pqo4F/4f6Hy09t57gWOYadDOg5iCRPpwsLgZBFEMBjl0ruQFriTHqLTqhvecLVysSn45F2lCalyfcs3IAcewFXiW4k9nfPXotNfKg6TpXM7A5Alud87pfHwphjEVubrslDxGHv7EZK0T8IargPXr/Kv66RjICvF0p+06AUBSkfaU6AjBwN5XDqTHcERxc7ueQB6XpRWWNguTMV4pMYAQ==",
+     "thinking": "",
+     "type": "thinking"
+    },
+    {
+     "text": "Next I'll pull the graph links from PPQ-001 to its evaluated parameters (with crit_no) and to its batches.",
+     "type": "text"
+    },
+    {
+     "id": "toolu_013SDc9nu7x4KcrRNbpKLpKz",
+     "caller": {
+      "type": "direct"
+     },
+     "input": {
+      "query": "SELECT kg_txt(a) AS x, kg_txt(b) AS y, kg_txt(r) AS crit FROM cypher('cart_kg', $$ MATCH (a:Protocol)-[r:EVALUATES]->(b) WHERE a.id='PPQ-001' RETURN a.id, b.id, r.crit_no $$) AS (a agtype, b agtype, r agtype);"
+     },
+     "name": "run_sql",
+     "type": "tool_use"
+    },
+    {
+     "id": "toolu_014yhp1uWq9dJ97BUUa4RABD",
+     "caller": {
+      "type": "direct"
+     },
+     "input": {
+      "query": "SELECT kg_txt(a) AS x, kg_txt(b) AS y FROM cypher('cart_kg', $$ MATCH (a:Protocol)-[:INCLUDES_BATCH]->(b:Batch) WHERE a.id='PPQ-001' RETURN a.id, b.id $$) AS (a agtype, b agtype);"
+     },
+     "name": "run_sql",
+     "type": "tool_use"
+    },
+    {
+     "id": "toolu_011GpfhJypiguwSLb4CuRJAf",
+     "caller": {
+      "type": "direct"
+     },
+     "input": {
+      "query": "SELECT * FROM pd.trace_link WHERE src_type='PROTOCOL' OR tgt_type='PROTOCOL' OR src_id LIKE 'PPQ%' OR tgt_id LIKE 'PPQ%' ORDER BY 1;"
+     },
+     "name": "run_sql",
+     "type": "tool_use"
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "toolu_013SDc9nu7x4KcrRNbpKLpKz",
+     "content": "x | y | crit\nPPQ-001 | viability_release | 10\nPPQ-001 | potency | 12\nPPQ-001 | fold_expansion | 7\nPPQ-001 | harvest_viability | 6\nPPQ-001 | cd3_purity | 11\nPPQ-001 | vcn | 9\nPPQ-001 | transduction_efficiency | 8\nPPQ-001 | culture_temp | 3\nPPQ-001 | hrs_post_act | 5\nPPQ-001 | seed_density | 2\nPPQ-001 | culture_duration | 4\nPPQ-001 | moi | 1\n(12 rows)",
+     "is_error": false
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "toolu_014yhp1uWq9dJ97BUUa4RABD",
+     "content": "x | y\nPPQ-001 | PPQ26-01\nPPQ-001 | PPQ26-02\nPPQ-001 | PPQ26-03\nPPQ-001 | PPQ26-04\nPPQ-001 | PPQ26-05\n(5 rows)",
+     "is_error": false
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "toolu_011GpfhJypiguwSLb4CuRJAf",
+     "content": "link_id | src_type | src_id | link_type | tgt_type | tgt_id\n149 | PROTOCOL | PPQ-001 | RELATED | BATCH | PPQ26-01\n150 | PROTOCOL | PPQ-001 | RELATED | BATCH | PPQ26-02\n151 | PROTOCOL | PPQ-001 | RELATED | BATCH | PPQ26-03\n152 | PROTOCOL | PPQ-001 | RELATED | BATCH | PPQ26-04\n153 | PROTOCOL | PPQ-001 | RELATED | BATCH | PPQ26-05\n156 | DEV | DEV-26-011 | RELATED | PROTOCOL | OQ-INC-01\n163 | DEV | DEV-26-033 | RELATED | BATCH | PPQ26-02\n164 | DEV | DEV-26-033 | RELATED | PROTOCOL | PPQ-001\n167 | DEV | DEV-26-038 | RELATED | BATCH | PPQ26-04\n168 | DEV | DEV-26-041 | RELATED | BATCH | PPQ26-05\n(10 rows)",
+     "is_error": false
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "signature": "CAQSnwoKEAgSGAI4AUIIdGhpbmtpbmcSDOlOKFHOmlXESDRajxoM9y9TJPZ8H6kOjcW0IjAxwCV0ODV+ZfbTUmUaRyMGJyn0oKE3yt9GaXFE+AtbGbicIPpMqo+DNAd5lwEEh2oqvAlPy9u0WeLeM9FehbLb0f778z+uDYTorQvf6z2OxC/vNH7U6FiQCJjbi4+IiUF8A8GOPs8PUgrJfGa94WrID3rMwfNCFXkUoSScXWieSAeX3FjoRV7ztOTpweS6ZTpy483mCSereVAQ4OXsKJpAnPDGaIGceyFBsoowqY9e+UsFzuKHfq7kgUsXl+TmdFeQHi2b+QBawPAGKqRcCZlREcn8ZQ2T9xBfXuu7h46TweuPwTIEIS9/Kp3Iy0VzLJc+vtvcDtCv11L2hN2x7YRVqHUIsvZhrfR42PIIGCKo92g6R5bIg6yRmwgohdwVIj0c9SlhjDyauC+/0HnsOhgEbZVZeU+yU3uQTX8bTE3N07tETQvsLU+R2Cvy83jJ7ps2QpSwU5ulVOIo/PFv9VxJO1CZgIqHpqnjrqdqmKgNzzjV8V3jaZNBoBP1T+DOL0WRxUZtzh2gZInxQSY5i8Qtui+Yb6LyKbkLfdhULBIUoyYUlt2qtuCeKaXdn7jB7EUc6HmNufGmlzOvtPutRAdRTn7/bWaFQH+xv26b3b5gxZhvH0Eekav5fEFs+VpzIOHwFztVc5P9MolJ1pktoAbPpy1Th6MZ1Zw3qnN1O3eRv4vxy7R8jDoey31GcfkRbT7jmOWJVLfR2V3U+C8iSZxEuUGB0FjBfVglv5p0ufb52HCz4w0obqGzY6LG3UCBfm0y33dxVmBZgm+df6+jttLZmiG9HdcGX+YheyLhRKnMjFEiUbOg8uZI+M/cnlcRB1kFenbnvd0Ih3LSZoicZWtPYVam5ro7+uPI4y6qGbnrrUhvOBxVO5MLGzO8xJzcHMaxwsAuMxe45YmRoBkvx40n9C2HgITSsS5jt2W6Pfugchwti7zHI1ngQcu9QG6ySMHHyuypnSFtd1dWBWN4WhWV4KbQEhNeboVJE/y64cQSudVaI4BSvwFIWdfJK9ekvtqXXYH1AnM/rekjw8v2jk2hCpVXL0JPDYrD38xy5C4O9wRxnGnZeU/wR5unfGjYdTVCYXqGwOPgTCaQvDEbwBhOO1z7qDPDjmIXfnB4oowmf42/ikLpDCctYiwku6NB7MsTQwfs8DCGxnW/snlS1FspqLIEIl/C0mV6ucFsPJpz251wsIocilMYSCCSLTmGj+xZyf8BHH8vMdCLUaHkSQSlSjSplLnVFucRsT2l6dphg+c4MZWHk1OlkluzzqtbZXclVgLCV+4XHXBQ2g253XpLDemlKESpSTCGxwtKDOLWbYbO9+1xM/EBUbLppLReQ01aKmJmh2F4gajrpCzy2E6Uq1lMRdq9+XCD1Y0Ga1BkBSAs4UWd39t6k8gTFt16WpIJBX5IPE5YshCBv+b+LTf0nP7RNizwGmkoeRcAmx7VsShUKw3gfvT8SbsLQOrandhrESYMI3brwNdq7ucUnRdPBErgJ6q+ZMaPFr0MIdy7S4Sa66OK8Q+5jI9oZXRHdBTL5mHCEIBN605wOmQKnPeoIDncxeVhKJwz/aty09zkARYnV6m8j73QWlhpJeOEib7e2k3d4IWPuNZZTfJ+hHLDGey2KGAA9QGenx2pOcULaczYu4b5ADRzalDdUsZ6vVliTcA2mFt8jx2p/k62bmcYAQ==",
+     "thinking": "",
+     "type": "thinking"
+    },
+    {
+     "text": "PPQ-001 evaluates five CPPs with limits: MOI, seeding density, culture temperature, culture duration and time to transduction. Now I'll pull the actual values for those parameters for the five PPQ batches.",
+     "type": "text"
+    },
+    {
+     "id": "toolu_01FqH4NYXDuFoR9ZSE7W5LV4",
+     "caller": {
+      "type": "direct"
+     },
+     "input": {
+      "query": "SELECT a.batch_id, a.seed_dens_e6_ml, a.act_ts, t.moi_tgt, t.hrs_post_act, t.td_ts, h.hvst_day, h.hvst_ts FROM pd.uo03_activation a LEFT JOIN pd.uo04_transduction t USING (batch_id) LEFT JOIN pd.uo06_harvest h USING (batch_id) WHERE a.batch_id LIKE 'PPQ26%' ORDER BY 1;"
+     },
+     "name": "run_sql",
+     "type": "tool_use"
+    },
+    {
+     "id": "toolu_01Y4DdG26WSkCu4Mskr5EPAn",
+     "caller": {
+      "type": "direct"
+     },
+     "input": {
+      "query": "SELECT batch_id, day_no, sample_ts, equip_id, car_pos_pct FROM pd.uo05_expansion WHERE batch_id LIKE 'PPQ26%' ORDER BY 1,2;"
+     },
+     "name": "run_sql",
+     "type": "tool_use"
+    },
+    {
+     "id": "toolu_01CmtXGcfkFW5qrCvK4dsz4A",
+     "caller": {
+      "type": "direct"
+     },
+     "input": {
+      "query": "SELECT * FROM pd.equipment WHERE equip_id IN (SELECT DISTINCT equip_id FROM pd.uo05_expansion WHERE batch_id LIKE 'PPQ26%');"
+     },
+     "name": "run_sql",
+     "type": "tool_use"
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "toolu_01FqH4NYXDuFoR9ZSE7W5LV4",
+     "content": "batch_id | seed_dens_e6_ml | act_ts | moi_tgt | hrs_post_act | td_ts | hvst_day | hvst_ts\nPPQ26-01 | 0.49 | 2026-06-02 14:13:00 | 5.0 | 23.3 | 2026-06-03 13:33:56 | 8 | 2026-06-10 09:40:00\nPPQ26-02 | 0.51 | 2026-06-04 13:45:00 | 5.0 | 23.7 | 2026-06-05 13:25:29 | 8 | 2026-06-12 10:08:00\nPPQ26-03 | 0.47 | 2026-06-09 13:25:00 | 5.0 | 21.9 | 2026-06-10 11:17:43 | 8 | 2026-06-17 10:06:00\nPPQ26-04 | 0.54 | 2026-07-14 13:30:00 | 5.0 | 22.0 | 2026-07-15 11:32:55 | 8 | 2026-07-22 10:06:00\nPPQ26-05 | 0.52 | 2026-08-04 14:24:00 | 5.0 | 21.9 | 2026-08-05 12:20:56 | 8 | 2026-08-12 09:58:00\n(5 rows)",
+     "is_error": false
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "toolu_01Y4DdG26WSkCu4Mskr5EPAn",
+     "content": "batch_id | day_no | sample_ts | equip_id | car_pos_pct\nPPQ26-01 | 3 | 2026-06-05 08:49:00 | INC-01 | NULL\nPPQ26-01 | 5 | 2026-06-07 08:55:00 | INC-01 | 44.6\nPPQ26-01 | 7 | 2026-06-09 08:58:00 | INC-01 | NULL\nPPQ26-01 | 8 | 2026-06-10 09:10:00 | INC-01 | NULL\nPPQ26-02 | 3 | 2026-06-07 08:39:00 | INC-03 | NULL\nPPQ26-02 | 5 | 2026-06-09 08:43:00 | INC-03 | 39.0\nPPQ26-02 | 7 | 2026-06-11 09:19:00 | INC-03 | NULL\nPPQ26-02 | 8 | 2026-06-12 09:38:00 | INC-03 | NULL\nPPQ26-03 | 3 | 2026-06-12 08:41:00 | INC-03 | NULL\nPPQ26-03 | 5 | 2026-06-14 09:14:00 | INC-03 | 29.5\nPPQ26-03 | 7 | 2026-06-16 09:10:00 | INC-03 | NULL\nPPQ26-03 | 8 | 2026-06-17 09:36:00 | INC-03 | NULL\nPPQ26-04 | 3 | 2026-07-17 08:32:00 | INC-02 | NULL\nPPQ26-04 | 5 | 2026-07-19 08:42:00 | INC-02 | 32.0\nPPQ26-04 | 7 | 2026-07-21 09:00:00 | INC-02 | NULL\nPPQ26-04 | 8 | 2026-07-22 09:36:00 | INC-02 | NULL\nPPQ26-05 | 3 | 2026-08-07 09:17:00 | INC-04 | NULL\nPPQ26-05 | 5 | 2026-08-09 08:57:00 | INC-04 | 35.5\nPPQ26-05 | 7 | 2026-08-11 09:14:00 | INC-04 | NULL\nPPQ26-05 | 8 | 2026-08-12 09:28:00 | INC-04 | NULL\n(20 rows)",
+     "is_error": false
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "toolu_01CmtXGcfkFW5qrCvK4dsz4A",
+     "content": "equip_id | equip_type | model | room | sys_id | cal_due_dt\nINC-01 | CO2 incubator | Heracell Vios 250i | G2-104 | SYS-INC | 2026-12-15\nINC-02 | CO2 incubator | Heracell Vios 250i | G2-104 | SYS-INC | 2026-12-15\nINC-03 | CO2 incubator | Heracell Vios 250i | G2-105 | SYS-INC | 2026-12-15\nINC-04 | CO2 incubator | Heracell Vios 250i | G2-105 | SYS-INC | 2026-12-15\n(4 rows)",
+     "is_error": false
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "signature": "CAQSlAkKEAgSGAI4AUIIdGhpbmtpbmcSDLk+/+uNbWUmQWBxaRoM+mDZjysIwspSYmzoIjBis1YJkHumWe8rFK19NPPH2bfcXx9zTSlnjPQJ5E0kOBgj5ZUn/OyKRL9J0QoUnOsqsQhcjkFiG2UWpKpKFCTTEPPio0fozcyDRuQweLBda2fqjnOhL0oDTCYdh1Q/KywTNji1fQ18GrEdXb0u/yCJ7JZcEF2mXH/xKwd5HeHqgOPCCfTcEwyhjRze6LwAFKrV5xaf0lO+h1LvJBiFPdbN+UXPdN/IaoVk6c7y33xGxq5Z+7Jx1TJTvqbO2szLeM8hc8n/6Jvr9eIHbP5269yQIzDYWRMhKvMQ2NUJRxG+F+FWIFSI4uUwHKRjuXG+xazGT14yl5KyqobDIclPlwWnv9pmg+2byhAsfMOhmjMJQ6yN5mbyDgWz6mEhwlYec+U9RIAcuH/Y5A7gZVAlz6PygTIpidtYJJF+xiO2p+pPc+fNzo734AwWDHPfGrJh9K31o24YkGKwctg6kaNH5Tv2ME7CIAGS7xB0dDC96Oy0OockK0eU/8dFDgAQF0BwXxq1Mz4d/4hF2uIqZqY0TOkIs/Uw3OUFyDFRvGivGylOMi1eGSQvlNDSbnqglmGy66umKZO1778UhyTmRAk0pSMX1RBeSUuwXGKx5CVz07YkN/rdn+3eZpMZbKSvDYgSJZKHUp2AFncRkt/nZZMHDxhkDPQQO7ntDnwYJ8rc+1H/kHTUYOWMOoLXd/A6H4D73hSLh3C/PIJZT4o+/mMULDKlhRRfIp1NB6YbXT+Y+nCcnxXUpk5pUjmzhxcgxvGEtAyAfyGL9yo0CEGhccbbnNs0YSTemW8zBznsHuQIdrazxBIsCC42zq3a3ny9afUdabfBgV/wa2x0bOfSbMd5kAgz9F0lf7hyS0cHYgyzal3mByGR50Bi9LTMxXBG/G9jUXEyUhu2N6peeby41WHcE/fVQZFmCyk3IvysvbEPVqNZ55RnkiDW5yiMytM5ovr89U+ziSwcwuEXxe2gu/rgACWzGIFjgQ4EYSBU4/bz9hUisvdy02leNxiEb0I9xy2GBdFoSguPC2UxJ7QiR2lVnjcAm2u353pQmHLoYpkg9usU4eAd9n+gZGpbNMDeK4htGTntY+4xUbPPU1DACs5iLT5QTsTx9V6vLWAIeyy/QwFaGFZJ+DLvCHUxVZoywyu93w3fLN/uDv1Z5W9CTDR6VwMy/kVlLRiAiHnI1vRYDjtYWsBNowvMQ1/4KA9E97SmHEnoezo19IzTd0PP4AUyJ4872ZU3sP7mdhoD6irvdzfM+MtQ7160zyingtSvLww+mVLGXjZKBpsK9rK69xIExT0fF2gC0tKpXkvs/nHFwZP0FSXQ0Cs26tN3Sj7c35h/TI06aOy8l1f4TbnU7YcU0YQQOkwUo0mqihq3Dq2eV/Ib+L6hXLtHL0jMbolEvDyToLhTlDlLEfJ8jLr9M4f8TAkHituaxQAgWWXc+p9C5VH5o0xsdUF1QdoguGe1z4RInv1qkHhtonIt7e1/zNqshiG6d/xghRgB",
+     "thinking": "",
+     "type": "thinking"
+    },
+    {
+     "text": "Four of the five CPPs sit inside their limits for every batch: MOI 5.0, seeding 0.47\u20130.54, culture duration 8 days, and time to transduction 21.9\u201323.7 h. Culture temperature has to come from the historian, so I'll check the tag data for the expansion window.",
+     "type": "text"
+    },
+    {
+     "id": "toolu_01PPXMPr2XWrB85dHRkEgPQC",
+     "caller": {
+      "type": "direct"
+     },
+     "input": {
+      "query": "SELECT b.batch_id, e.equip_id, replace(e.equip_id,'-','') || '.TEMP.PV' AS tag, count(*) AS n_all, count(h.val) AS n_good, count(*) FILTER (WHERE h.qual='BAD') AS n_bad, min(h.val) AS tmin, max(h.val) AS tmax, min(h.ts) AS t0, max(h.ts) AS t1 FROM pd.batch_master b JOIN pd.uo03_activation a USING (batch_id) JOIN pd.uo06_harvest hv USING (batch_id) JOIN (SELECT DISTINCT batch_id, equip_id FROM pd.uo05_expansion) e ON e.batch_id=b.batch_id LEFT JOIN pd.hist_tag_data h ON h.tag = replace(e.equip_id,'-','') || '.TEMP.PV' AND h.ts BETWEEN a.act_ts AND hv.hvst_ts WHERE b.run_type='PPQ' GROUP BY 1,2,3 ORDER BY 1;"
+     },
+     "name": "run_sql",
+     "type": "tool_use"
+    },
+    {
+     "id": "toolu_01UkGqHujCYWnwQSHsUszSLT",
+     "caller": {
+      "type": "direct"
+     },
+     "input": {
+      "query": "SELECT tag, qual, count(*), min(val), max(val), min(ts), max(ts) FROM pd.hist_tag_data WHERE tag LIKE 'INC%' GROUP BY 1,2 ORDER BY 1,2;"
+     },
+     "name": "run_sql",
+     "type": "tool_use"
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "toolu_01PPXMPr2XWrB85dHRkEgPQC",
+     "content": "batch_id | equip_id | tag | n_all | n_good | n_bad | tmin | tmax | t0 | t1\nPPQ26-01 | INC-01 | INC01.TEMP.PV | 187 | 187 | 0 | 36.82 | 37.19 | 2026-06-02 15:00:00 | 2026-06-10 09:00:00\nPPQ26-02 | INC-03 | INC03.TEMP.PV | 189 | 188 | 1 | 33.53 | 37.14 | 2026-06-04 14:00:00 | 2026-06-12 10:00:00\nPPQ26-03 | INC-03 | INC03.TEMP.PV | 189 | 188 | 1 | 33.53 | 37.14 | 2026-06-09 14:00:00 | 2026-06-17 10:00:00\nPPQ26-04 | INC-02 | INC02.TEMP.PV | 189 | 189 | 0 | 36.83 | 37.18 | 2026-07-14 14:00:00 | 2026-07-22 10:00:00\nPPQ26-05 | INC-04 | INC04.TEMP.PV | 187 | 186 | 1 | 36.87 | 37.18 | 2026-08-04 15:00:00 | 2026-08-12 09:00:00\n(5 rows)",
+     "is_error": false
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "toolu_01UkGqHujCYWnwQSHsUszSLT",
+     "content": "tag | qual | count | min | max | min | max\nINC01.CO2.PV | GOOD | 5832 | 4.84 | 5.17 | 2026-01-05 00:00:00 | 2026-09-04 23:00:00\nINC01.TEMP.PV | BAD | 12 | NULL | NULL | 2026-01-10 11:00:00 | 2026-08-03 07:00:00\nINC01.TEMP.PV | GOOD | 5820 | 36.74 | 37.24 | 2026-01-05 00:00:00 | 2026-09-04 23:00:00\nINC02.CO2.PV | GOOD | 5832 | 4.86 | 5.15 | 2026-01-05 00:00:00 | 2026-09-04 23:00:00\nINC02.TEMP.PV | BAD | 7 | NULL | NULL | 2026-01-29 16:00:00 | 2026-08-29 05:00:00\nINC02.TEMP.PV | GOOD | 5825 | 36.79 | 37.21 | 2026-01-05 00:00:00 | 2026-09-04 23:00:00\nINC03.CO2.PV | GOOD | 5832 | 1.05 | 5.16 | 2026-01-05 00:00:00 | 2026-09-04 23:00:00\nINC03.TEMP.PV | BAD | 14 | NULL | NULL | 2026-01-13 02:00:00 | 2026-08-15 21:00:00\nINC03.TEMP.PV | GOOD | 5818 | 33.53 | 37.30 | 2026-01-05 00:00:00 | 2026-09-04 23:00:00\nINC04.CO2.PV | GOOD | 5832 | 4.86 | 5.14 | 2026-01-05 00:00:00 | 2026-09-04 23:00:00\nINC04.TEMP.PV | BAD | 9 | NULL | NULL | 2026-02-15 18:00:00 | 2026-08-21 19:00:00\nINC04.TEMP.PV | GOOD | 5823 | 36.79 | 37.25 | 2026-01-05 00:00:00 | 2026-09-04 23:00:00\n(12 rows)",
+     "is_error": false
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "signature": "CAQSswcKEAgSGAI4AUIIdGhpbmtpbmcSDGFQjuGXAXHmUNzOVhoMZICZ0xv8ekeBdI+TIjA5QpqESsQjnnFGKFVV0r6aNfQMmrO/0HQDk5cKEKzRTurLvPkOuQ6CN5EZqELw6jAq0Abj8PowzjN2Iw48+NvkAj1NIp8rVsfkmk7Gt4ReYL5NczqZG/cZpDSCusDmndyKDoeMESBQgQQYwlnoADzX/WmYOwc9JqJCktWDRGd1PQ8Vc/2Yj5YE0FvGbZp56wAG1vzFKnM/OLppvvNcx9k6VauLYpIv+ymycQvrrxae6nVSFK6l++VGSZD4hcaSJSvY1vtrcVMA9CUMOzNbWm5yolagBrFdsfXvEShr+wgllujqBzNcA09RXo31SzZh/3gPEtsU4W60kq5jDKa9ULW+sW5ie1eLBKmOoqm1+pceB3KVZU0Al24rfcFl3bobej/BrJ65K8Jnt1vGW41rj1cFV0aBhz1qDGJcjIFP+GlIPpmvbA6FCBF5J/WsIGbkHolLEmr5u23v55JmIxCaDO5C5Ewq8DnEI0JyHWvHm+phFDjzGa93MlKHktthL9zdy596JZw7eu7HDgpE1OcuacRRYbtA2wQN+Dxc4qeVhnzei9C1ouwx1qCfpnKLXs7/upmIv6LsACjtF9QjSF4FWwdjHN3+40TRw386Zkx3hLCMRnXii1SYzEhrM0OxCVp1eKueNkoDnLrbOd4O1+lAZrQvD2Yex01YRgWjF2Y2J7AidDzqi5xx+gb6lmTtrr07PZ6CwVRTmhnAUuqsewyxjSSb52s4qCAvD5XcM42zoerfxMztAayUmwEG58M+TWR56kLDZitn2RPjqc5xCReSXiJTLPmm132X+LVfJ0eW61pnH20lW5GCYsiIgVW86dPldtcJ0mkqP3sLdswfa6Nl2WgP2OWCjdszKi9Bmgt+EDR6aHPUxCneSoQQYsy9hOqodNUtvAqXQBzUmhUzlAJ7gi4LeAckD5+uaLyJe+Rsi5xU/8THNqHJJZPnnZctayXyFDH62DSQw4hlkGabXuBozFOgVmJRXVZMKyvFWyrNJJBoQe2IsA/9P7iBfb6983cPK6efucsdWWT4uWMl1i7OPf8QKBLug35sqcWklktuldO6ut492Oef7BPuSJwXjYlH8nWjLmcJ1XXIVLM47zEryqvUCSitahoEiKOzDBfrbWZ32okbaFpUYjmUXVCIfoGoXfDMuLVONlsuSmHTMQAD1Et/OOR3rXaRylYhaF7qfRBavzJMxxgB",
+     "thinking": "",
+     "type": "thinking"
+    },
+    {
+     "text": "The historian shows INC-03 dropping to 33.53 \u00b0C during the PPQ26-02/03 window. I'll list every out-of-range temperature reading in each batch's expansion window to see exactly which batches and times are affected.",
+     "type": "text"
+    },
+    {
+     "id": "toolu_01DwDADYGy43suVxezGyFVMe",
+     "caller": {
+      "type": "direct"
+     },
+     "input": {
+      "query": "SELECT b.batch_id, h.tag, h.ts, h.val FROM pd.batch_master b JOIN pd.uo03_activation a USING (batch_id) JOIN pd.uo06_harvest hv USING (batch_id) JOIN (SELECT DISTINCT batch_id, equip_id FROM pd.uo05_expansion) e ON e.batch_id=b.batch_id JOIN pd.hist_tag_data h ON h.tag = replace(e.equip_id,'-','') || '.TEMP.PV' AND h.ts BETWEEN a.act_ts AND hv.hvst_ts WHERE b.run_type='PPQ' AND h.qual='GOOD' AND (h.val < 36.5 OR h.val > 37.5) ORDER BY 1,3;"
+     },
+     "name": "run_sql",
+     "type": "tool_use"
+    },
+    {
+     "id": "toolu_01VzBBpw3FaVbxZ3bvu8wHBK",
+     "caller": {
+      "type": "direct"
+     },
+     "input": {
+      "query": "SELECT d.dev_no, d.record_type, d.open_dt, d.event_ts, d.dev_class, d.title, d.description, d.status, d.rc_category, d.root_cause, d.impact_assessment FROM pd.qms_deviation d WHERE d.dev_no IN (SELECT tgt_id FROM pd.trace_link WHERE src_type='DEV' AND tgt_type IN ('BATCH','PROTOCOL')) OR d.dev_no IN (SELECT src_id FROM pd.trace_link WHERE src_type='DEV' AND tgt_id LIKE 'PPQ26%') OR d.title ILIKE '%PPQ%' OR d.description ILIKE '%PPQ%' OR d.description ILIKE '%INC-03%' OR d.description ILIKE '%temperature%' ORDER BY 1;"
+     },
+     "name": "run_sql",
+     "type": "tool_use"
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "toolu_01DwDADYGy43suVxezGyFVMe",
+     "content": "batch_id | tag | ts | val\nPPQ26-02 | INC03.TEMP.PV | 2026-06-10 22:00:00 | 36.22\nPPQ26-02 | INC03.TEMP.PV | 2026-06-10 23:00:00 | 34.64\nPPQ26-02 | INC03.TEMP.PV | 2026-06-11 00:00:00 | 34.09\nPPQ26-02 | INC03.TEMP.PV | 2026-06-11 01:00:00 | 33.85\nPPQ26-02 | INC03.TEMP.PV | 2026-06-11 02:00:00 | 33.73\nPPQ26-02 | INC03.TEMP.PV | 2026-06-11 03:00:00 | 33.56\nPPQ26-02 | INC03.TEMP.PV | 2026-06-11 04:00:00 | 33.69\nPPQ26-02 | INC03.TEMP.PV | 2026-06-11 05:00:00 | 33.63\nPPQ26-02 | INC03.TEMP.PV | 2026-06-11 06:00:00 | 33.59\nPPQ26-02 | INC03.TEMP.PV | 2026-06-11 07:00:00 | 33.53\nPPQ26-02 | INC03.TEMP.PV | 2026-06-11 08:00:00 | 34.42\nPPQ26-03 | INC03.TEMP.PV | 2026-06-10 22:00:00 | 36.22\nPPQ26-03 | INC03.TEMP.PV | 2026-06-10 23:00:00 | 34.64\nPPQ26-03 | INC03.TEMP.PV | 2026-06-11 00:00:00 | 34.09\nPPQ26-03 | INC03.TEMP.PV | 2026-06-11 01:00:00 | 33.85\nPPQ26-03 | INC03.TEMP.PV | 2026-06-11 02:00:00 | 33.73\nPPQ26-03 | INC03.TEMP.PV | 2026-06-11 03:00:00 | 33.56\nPPQ26-03 | INC03.TEMP.PV | 2026-06-11 04:00:00 | 33.69\nPPQ26-03 | INC03.TEMP.PV | 2026-06-11 05:00:00 | 33.63\nPPQ26-03 | INC03.TEMP.PV | 2026-06-11 06:00:00 | 33.59\nPPQ26-03 | INC03.TEMP.PV | 2026-06-11 07:00:00 | 33.53\nPPQ26-03 | INC03.TEMP.PV | 2026-06-11 08:00:00 | 34.42\n(22 rows)",
+     "is_error": false
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "toolu_01VzBBpw3FaVbxZ3bvu8wHBK",
+     "content": "dev_no | record_type | open_dt | event_ts | dev_class | title | description | status | rc_category | root_cause | impact_assessment\nDEV-26-011 | TEST_INCIDENT | 2026-02-10 | NULL | MINOR | OQ test incident: INC-03 door-open alarm late | During execution of TC-OQ-INC-04 on INC-03 the door-open alarm activated at 142 s (criterion <= 60 s). INC-01, INC-02 and INC-04 passed. | CLOSED | EQUIPMENT - COMPONENT | Door switch misaligned. | Qualification test incident. INC-03 door alarm function not verified.\nDEV-26-021 | DEVIATION | 2026-04-20 | NULL | MAJOR | FRZ-80-02 high temperature alarm | FRZ-80-02 high temperature alarm acknowledged by warehouse staff at 14:40. Compressor found not running. Contents (viral vector and cytokine lots) relocated to FRZ-80-01 at 15:30. Maximum recorded chamber temperature before relocation approx. -36 C. | CLOSED | EQUIPMENT - COMPRESSOR FAILURE | Compressor failure (age-related). | Materials remained frozen. Supplier stability statement supports storage at <= -65 C; short excursion assessed as low risk. No lots placed on hold.\nDEV-26-033 | PROTOCOL_DEVIATION | 2026-06-12 | NULL | MAJOR | PPQ26-02 harvest viability below PPQ acceptance criterion | Harvest viability for PPQ26-02 below the PPQ-001 acceptance criterion of 80%. INC-03 door found not fully latched on the morning of 11-Jun; door alarm acknowledged 07:50. | CLOSED | HUMAN ERROR - PROCEDURE NOT FOLLOWED | Operator did not confirm door latch per SOP-MFG-105. | PPQ26-02 does not meet PPQ-001 criterion 6. Release testing within specification.\nDEV-26-038 | DEVIATION | 2026-07-14 | NULL | MINOR | PPQ26-04 label printer error | Bag labels misprinted (truncated text). Labels reprinted and reconciled. | CLOSED | EQUIPMENT - PRINTER | Printer ribbon misfeed. | No product impact.\nDEV-26-041 | DEVIATION | 2026-08-03 | NULL | MINOR | PPQ26-05 Prodigy tubing set leak at sampling port | Small leak at sampling port observed during priming, before product contact. Tubing set replaced. | OPEN | SUPPLIER - MATERIAL DEFECT | Sampling port weld defect (supplier). | No product contact. Sterility results pending at time of assessment.\n(5 rows)",
+     "is_error": false
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "signature": "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",
+     "thinking": "",
+     "type": "thinking"
+    },
+    {
+     "text": "Two batches, PPQ26-02 and PPQ26-03, both show the same 33.5\u201334.6 \u00b0C INC-03 excursion, and DEV-26-033 is tied to PPQ26-02 only. I'll check every link that touches these batches, the deviation's links, and whether any record mentions PPQ26-03.",
+     "type": "text"
+    },
+    {
+     "id": "toolu_012JtH4P9hgt8KX5SNqeNw9Z",
+     "caller": {
+      "type": "direct"
+     },
+     "input": {
+      "query": "SELECT * FROM pd.trace_link WHERE src_id IN ('PPQ26-02','PPQ26-03','DEV-26-033') OR tgt_id IN ('PPQ26-02','PPQ26-03','DEV-26-033') OR src_id='INC-03' OR tgt_id='INC-03' OR src_id='SYS-INC' OR tgt_id='SYS-INC' ORDER BY 1;"
+     },
+     "name": "run_sql",
+     "type": "tool_use"
+    },
+    {
+     "id": "toolu_01AdJxueCwHieDtQMviEq5oo",
+     "caller": {
+      "type": "direct"
+     },
+     "input": {
+      "query": "SELECT d.dev_no, d.title, d.description, d.impact_assessment FROM pd.qms_deviation d WHERE d.description ILIKE '%PPQ26-03%' OR d.title ILIKE '%PPQ26-03%' OR d.impact_assessment ILIKE '%PPQ26-03%' OR d.description ILIKE '%PPQ26-02%' OR d.impact_assessment ILIKE '%PPQ26-02%' OR d.description ILIKE '%criterion%' OR d.description ILIKE '%11-Jun%' OR d.description ILIKE '%door%';"
+     },
+     "name": "run_sql",
+     "type": "tool_use"
+    },
+    {
+     "id": "toolu_01UPn4XEysHsGLAob51sQAcv",
+     "caller": {
+      "type": "direct"
+     },
+     "input": {
+      "query": "SELECT c.capa_no, c.open_dt, c.capa_type, c.action_desc, c.status, c.eff_check FROM pd.qms_capa c WHERE c.action_desc ILIKE '%PPQ%' OR c.action_desc ILIKE '%INC%' OR c.action_desc ILIKE '%door%' OR c.action_desc ILIKE '%temperature%' OR c.capa_no IN (SELECT tgt_id FROM pd.trace_link WHERE src_type='DEV' AND tgt_type='CAPA');"
+     },
+     "name": "run_sql",
+     "type": "tool_use"
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "toolu_012JtH4P9hgt8KX5SNqeNw9Z",
+     "content": "link_id | src_type | src_id | link_type | tgt_type | tgt_id\n3 | SYS | SYS-EMS | MONITORS | EQUIP | INC-03\n150 | PROTOCOL | PPQ-001 | RELATED | BATCH | PPQ26-02\n151 | PROTOCOL | PPQ-001 | RELATED | BATCH | PPQ26-03\n155 | DEV | DEV-26-011 | RELATED | EQUIP | INC-03\n163 | DEV | DEV-26-033 | RELATED | BATCH | PPQ26-02\n164 | DEV | DEV-26-033 | RELATED | PROTOCOL | PPQ-001\n165 | DEV | DEV-26-033 | RELATED | EQUIP | INC-03\n166 | DEV | DEV-26-033 | RELATED | CAPA | CAPA-26-015\n181 | CC | CC-26-019 | IMPACTS | EQUIP | INC-03\n(9 rows)",
+     "is_error": false
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "toolu_01AdJxueCwHieDtQMviEq5oo",
+     "content": "dev_no | title | description | impact_assessment\nDEV-26-011 | OQ test incident: INC-03 door-open alarm late | During execution of TC-OQ-INC-04 on INC-03 the door-open alarm activated at 142 s (criterion <= 60 s). INC-01, INC-02 and INC-04 passed. | Qualification test incident. INC-03 door alarm function not verified.\nDEV-26-033 | PPQ26-02 harvest viability below PPQ acceptance criterion | Harvest viability for PPQ26-02 below the PPQ-001 acceptance criterion of 80%. INC-03 door found not fully latched on the morning of 11-Jun; door alarm acknowledged 07:50. | PPQ26-02 does not meet PPQ-001 criterion 6. Release testing within specification.\n(2 rows)",
+     "is_error": false
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "toolu_01UPn4XEysHsGLAob51sQAcv",
+     "content": "capa_no | open_dt | capa_type | action_desc | status | eff_check\nCAPA-26-008 | 2026-04-21 | CORRECTIVE | Replace FRZ-80-02 compressor and verify pull-down. | CLOSED | EFFECTIVE - no recurrence 24-Apr to 26-May\nCAPA-26-012 | 2026-02-24 | CORRECTIVE | Replace INC-03 door switch and re-execute TC-OQ-INC-04. | OPEN | NULL\nCAPA-26-015 | 2026-06-15 | CORRECTIVE | Retrain Suite 2 operators on incubator door latch check (SOP-MFG-105). | CLOSED | PENDING\nCAPA-26-016 | 2026-05-28 | PREVENTIVE | Evaluate minimum CD3% acceptance criterion at apheresis receipt. | OPEN | NULL\nCAPA-26-019 | 2026-08-05 | CORRECTIVE | Supplier corrective action request for tubing set sampling port. | OPEN | NULL\n(5 rows)",
+     "is_error": false
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "signature": "CAQSigoKEAgSGAI4AUIIdGhpbmtpbmcSDPgGPGATKcq2VvEz4xoMPUvKsi5uEIfjV5RfIjCuJNcG6g0cALoD6bmg0+fsnTT6lSiq3r3FHUHPEQbZJDoPDIC8yI4yPZj4PXAP8iQqpwk4ApqW42vGpnKP2GHYYP5xWC5AhRTyaT/d8+ed8fFjoR38TAPtqnGjYj0fxdTKrL+ZjDNm+EiY8LTJKjGckbVxyX6r4WRUqJ4vFb+ytVI57ArTgV+E8eVD7kZM/9YTdFfrN20kZJvYhqktn0Dy8F2UT/N4EGYQlaaHdHjjhGXxfo0qW+jVp0vOOurruphJPp91+7v/yzBxtn8+ZDW5elb7drLmVjoKow5uAe5Xned3hITsQoM14ZV4Uspa74SfzUOF1mrNrB5VOhgtGo6hTpXRVDu0m0lSES6FxarsQM4BbgwkVK4bxaQqF1062pQhvQw31PJ/hri7dVn2v7oWEr52q2+i6ctdZbJYWFvd8kIqe6ZuA61wldvf5BgmHdk0+oU9GtowwSTob0Qg6YfFLLdytvQEhilWpQ90kE86FuogXySv+43K9zvdSqXGcDiDYsxnoW4HvTa1ZDHqfDzlmVgmibjMQjQna+jv0A3tp78wuBPGy4QdboNhN8a0DUvLHmjs4w2WvS9IJza8Q50VS3KHA0JxHRmxPpfCk6plNo6otLTOXdfsR4vh7MAWs8J/awiarAfGpHMmTYsjF1rNJXyyRcSBe3qzy0FtURLlHDTx5VPPPGAz8rFWVdfJkZ6KUIYvhtciAxGg59ddvc/4c9RlRoq8uKaSFagpCymBlPw23HGu7dCYw7EvkvWYR6tmx2XqLY2iYAbuLjoZGYB8EfObPkDrTb0WV4fxYjzl3gu9RGIq2Ir4CVCMw1C6Z/LGr8HTLPk68Uxa3sgL2zeEYAf6jPP2RkRKCwqvmJMxVaB931TGlaEkfW8F9xCQQ5x6rT6FgkeLUpI26jEAnzeYcUmjDpJdXBRhp2Vi493JR7yOf6cURrqmXK6IOg27SNeI2VgKEGfx9iDyuL5Ek0In58dH3dKIgqq4o8Alhi3KSbB36SidyoRXSt8Dt/UmdxE4qRPI675qF7qh/qg8WM6g3ePyJI8sC3f2yIEFL9Iz8DBYo/dlq6q5trE+J57mT0Z60/1KtmikBleDfaWHcwKTiXdcyxfNWhPt3ZYtynaL+nfNjKr182+4x68ErtwiHvD7FXFWTJpeia3iINDmNzOCRnI5pxVfc6xmPw5CTJnCoo50b8MImaQ15hyAt5ErIdiDce4W0gDyCQMME/ZGMEhuaIIcSq1kIPEC02g7gMNxY3Kc0nT7qXHrWNX9WUqLd0RwfbTRz8e0UXmIJOA33+0/5S7o+bqAxhoQTL3V9NxcpNZQOP1GWwm4Uv5uJ3xEBbVLwhIOUqDzTAmhOunoBzHnHa/tlKM6Oj/bmKiH3Qt2RGb/f7LZb2sHbpRBjUlpidF5Oq8kooQcjAaETZKWeE6VYKfbLK0ur4qQOgUHipKUCXxhS6Faz6JsU75D4azgSdKL142gWOOfPH0wBUgfqvF14tJspJEg3oISTbzcemlgc7h/ozILI82u0mmQSwTqtnhLLMGLt50z9VvZVxj0zLuJygFA3iZXXSSLYOENpy4s8LgHmTP93fZQf7LKmOUI6y5njZ6/I/68iJTcR+3lM30barepVsMI5nJI+junhMzayY7SOEYYbpQNPhIYAQ==",
+     "thinking": "",
+     "type": "thinking"
+    },
+    {
+     "text": "The deviation record does not mention the temperature excursion. I'll check harvest viability for all five batches to confirm how DEV-26-033 was framed.",
+     "type": "text"
+    },
+    {
+     "id": "toolu_01AVF2CSHssXPJV465GmokJt",
+     "caller": {
+      "type": "direct"
+     },
+     "input": {
+      "query": "SELECT batch_id, hvst_ts, via_pct FROM pd.uo06_harvest WHERE batch_id LIKE 'PPQ26%' ORDER BY 1;"
+     },
+     "name": "run_sql",
+     "type": "tool_use"
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "toolu_01AVF2CSHssXPJV465GmokJt",
+     "content": "batch_id | hvst_ts | via_pct\nPPQ26-01 | 2026-06-10 09:40:00 | 91.8\nPPQ26-02 | 2026-06-12 10:08:00 | 75.2\nPPQ26-03 | 2026-06-17 10:06:00 | 93.8\nPPQ26-04 | 2026-07-22 10:06:00 | 92.9\nPPQ26-05 | 2026-08-12 09:58:00 | 94.4\n(5 rows)",
+     "is_error": false
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "signature": "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",
+     "thinking": "",
+     "type": "thinking"
+    },
+    {
+     "text": "Yes. One incubator excursion put two PPQ batches outside a CPP limit, and only one of them has a deviation, which does not cite the temperature criterion.\n\n**The excursion.** Culture temperature is the CPP \"Incubator temperature during expansion\", with a PPQ-001 limit of 36.5\u201337.5 \u00b0C (criterion 3). I checked the other four CPPs against their limits (MOI 5.0 in 4\u20136; seeding density 0.47\u20130.54 in 0.4\u20130.6; culture duration 8 days in 7\u20139; time to transduction 21.9\u201323.7 h in 20\u201330). All were in range for all five batches. Culture temperature came from the EMS historian (tag INC03.TEMP.PV), excluding BAD-quality rows. For PPQ26-01, -04 and -05 (INC-01, INC-02, INC-04) every reading was within limits. INC-03 went out of range on 10\u201311 June 2026, from 22:00 to 08:00, reaching a minimum of 33.53 \u00b0C, with 11 readings below 36.5 \u00b0C. That window falls inside the expansion period for both batches that ran in INC-03 at the time:\n\n- **PPQ26-02** (transduction 5 June) and **PPQ26-03** (transduction 10 June) both shared INC-03 during that window, which is why the historian shows identical readings for both.\n\n**Was a deviation raised?**\n\n- **PPQ26-02:** Yes, DEV-26-033 (PROTOCOL_DEVIATION, MAJOR, closed). It is framed as harvest viability of 75.2% falling below the 80% limit (criterion 6), with the root cause recorded as a door not fully latched on INC-03 (human error, SOP-MFG-105). It does not mention the culture temperature excursion or criterion 3, and its impact assessment only cites criterion 6. The deviation is linked to CAPA-26-015 (operator retraining on the door latch check, closed, effectiveness check still pending).\n- **PPQ26-03:** No. There is no deviation linked to this batch, and no record mentions its temperature excursion. Its harvest viability was 93.8%, so it did not trigger the viability deviation either.\n\nSo the excursion appears to have been captured only as a viability/door-latch event for PPQ26-02. The culture temperature criterion was not addressed as a CPP excursion for either batch. Batch PPQ26-03 has no deviation at all, which is a gap to review. CC-26-019 also lists INC-03 as impacted, but I did not assess it.\n\n```json\n{\"answer_ids\": [\"PPQ26-02\", \"PPQ26-03\", \"DEV-26-033\", \"CAPA-26-015\"]}\n```",
+     "type": "text"
+    }
+   ]
+  }
+ ]
+}

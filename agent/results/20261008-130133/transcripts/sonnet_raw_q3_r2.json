@@ -1,0 +1,258 @@
+{
+ "model": "sonnet",
+ "condition": "raw",
+ "qid": "q3",
+ "run": 2,
+ "score": 0.5,
+ "recall": 0.333,
+ "precision": 1.0,
+ "missed": [
+  "EMS after-hours escalation broken by CC-26-011",
+  "FRZ-80-02 failure degraded vector lot LV25-118 (DEV-26-027 blames donors)"
+ ],
+ "extra": [],
+ "answer_ids": [
+  "CAPA-26-012",
+  "CAPA-26-015"
+ ],
+ "id_source": "json",
+ "tool_calls": 9,
+ "sql_errors": 0,
+ "turns": 4,
+ "hit_turn_limit": false,
+ "stop_reason": "end_turn",
+ "seconds": 16.3,
+ "cost_usd": 0.0453,
+ "tok_input": 12,
+ "tok_output": 2124,
+ "tok_cache_write": 8787,
+ "tok_cache_read": 20712,
+ "final_answer": "Two CAPAs trace back to the same upstream cause: **CAPA-26-012** and **CAPA-26-015**. The shared cause is the unresolved door-switch fault on incubator INC-03.\n\n**The two CAPAs**\n- **CAPA-26-012** comes from DEV-26-011, an OQ test incident. In TC-OQ-INC-04, the INC-03 door-open alarm fired at 142 s against a limit of 60 s or less. The recorded root cause is \"Door switch misaligned\" (EQUIPMENT \u2013 COMPONENT). The CAPA is to replace the door switch and re-execute the test. It is linked to CC-26-019, \"INC-03 door switch replacement\".\n- **CAPA-26-015** comes from DEV-26-033, a PPQ26-02 harvest viability failure. The recorded root cause is \"Operator did not confirm door latch per SOP-MFG-105\" (HUMAN ERROR \u2013 PROCEDURE NOT FOLLOWED). The CAPA is operator retraining.\n\n**Why they share a cause**\n- Both deviations are linked to INC-03.\n- The INC-03 door-open alarm (ALM-DOOR) went off at 21:40 on 10 June. A low-temperature alarm followed at 22:22.\n- Neither alarm was acknowledged until 07:50 on 11 June, about 10 hours later.\n- PPQ26-02 viability then fell from 91.6% on day 5 to 66.5% on day 7 and 73.4% on day 8. The PPQ-001 criterion is 80%.\n- The door-alarm defect from DEV-26-011 was already known. CC-26-019 was approved on 24 Feb 2026 but is still \"APPROVED \u2013 NOT IMPLEMENTED\".\n- CAPA-26-012 is still OPEN and was due 31 Mar 2026. The door switch was therefore still faulty when the PPQ26-02 door event happened.\n- The alarm that should have flagged the door immediately was the one known to be late or unreliable on INC-03.\n- The PPQ26-02 deviation was recorded as operator error, but the unfixed switch defect is the common upstream cause. The retraining CAPA doesn't address it.\n\n**Caveats**\n- The data doesn't show that the door switch actually caused the 11 June door-open and low-temperature alarms. It shows the same component was known to be defective and its fix was never implemented.\n- CAPA-26-015 is also marked CLOSED on 3 Jul 2026, after its 1 Jul due date, with its effectiveness check still PENDING.\n\n**Other CAPAs**\n- CAPA-26-008: FRZ-80-02 compressor failure.\n- CAPA-26-016: low CD3% in donor material.\n- CAPA-26-019: supplier tubing-set defect.\n\nThese don't share an upstream cause with each other or with the INC-03 pair.\n\n```json\n{\"answer_ids\": [\"CAPA-26-012\", \"CAPA-26-015\"]}\n```",
+ "transcript": [
+  {
+   "role": "user",
+   "content": "CAPAs have been raised from several different deviations. Do any of them trace back to the same upstream cause, even where the recorded root causes differ? Name the CAPAs and the shared cause."
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "signature": "CAQS7gQKEAgSGAI4AUIIdGhpbmtpbmcSDIg/W7koaFJtm78SVxoMi55RUovY9Fl+1mSOIjC9joj9C4uaryg21DWSSNjrD9zjSbHKoQbFEhpCx1tWVwHRZbxVfkIpbL+U7ivM5RMqiwQx9wN/ih7kIwaZxmUGka/ED+kuKSVTIULftHhZin3AWms/OzZCd4NS2G4xj+NbdifBBQFzKHY7zMb9+BDKRwheh5GS67DsPKTg/p+CCAeEHmVt8BYkSOG1Q6PDXmFCncM79CGB+yxuwYc09xBhOtNxBAqtU0rAtJpNoKXRTXfaMLBS0k49MEk55iWO/e3xanUT2nrV2RHxyZ5mOubz5rW+VLkQ3pYvF/sBDjsSnxJRkvkGxreQYG8C8B3Amb1A53yl2z1OeFzHKg2LoOP6MYTkorZwNmP/6mClppL26U3i5dTKS0enQutn+81i+ExrndtlhE2O1d9YDCeLCDSi1+0IFDJBNH0mlIVLR+dAZkdSHSzvSlT2FfRS6t/yL3aCIB7yd71QGy110BEMRWjPKs0ZWRPjCHM+l/lTF+v3lolbWOEiJqkMixlzhgEE8t+I1Mu+DhpiAZHmfBKdx76dFAxWyxYy84HwHaVaSoAdK8BA0x6Qkg4HNvqVAgbzunsrIUdG5fEd7h4dGxRdjIzIhN1/I7l8jdXqvisGO5xIp0WtYmT5zyzCYII18+Z0orBC8gOaRbBaciADevRUIkTAkcpWcfL0lEV8KSe+MARU0DySttie1KRZloEcEE8Hx+Pjg85vH7zolxxSkiLAvBg5IEPAWqKJ/GW0I5iMfT+LbK7a0ZzdCXymE3s8DuzmGAE=",
+     "thinking": "",
+     "type": "thinking"
+    },
+    {
+     "text": "I'll start by looking at how CAPAs link to deviations in the trace links.",
+     "type": "text"
+    },
+    {
+     "id": "toolu_0142VHKsB8niamVEiJHJDm6G",
+     "caller": {
+      "type": "direct"
+     },
+     "input": {
+      "query": "select src_type, link_type, tgt_type, count(*) from pd.trace_link group by 1,2,3 order by 1,2,3"
+     },
+     "name": "run_sql",
+     "type": "tool_use"
+    },
+    {
+     "id": "toolu_01KVmTNqh6zBFGctqkvvdnia",
+     "caller": {
+      "type": "direct"
+     },
+     "input": {
+      "query": "select * from pd.qms_capa order by capa_no"
+     },
+     "name": "run_sql",
+     "type": "tool_use"
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "toolu_0142VHKsB8niamVEiJHJDm6G",
+     "content": "src_type | link_type | tgt_type | count\nCAPA | RELATED | CC | 2\nCC | IMPACTS | EQUIP | 2\nCC | IMPACTS | RA | 1\nCC | IMPACTS | SOP | 4\nCC | IMPACTS | SPEC | 1\nCC | RELATED | EXEC | 2\nDEV | RELATED | BATCH | 5\nDEV | RELATED | CAPA | 5\nDEV | RELATED | EQUIP | 4\nDEV | RELATED | PROTOCOL | 2\nEXEC | RELATED | DEV | 1\nPROTOCOL | RELATED | BATCH | 5\nRISK | ASSESSES | SPEC | 43\nRISK | MITIGATES | SOP | 10\nRISK | MITIGATES | SPEC | 20\nSPEC | TRACE | SPEC | 16\nSYS | MONITORS | EQUIP | 6\nTC | VERIFIES | SPEC | 53\n(18 rows)",
+     "is_error": false
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "toolu_01KVmTNqh6zBFGctqkvvdnia",
+     "content": "capa_no | open_dt | capa_type | action_desc | owner | due_dt | status | closed_dt | eff_check\nCAPA-26-008 | 2026-04-21 | CORRECTIVE | Replace FRZ-80-02 compressor and verify pull-down. | Facilities | 2026-05-29 | CLOSED | 2026-05-27 | EFFECTIVE - no recurrence 24-Apr to 26-May\nCAPA-26-012 | 2026-02-24 | CORRECTIVE | Replace INC-03 door switch and re-execute TC-OQ-INC-04. | Engineering | 2026-03-31 | OPEN | NULL | NULL\nCAPA-26-015 | 2026-06-15 | CORRECTIVE | Retrain Suite 2 operators on incubator door latch check (SOP-MFG-105). | Manufacturing | 2026-07-01 | CLOSED | 2026-07-03 | PENDING\nCAPA-26-016 | 2026-05-28 | PREVENTIVE | Evaluate minimum CD3% acceptance criterion at apheresis receipt. | PD | 2026-09-30 | OPEN | NULL | NULL\nCAPA-26-019 | 2026-08-05 | CORRECTIVE | Supplier corrective action request for tubing set sampling port. | Supply Quality | 2026-10-30 | OPEN | NULL | NULL\n(5 rows)",
+     "is_error": false
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "id": "toolu_01TSW6yX3rsqyc3YfMPJVNC7",
+     "caller": {
+      "type": "direct"
+     },
+     "input": {
+      "query": "select * from pd.trace_link where src_type in ('DEV','CAPA') or tgt_type in ('DEV','CAPA') order by src_id"
+     },
+     "name": "run_sql",
+     "type": "tool_use"
+    },
+    {
+     "id": "toolu_01X1ECq2muhghvPA4QgJk1C9",
+     "caller": {
+      "type": "direct"
+     },
+     "input": {
+      "query": "select * from pd.qms_deviation order by dev_no"
+     },
+     "name": "run_sql",
+     "type": "tool_use"
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "toolu_01TSW6yX3rsqyc3YfMPJVNC7",
+     "content": "link_id | src_type | src_id | link_type | tgt_type | tgt_id\n171 | CAPA | CAPA-26-008 | RELATED | CC | CC-26-014\n172 | CAPA | CAPA-26-012 | RELATED | CC | CC-26-019\n157 | DEV | DEV-26-011 | RELATED | CAPA | CAPA-26-012\n155 | DEV | DEV-26-011 | RELATED | EQUIP | INC-03\n156 | DEV | DEV-26-011 | RELATED | PROTOCOL | OQ-INC-01\n159 | DEV | DEV-26-021 | RELATED | CAPA | CAPA-26-008\n158 | DEV | DEV-26-021 | RELATED | EQUIP | FRZ-80-02\n160 | DEV | DEV-26-027 | RELATED | BATCH | ENG26-01\n161 | DEV | DEV-26-027 | RELATED | BATCH | ENG26-02\n162 | DEV | DEV-26-027 | RELATED | CAPA | CAPA-26-016\n163 | DEV | DEV-26-033 | RELATED | BATCH | PPQ26-02\n164 | DEV | DEV-26-033 | RELATED | PROTOCOL | PPQ-001\n165 | DEV | DEV-26-033 | RELATED | EQUIP | INC-03\n166 | DEV | DEV-26-033 | RELATED | CAPA | CAPA-26-015\n167 | DEV | DEV-26-038 | RELATED | BATCH | PPQ26-04\n168 | DEV | DEV-26-041 | RELATED | BATCH | PPQ26-05\n169 | DEV | DEV-26-041 | RELATED | EQUIP | PRDG-01\n170 | DEV | DEV-26-041 | RELATED | CAPA | CAPA-26-019\n154 | EXEC | TX-0023 | RELATED | DEV | DEV-26-011\n(19 rows)",
+     "is_error": false
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "toolu_01X1ECq2muhghvPA4QgJk1C9",
+     "content": "dev_no | record_type | open_dt | event_ts | dev_class | title | description | impact_assessment | rc_category | root_cause | status | closed_dt\nDEV-26-011 | TEST_INCIDENT | 2026-02-10 | NULL | MINOR | OQ test incident: INC-03 door-open alarm late | During execution of TC-OQ-INC-04 on INC-03 the door-open alarm activated at 142 s (criterion <= 60 s). INC-01, INC-02 and INC-04 passed. | Qualification test incident. INC-03 door alarm function not verified. | EQUIPMENT - COMPONENT | Door switch misaligned. | CLOSED | 2026-02-24\nDEV-26-018 | DEVIATION | 2026-03-25 | NULL | MINOR | Expired CD8 bead lot scanned during dry run | EBR blocked an expired CD8 bead lot during an operator training dry run. No product involved. | No impact. Control worked as intended. | MATERIAL MANAGEMENT | Expired lot not removed from cold room. | CLOSED | 2026-04-01\nDEV-26-021 | DEVIATION | 2026-04-20 | NULL | MAJOR | FRZ-80-02 high temperature alarm | FRZ-80-02 high temperature alarm acknowledged by warehouse staff at 14:40. Compressor found not running. Contents (viral vector and cytokine lots) relocated to FRZ-80-01 at 15:30. Maximum recorded chamber temperature before relocation approx. -36 C. | Materials remained frozen. Supplier stability statement supports storage at <= -65 C; short excursion assessed as low risk. No lots placed on hold. | EQUIPMENT - COMPRESSOR FAILURE | Compressor failure (age-related). | CLOSED | 2026-05-12\nDEV-26-027 | ATYPICAL_RESULT | 2026-05-21 | NULL | MINOR | Low %CAR+ in engineering runs ENG26-01 and ENG26-02 | FC-CAR results for ENG26-01 and ENG26-02 below the 20% target. Transduction performed per SOP-MFG-104; MOI 5.0 TU/cell. | Engineering runs, not for clinical use. No impact to released product. | STARTING MATERIAL - DONOR VARIABILITY | Suspected donor-related variability (low CD3% at apheresis). | OPEN | NULL\nDEV-26-033 | PROTOCOL_DEVIATION | 2026-06-12 | NULL | MAJOR | PPQ26-02 harvest viability below PPQ acceptance criterion | Harvest viability for PPQ26-02 below the PPQ-001 acceptance criterion of 80%. INC-03 door found not fully latched on the morning of 11-Jun; door alarm acknowledged 07:50. | PPQ26-02 does not meet PPQ-001 criterion 6. Release testing within specification. | HUMAN ERROR - PROCEDURE NOT FOLLOWED | Operator did not confirm door latch per SOP-MFG-105. | CLOSED | 2026-07-03\nDEV-26-038 | DEVIATION | 2026-07-14 | NULL | MINOR | PPQ26-04 label printer error | Bag labels misprinted (truncated text). Labels reprinted and reconciled. | No product impact. | EQUIPMENT - PRINTER | Printer ribbon misfeed. | CLOSED | 2026-07-21\nDEV-26-041 | DEVIATION | 2026-08-03 | NULL | MINOR | PPQ26-05 Prodigy tubing set leak at sampling port | Small leak at sampling port observed during priming, before product contact. Tubing set replaced. | No product contact. Sterility results pending at time of assessment. | SUPPLIER - MATERIAL DEFECT | Sampling port weld defect (supplier). | OPEN | NULL\n(7 rows)",
+     "is_error": false
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "signature": "CAQSuggKEAgSGAI4AUIIdGhpbmtpbmcSDOujBFAQ2ubsNJfvJhoMpXNXA2p71ImXgcc+IjBOjZuxxeRjCO8QACvPVyFdrnWvtSh7ddbpa0e1mR/OssDgXxRjq4gHIpq+vpSX/Yoq1weUkMD0SF/PNNxGY1S7SyRUNIrH0EKzjlcVY/BPC69xOaBD/HBqnmVrUxBgg4X5bdYjREtvuBtG7NYrkuXF8FY+qX2quUAXAMBFeER7RQrGKCpJClD6GDQvuCyiD44X7rTz3x2UyGPLSIMuSqaeV7OBY13GceFBi+8yuwbQVY/kKP5pbVWZZzwflKmlpbNZbDUDuWna7LaiIoWnA9YOIbaOMofV614i6vdyw83FohfipmHi7m9s7EnmUQyAh+X14/WTLGGmajJ6KA/DdIAxYPnaDGUyxscQqQ9O8Wwt1KEIseY3oHaIjdS/C8mGTN2fUJ9xbpdWOhvQnOcgb+ByNJv6vvJzakef0DBkZwmFcSpkEP1HSO6FrDV2xV4DpmCxf9GxuEGFAJ6DyJBsB2k78eLHOTlQmDNt4aJVaYyrDknYCyr18k2gC0fz4et15H/qsZ87PKSP4GtNPYl7zBJSKoRDPxlWAVMochw7fQHglb6txQeZToUoeMB05Oq7f2MK1YyiDWIu+TldE9S9bEpFXgBBhE+qEdCW1f/E1NqbjrG0GqVc31IPiTJ8OJXjZTMLeO5yV8sgYcNbz0TFRtMkoIgB03gvoM/EbrZvfufYD4gNUooMi3TGPz1awY+hm5l08evToxbs4J90IUSPhFygvm70gjRqZQuHYlrTOtSJ33PHXRuJKUT/g40pQWXmmzDoZSNVUxpDUWOUKIZWHCGXoownwIgNXTf/U7mSZB3Vrx9KBSdRF7CnIabnCWyKWre0HrF934S/k77BT0S1JS56cH0sEphBMIDVn53COj5bBtq0sRKIQzH5k5e7W/x45LWLV7Ru9jX0KyBILkdI7Khs9C/qY27Yufx6GONtL2bYqNQ3kEZWvhQptXjjVUSWdz7xA4cKqyNo6s3i7VnzgLfDyDBvZblH4kacmELUopHUxLOPAg+MZwndxiutYqTMpeasgdL4nKMra4+uJEBmS7Cnk5obDhnAbeKpqY6VLHop2mVog5HVDvMVU8cC9QczqkkratpKMu3Z99LHS6VJAxcYbOSHPeEHusTzqrVBIPB9kCeevhZRzmunI80yIgSFYbs6/fuvYkhHrX2jzDh/XHFFHmxWBWxNnYhj8KyIAHD95TytP+pxHVnCiUGfN0rpc8R+AY2L4CoxhktwkUgenKC+WGDcci4IGrITdGO7ZgTgGIzomDGwEB+rxXRmCqPR2clLNWrgFiIdigCpvO2li7Gzh1aTJBAtqraTlYgyy9K5ChZo2hib1/yK1+FdiNPEwjO65G9PjMQ7bQzYq/P+HyAOU6G5ykx/xxSK+RgB",
+     "thinking": "",
+     "type": "thinking"
+    },
+    {
+     "id": "toolu_01VFZZKenkjFdiXGCrwiSfLo",
+     "caller": {
+      "type": "direct"
+     },
+     "input": {
+      "query": "select * from pd.qms_change_control where cc_no in ('CC-26-019','CC-26-014')"
+     },
+     "name": "run_sql",
+     "type": "tool_use"
+    },
+    {
+     "id": "toolu_01N2Z4EZatWNyTAzB1GgksqB",
+     "caller": {
+      "type": "direct"
+     },
+     "input": {
+      "query": "select * from pd.equipment_event where equip_id in ('INC-03','FRZ-80-02','PRDG-01') order by start_ts"
+     },
+     "name": "run_sql",
+     "type": "tool_use"
+    },
+    {
+     "id": "toolu_01DTmVmi52U6zGejzpBzJMeQ",
+     "caller": {
+      "type": "direct"
+     },
+     "input": {
+      "query": "select * from pd.trace_link where src_id in ('CC-26-019','CC-26-014') or tgt_id in ('CC-26-019','CC-26-014','INC-03')"
+     },
+     "name": "run_sql",
+     "type": "tool_use"
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "toolu_01VFZZKenkjFdiXGCrwiSfLo",
+     "content": "cc_no | open_dt | title | description | change_class | impact_assessment | status | impl_dt\nCC-26-014 | 2026-04-21 | FRZ-80-02 compressor replacement | Like-for-like compressor replacement. | MINOR | Partial OQ re-execution (pull-down, alarm). | CLOSED | 2026-04-23\nCC-26-019 | 2026-02-24 | INC-03 door switch replacement | Replace and realign door switch; re-execute TC-OQ-INC-04. | MINOR | Re-execution of TC-OQ-INC-04 on INC-03 required. | APPROVED - NOT IMPLEMENTED | NULL\n(2 rows)",
+     "is_error": false
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "toolu_01N2Z4EZatWNyTAzB1GgksqB",
+     "content": "event_id | equip_id | event_type | alarm_code | start_ts | ack_ts | ack_by | end_ts | event_desc\nEV-26-0007 | INC-03 | CALIBRATION | NULL | 2026-04-03 10:00:00 | NULL | NULL | 2026-04-03 12:00:00 | Quarterly temperature and CO2 sensor calibration. As-found within tolerance.\nEV-26-0009 | FRZ-80-02 | ALARM | ALM-TEMP-HI | 2026-04-20 03:20:00 | 2026-04-20 14:40:00 | WH-02 | 2026-04-23 10:00:00 | High temperature alarm. Compressor not running. Contents relocated to FRZ-80-01.\nEV-26-0010 | FRZ-80-02 | MAINTENANCE | NULL | 2026-04-21 09:00:00 | NULL | NULL | 2026-04-23 10:00:00 | Compressor replaced (like-for-like). Pull-down verified.\nEV-26-0012 | INC-03 | ALARM | ALM-DOOR | 2026-06-10 21:40:00 | 2026-06-11 07:50:00 | OP-04 | 2026-06-11 07:50:00 | Door open alarm.\nEV-26-0013 | INC-03 | ALARM | ALM-TEMP-LO | 2026-06-10 22:22:00 | 2026-06-11 07:50:00 | OP-04 | 2026-06-11 09:20:00 | Temperature low alarm.\n(5 rows)",
+     "is_error": false
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "toolu_01DTmVmi52U6zGejzpBzJMeQ",
+     "content": "link_id | src_type | src_id | link_type | tgt_type | tgt_id\n3 | SYS | SYS-EMS | MONITORS | EQUIP | INC-03\n155 | DEV | DEV-26-011 | RELATED | EQUIP | INC-03\n165 | DEV | DEV-26-033 | RELATED | EQUIP | INC-03\n171 | CAPA | CAPA-26-008 | RELATED | CC | CC-26-014\n172 | CAPA | CAPA-26-012 | RELATED | CC | CC-26-019\n178 | CC | CC-26-014 | IMPACTS | EQUIP | FRZ-80-02\n179 | CC | CC-26-014 | RELATED | EXEC | TX-0091\n180 | CC | CC-26-014 | RELATED | EXEC | TX-0092\n181 | CC | CC-26-019 | IMPACTS | EQUIP | INC-03\n(9 rows)",
+     "is_error": false
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "signature": "CAQSgggKEAgSGAI4AUIIdGhpbmtpbmcSDBBLBemiuGe651WrrhoMyHqRnraVblTphrscIjAx70G4ZGW9RRKNJ1NIJ0Y32rYWWfJUm7t3PLgDDiNF3JLEHTt3RVgm0p+9+kNXvGoqnweVcuK5TB559icxzLqugPXdk+7hIeVBG0D9643PiF2fpBZ4rkIwGSpogDdPhhht/5c7yuory/eeZjUH0hr8LzyktPDOZK8AzxFLOdpexABErnNgMOoDf/XgvxzRhUqY+DN55J3IWdmmQMstnI5X7cqCQe+kk1ucecfHI5aQ7wdRHbnJbyn/V3CEzA5WYb+eisUMVLADnGI9AAyfK1pbOhYrEKZlKnjyOVQ+MVvXkbHSR8O/l6Y8oAMTIlpALTHGXVjilLJEEazXNLdTej3EtwGUfPO8OdzpTpJ4CNMQjQoMu9bf2NPsFA7YtSos/CCx7ST8ZBGPpPjeoq0UOXpYnuWL3e7c0ATOB2CcxbJf8UwM8Bb+T2yPGik8W1mHdfw39bKHehIKG/naeHb4ZXZ+Pm9l1m5PVYN5552Coz5sxXw3xHH6pJh4anjyVcrlQFVtBQ1gJUAualZRN+J1F6WQzJpkn2aYM9nq1wTliRcclOl0NpqyekLc//GBEcLUPCPE9Fn0TAfaAcyVxVkyiWoArL21kEwMaD7sX3CDd3KbiOCC0xhp/bPnEDGDxV80jAyQdgbyx7MxNb40tkowfVRQYG4/YMK4wwh6btFkVFIBT9QI27tNOxcAWxEQly8HaeCcLWEwnbtZjn6b6nSHq6xWDPXeZ183IhVU0HIM8pDLYHo+liTdjFTY3Gr3wpyKzWGDDEdYh9ekRL8aCx17qbNw61RxBpit8POs09of9hfWObeygs/lyBx7b1HGZsIftbT6IusLSecrHpU9jtfSK36dkWStaq0YfcqfsO37QjVwU7Khko7uMRWN0BjXHsxH1uEu85OinbJSSihhpqYYo0sTwP4yGS24EKTaAeMCUz4KGzavhNnta5+HyvoVDRVrRCoNXQqTdjLjSrO/2E4EcEavZDPqVKNhIXseObmKR1nBeQcY9eax2lk3kT8ppxABInKQfsOkHpm5tvaEF6jpLYEM+Zn3yX1+FXIhYAqUcSunJBg/lCtlSCmJzkuM6ow8DZyOgDw2Q+aEYW2jqow0qqvNRdoDIpY+POHF8j/csWkn5XJyiFyRPCoiTbNTFEsKzXRyVjjy6ta5ZguH9Hrepp0q6lywROe8uEX0R24OgDe2z7JNgHoHAcY+Mew80wfQlndmzSIeqHpALPs287IQzckbhetCHPU+7EWGf27pG04KBSuLf1rTlZfOyEZf8iH2b5NPMsaURCVkM0ZxK5izqXVvg2gYAQ==",
+     "thinking": "",
+     "type": "thinking"
+    },
+    {
+     "id": "toolu_017AVJCZGHfvussbGk5sqHZX",
+     "caller": {
+      "type": "direct"
+     },
+     "input": {
+      "query": "select batch_id, day_no, equip_id, sample_ts, via_pct from pd.uo05_expansion where equip_id='INC-03' order by sample_ts"
+     },
+     "name": "run_sql",
+     "type": "tool_use"
+    },
+    {
+     "id": "toolu_01Lz33dAsL7w1WDZmvAyRuy1",
+     "caller": {
+      "type": "direct"
+     },
+     "input": {
+      "query": "select * from pd.sop where sop_id in ('SOP-MFG-105')"
+     },
+     "name": "run_sql",
+     "type": "tool_use"
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "toolu_017AVJCZGHfvussbGk5sqHZX",
+     "content": "batch_id | day_no | equip_id | sample_ts | via_pct\nENG26-02 | 3 | INC-03 | 2026-05-15 08:58:00 | 91.0\nENG26-02 | 5 | INC-03 | 2026-05-17 08:52:00 | 95.3\nENG26-02 | 7 | INC-03 | 2026-05-19 08:30:00 | 95.2\nENG26-02 | 8 | INC-03 | 2026-05-20 09:52:00 | 95.7\nPPQ26-02 | 3 | INC-03 | 2026-06-07 08:39:00 | 87.5\nPPQ26-02 | 5 | INC-03 | 2026-06-09 08:43:00 | 91.6\nPPQ26-02 | 7 | INC-03 | 2026-06-11 09:19:00 | 66.5\nPPQ26-03 | 3 | INC-03 | 2026-06-12 08:41:00 | 81.4\nPPQ26-02 | 8 | INC-03 | 2026-06-12 09:38:00 | 73.4\nPPQ26-03 | 5 | INC-03 | 2026-06-14 09:14:00 | 91.7\nPPQ26-03 | 7 | INC-03 | 2026-06-16 09:10:00 | 93.8\nPPQ26-03 | 8 | INC-03 | 2026-06-17 09:36:00 | 93.7\n(12 rows)",
+     "is_error": false
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "toolu_01Lz33dAsL7w1WDZmvAyRuy1",
+     "content": "sop_id | title | doc_ver | effective_dt | owner_dept | process_step | sys_id\nSOP-MFG-105 | Expansion in G-Rex vessels and incubator use | 3.0 | 2026-05-01 | Manufacturing | Expansion | SYS-INC\n(1 rows)",
+     "is_error": false
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "text": "Two CAPAs trace back to the same upstream cause: **CAPA-26-012** and **CAPA-26-015**. The shared cause is the unresolved door-switch fault on incubator INC-03.\n\n**The two CAPAs**\n- **CAPA-26-012** comes from DEV-26-011, an OQ test incident. In TC-OQ-INC-04, the INC-03 door-open alarm fired at 142 s against a limit of 60 s or less. The recorded root cause is \"Door switch misaligned\" (EQUIPMENT \u2013 COMPONENT). The CAPA is to replace the door switch and re-execute the test. It is linked to CC-26-019, \"INC-03 door switch replacement\".\n- **CAPA-26-015** comes from DEV-26-033, a PPQ26-02 harvest viability failure. The recorded root cause is \"Operator did not confirm door latch per SOP-MFG-105\" (HUMAN ERROR \u2013 PROCEDURE NOT FOLLOWED). The CAPA is operator retraining.\n\n**Why they share a cause**\n- Both deviations are linked to INC-03.\n- The INC-03 door-open alarm (ALM-DOOR) went off at 21:40 on 10 June. A low-temperature alarm followed at 22:22.\n- Neither alarm was acknowledged until 07:50 on 11 June, about 10 hours later.\n- PPQ26-02 viability then fell from 91.6% on day 5 to 66.5% on day 7 and 73.4% on day 8. The PPQ-001 criterion is 80%.\n- The door-alarm defect from DEV-26-011 was already known. CC-26-019 was approved on 24 Feb 2026 but is still \"APPROVED \u2013 NOT IMPLEMENTED\".\n- CAPA-26-012 is still OPEN and was due 31 Mar 2026. The door switch was therefore still faulty when the PPQ26-02 door event happened.\n- The alarm that should have flagged the door immediately was the one known to be late or unreliable on INC-03.\n- The PPQ26-02 deviation was recorded as operator error, but the unfixed switch defect is the common upstream cause. The retraining CAPA doesn't address it.\n\n**Caveats**\n- The data doesn't show that the door switch actually caused the 11 June door-open and low-temperature alarms. It shows the same component was known to be defective and its fix was never implemented.\n- CAPA-26-015 is also marked CLOSED on 3 Jul 2026, after its 1 Jul due date, with its effectiveness check still PENDING.\n\n**Other CAPAs**\n- CAPA-26-008: FRZ-80-02 compressor failure.\n- CAPA-26-016: low CD3% in donor material.\n- CAPA-26-019: supplier tubing-set defect.\n\nThese don't share an upstream cause with each other or with the INC-03 pair.\n\n```json\n{\"answer_ids\": [\"CAPA-26-012\", \"CAPA-26-015\"]}\n```",
+     "type": "text"
+    }
+   ]
+  }
+ ]
+}

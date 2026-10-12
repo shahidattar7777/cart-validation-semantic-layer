@@ -1,0 +1,246 @@
+{
+ "model": "sonnet",
+ "condition": "semantic",
+ "qid": "q5",
+ "run": 1,
+ "score": 1.0,
+ "recall": 1.0,
+ "precision": 1.0,
+ "missed": [],
+ "extra": [],
+ "answer_ids": [
+  "FM-02",
+  "FM-13",
+  "FRA-014",
+  "FRA-020"
+ ],
+ "id_source": "json",
+ "tool_calls": 8,
+ "sql_errors": 0,
+ "turns": 4,
+ "hit_turn_limit": false,
+ "stop_reason": "end_turn",
+ "seconds": 22.3,
+ "cost_usd": 0.1036,
+ "tok_input": 12,
+ "tok_output": 3250,
+ "tok_cache_write": 25260,
+ "tok_cache_read": 79453,
+ "final_answer": "Four high-criticality risk items have OQ test coverage but no PQ coverage, where PQ evidence is expected. They come from two underlying performance requirements.\n\n**Method**\n- High criticality means `risk_class = 'HIGH'`. I did not re-derive it from RPN.\n- PQ is expected for requirements with `req_category = 'PERFORMANCE'` on EQUIPMENT systems.\n- A risk is linked to a requirement either through an FRA row (ASSESSES) or through a pFMEA row (MITIGATED_BY).\n- Coverage follows the verification path. A test case verifies the requirement directly, or through its FS, CS or DS children. I then looked at the protocol type of each test case (OQ or PQ).\n\n**Result**\n\n| Risk (pFMEA) | Risk (FRA) | Requirement | System | Coverage |\n|---|---|---|---|---|\n| FM-02, selection program parameters (HIGH) | FRA-014 | URS-PRDG-002 (locked CD4/CD8 enrichment program, purity \u226590% CD3+) | SYS-PRDG | Only TC-OQ-PRDG-02 (OQ-PRDG-01, scripted). No PQ test case. |\n| FM-13, freeze profile (HIGH) | FRA-020 | URS-CRF-001 (CRF-P01 freeze profile within \u00b12 \u00b0C with a representative load) | SYS-CRF | Only TC-OQ-CRF-01 (OQ-CRF-01, scripted). No PQ test case. |\n\n**Comparison with other risks**\n- Other high-criticality risks on equipment performance requirements do have PQ coverage. These are FRA-001 and FM-09 (INC-001), FRA-008 and FM-07 (ULT-001), FRA-013 and FM-03 (PRDG-001), and FRA-019 (LOVO-002).\n- High risks on ALARM requirements on equipment systems have OQ only. These are FRA-003, FRA-004 and FRA-009. They are excluded because alarm requirements are fully verified at OQ, so PQ is not expected.\n- High risks on the EMS, LIMS and EBR systems are excluded because they are computerized systems, so PQ does not apply.\n\nThe four risk IDs in the answer are FM-02, FM-13, FRA-014 and FRA-020. If you only want the process FMEA, that is FM-02 and FM-13. If you only want the functional risk assessment rows, it is FRA-014 and FRA-020.\n\n```json\n{\"answer_ids\": [\"FM-02\", \"FM-13\", \"FRA-014\", \"FRA-020\"]}\n```",
+ "transcript": [
+  {
+   "role": "user",
+   "content": "Which high-criticality FMEA risks have OQ test coverage but no PQ coverage, where PQ evidence would be expected?"
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "signature": "CAQSvwgKEAgSGAI4AUIIdGhpbmtpbmcSDJbohUuCg+AOVth++RoMskG2+wIxwvEqaeJeIjCq7H1aqBTXr/I34A5pM1FmWPVlOw1C5m5lUOF58P+nXwNRbCRMgT70S2yeR4tmuIoq3AdJZN/n0pgenKUhe0KC1rg2gl1pVy4YviyhY++sNyGuCkAnzw5wulFIeY9BxXACdsZuHWE5r2CUGHmgfUpNdvT1C2n/CF2FZHzTI/gyC+JnYKmpFSuZuCarphfzd+oYSMPFJqHS/We2iy9u3JF1mxe0JmXJWklWtARZbPA3BTmoYbMTDYlhksE0CKcupRX2hfe/qmoyI1NTzTtnD38r4CAgfmVv0ZitCOL3hcRB0KNCQGSUlifa+h/60XuIWH+2nErhvTCG8OOL52AsbCwq2b0socqgBzha0cz3ZljrQWdzFbhVyu7Cq8m6sLsn0hPOThrHEBBL9JrH365HwKGKo6BWK6KkivufVcDbMekPh97seTtGKrU5K+zYgz+26wlCW9+mfemrOqvq6x8p+TwO4iHu5M+CT12x7ygHeLMVSA7qeEq9OEmXVFRKFVp1KiAvv/12e8xWCo5A+UvrDE/DpJsUXyehYlfAMvUqEoOcxy4H/g7E7BXuv/++BYAzdYH/jv+cBk3c2/oPZ08idgE19FX+InOnja3vNSJcVMHPzpYgY1ePfIalqiYObvbhUiatcoPKo5BAR+RZ23m7dqZ+yb/SiODEwQ1FRUKeBlpYy/hp4qySjtc/epaJkAmNEdJGUc1yoRZoiER8g2Uzlx803o2oIBxwN3d3iAQQUdMaQoxlgCmX5vNFpgoMSeUjNObrgdwOWAVbVHe2EqIWSGQQRxw1s4yyw6t8J04i+EmfbDt42sHHAqN5ju9pbW3oUFiK1okeGxnXZGyEXPoaW/xLAzcXaz5XzyNA6uHH4zsX1RESM4uMiiv3M5OR2ItHovWo98B+EZ/jvb+bHqICrDnKKLbW26/7c44DuiTW/CW/df15CTbkgKO5Ij3vPwIRdjxP/+c6Lew4lMMA+VzrZomfvZuarbA6D2TB0qdlMBmm9u5cOjDfew0cx01Gv2ujJIYXo2iPa4kv20CbwvhM686J0nYFMQGPWsZ0BRTLJjEmV/SKwjs4R0t1jU6r9eW97YA3/3s8R2Mr1DBYuJlHq/k10t2koeayWWEilKfal2jH8MBdrKxauentkvQM4UBXRSvVOq4uSmSSMhUuUSrpRezLerJWv1mjd9FZg6nf0FP2cI1uGkFnw3x1et0ceuBXlF4bXMpu0dVB5S7GAtsMQXvVwn6MuFTMzfOznVcwp+IFyQnjfdeOXiBQK7R6s0hGjMuv/EkDWW/3AhIAmNVpe8A3j7jeF3F60a3XRwcCqsC9jdt/NxXIXgvQkjEIQlthrL+K5zG721AX7MWLr8hf2bCeHdoj01iNrFlUyIq86QBIGAE=",
+     "thinking": "",
+     "type": "thinking"
+    },
+    {
+     "id": "toolu_01Cm8CxwsLBincMkhP1Wca93",
+     "caller": {
+      "type": "direct"
+     },
+     "input": {
+      "query": "select ra_type, count(*), count(*) filter (where risk_class='HIGH') from pd.val_risk_item ri join pd.val_risk_assessment r using(ra_id) group by 1;\nselect ptype, count(*) from pd.val_protocol group by 1;\nselect link_type, src_type, tgt_type, count(*) from pd.trace_link group by 1,2,3 order by 1,2,3;\nselect sys_class, count(*) from pd.val_system group by 1;"
+     },
+     "name": "run_sql",
+     "type": "tool_use"
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "toolu_01Cm8CxwsLBincMkhP1Wca93",
+     "content": "ra_type | count | count\npFMEA | 16 | 10\nFRA | 43 | 26\n(2 rows)",
+     "is_error": false
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "signature": "CAQS3gUKEAgSGAI4AUIIdGhpbmtpbmcSDKfyokDTT5/Qd9kFzRoM9fuXInAOwmP2zJQUIjCvDMkMT+sZ1Q3RoWRErj+j5sJvY52bizVs2eCFbtiQgW5jbMYu6gUDaxPo0cZwNpIq+wQzGhAyT5HP3Mqf230OrxfJ5ALKII8wRUv4OF9d21EysAfNHUb98oQjDK0iBDMSIb+BFfrpe75EnozZrhMNJfFl3KP7QhsLC9PsxCG1YslJB1x5CTgGaxwms2J1PdgmQGebfnlY7dQ+1SNbzeCb1IVMmk7A8EDGwfXPd99JTIghcCwlsodsjwdqijWjMRAHXtob61HG3mDCGKKFUEXYNFtfZ6YZU+nIfMDrVD+3QTX5z+dPbD6qoaBOB4/NA8fxRhruEpeAVum4VCHV1u/8dZj0Np/1JcuMqNQz6d/2WVQa1qX4+IXv55RV+WFWeWR/KYKZc8Eeb9amCEHqbSZxc5wbgWt41aCX0Olr3AXq3CJ76zU2zjlxjN/0oFwXX58dQ+PJ4KGV2DW1Bdnn75gd8qUuv6T+kgeVLLEz/fwqxg+UkSmYRXoGcXIuHNMNiwxuDoxedu8YVL8bQvgRJ/yGzRWeCgy8Xlo/L9BtCLXn0FqtZeARFYjPevtjLNZnDyUhmPRbhxDjmIIlhQxUF7LE833oekfhcqVhm/6RwHHGlPYDtusBjj26Mtg3HDYsPKI/kv+//0iOlnBX6666QidD9cfUdhQCJYJimJPq7L/ow+a3/z1pwOQF2qv6+e+wB8SsKLSMe/TiVmfQqIzIkY0WeW0sWjZsty6Vfjl7PiyYA4cBNEmFyA1wdN4VRLWrrLHhO2MkGJrXPsnLMkQ+RqCeV9HdssU5S+GA+K6SkpHYXfpqPOkY4zW0ZeccIj5RHPZw9jMtatLtqpYvg2nnHZvDbwExufbIarPrXarMbfWvo/4n4QmIypTDe63M1y2IUu0X6GwuVTTrl7LaJBCgURgB",
+     "thinking": "",
+     "type": "thinking"
+    },
+    {
+     "id": "toolu_01WmiG48QuKVNVBPRovWT2FL",
+     "caller": {
+      "type": "direct"
+     },
+     "input": {
+      "query": "select ptype, count(*) from pd.val_protocol group by 1"
+     },
+     "name": "run_sql",
+     "type": "tool_use"
+    },
+    {
+     "id": "toolu_01VtaDcNZgqMh4jh2fAPH9u9",
+     "caller": {
+      "type": "direct"
+     },
+     "input": {
+      "query": "select link_type, src_type, tgt_type, count(*) from pd.trace_link group by 1,2,3 order by 1,2,3"
+     },
+     "name": "run_sql",
+     "type": "tool_use"
+    },
+    {
+     "id": "toolu_011LY6tXZbFPLqNzwYyXjzfe",
+     "caller": {
+      "type": "direct"
+     },
+     "input": {
+      "query": "select sys_class, count(*) from pd.val_system group by 1"
+     },
+     "name": "run_sql",
+     "type": "tool_use"
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "toolu_01WmiG48QuKVNVBPRovWT2FL",
+     "content": "ptype | count\nPPQ | 1\nPQ | 4\nIQ | 6\nOQ | 8\nAMV | 5\n(5 rows)",
+     "is_error": false
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "toolu_01VtaDcNZgqMh4jh2fAPH9u9",
+     "content": "link_type | src_type | tgt_type | count\nASSESSES | RISK | SPEC | 43\nIMPACTS | CC | EQUIP | 2\nIMPACTS | CC | RA | 1\nIMPACTS | CC | SOP | 4\nIMPACTS | CC | SPEC | 1\nMITIGATES | RISK | SOP | 10\nMITIGATES | RISK | SPEC | 20\nMONITORS | SYS | EQUIP | 6\nRELATED | CAPA | CC | 2\nRELATED | CC | EXEC | 2\nRELATED | DEV | BATCH | 5\nRELATED | DEV | CAPA | 5\nRELATED | DEV | EQUIP | 4\nRELATED | DEV | PROTOCOL | 2\nRELATED | EXEC | DEV | 1\nRELATED | PROTOCOL | BATCH | 5\nTRACE | SPEC | SPEC | 16\nVERIFIES | TC | SPEC | 53\n(18 rows)",
+     "is_error": false
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "toolu_011LY6tXZbFPLqNzwYyXjzfe",
+     "content": "sys_class | count\nEQUIPMENT | 5\nCOMPUTERIZED | 3\n(2 rows)",
+     "is_error": false
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "signature": "CAQSuwcKEAgSGAI4AUIIdGhpbmtpbmcSDBHE7FwaQdx2Mo5jWBoMgPTOcv26KlRBw4KZIjAcge6VSJ29cRdz6vomRnbGcp0pr8zr53pDCEoC2JJ5AjpADHIsKcqD+m4YuIL6HrEq2AbiKpDJA840yCjaRXiWoPX8X1TQl1BQqm43dynAJiuzvkToMvZFxlimy+7ESMHArA+2RbvtdzBE1r1oeUd0sJ4srv0C1sBIErDV1qWmI1VEzVCuDbAnzqUvitAVIi3YMREvPrVhEqAFAexUiWMhtqhZQMZm+MepvN5oecWQnZ11/E7J+qfrWCUpKqvTAMLCVBTtzsu+2uQGYV8gPpo0P3lT5xBDBex5IpWk44XjVpcw2Kg8cqDf5nlc0HNcmJkdTTQ0wA4xF4H8siPKeFBGhRa0at72ekO3kD+XjaPD4PxavzTz9dXVQpbE+oG3j4fDADT5h+ld4xcqOa9gKyRUukNSD2FXVb/Oxxt/lHn3F7ehKfFcPJ6ofjLVovTmpTJbqQFh3oGW/dqWdbuOwr3puq5TQsldDs+gmalZBDtlDqI7XU7LpRMSMpA2p7RUCWtDCT4eXCPIcsoAz3f9zJm2V5Hcqt+rZKH4lUisKb6DhlL1FMWO4E2UaZ+WJqrbLI/KlonPd0V5592/LYuYzommz6pdlqdXwhXg6tQB/goHLqCw2noIJ+rsfW/ulYUoawCZYkZ+s149r6hODPXRQl4mLbtfiqqjpyysnpiVt++lSaunBIPUq+kH4BXpuAF2yKKs5bwSU7GClUxEgaojPNdHN3bhXrOC95j9oqfQlm+D4i9c7Ssa44i+QU7nFyRZZM+Bz99qoS+pX0b1FkzxkMciuuiSxSAxPf3Ncxn0+76A+MqML3pt4A1d8jwuLrXr/mvOzjQblh6vxY2k82yS/Ww1pbLEtJdwzrMIK9o83MiTcqjOv98zegmoqnF6Zxb3UJxcH6/bYYf6/wmkxJWQL3HqzMyRVRQ/Jx37WFHB2+o187ovR6B9NO95ckO51hc3t0Aoilr5Lrk0aub3REQjfEAUrfPAaMyuZQ4ftiuYl5Rs3TRYjeSTOn+8HSU/Idhn5HdiaqdXIli3FHLQwphlPLTjIALhPZ28Ct83LqjmE86TV4/bCEc9RX753P0JuTnmnBam+5c9RI1K8FcXFltvANuP82U8DpPa5x7V5dpvyxmt900ZZAaBxOnjO92EjPWuEQSGA1n52J3ozFJNYeR/MAYot+CW8Xa973pjp+92A7R/yfKnsE+5wXIgP9KZGAE=",
+     "thinking": "",
+     "type": "thinking"
+    },
+    {
+     "id": "toolu_018dCEcZ9pPjjeiTDshFK6rV",
+     "caller": {
+      "type": "direct"
+     },
+     "input": {
+      "query": "with urs_tc as (\n select s.item_id urs, l.src_id tc from pd.val_spec_item s join pd.trace_link l on l.link_type='VERIFIES' and l.tgt_id=s.item_id where s.spec_level='URS'\n union\n select t.tgt_id, l.src_id from pd.trace_link t join pd.trace_link l on l.link_type='VERIFIES' and l.tgt_id=t.src_id where t.link_type='TRACE' and t.tgt_id in (select item_id from pd.val_spec_item where spec_level='URS')\n union\n select t2.tgt_id, l.src_id from pd.trace_link t1 join pd.trace_link t2 on t2.link_type='TRACE' and t2.src_id=t1.tgt_id join pd.trace_link l on l.link_type='VERIFIES' and l.tgt_id=t1.src_id where t1.link_type='TRACE'\n),\ncov as (select u.urs, string_agg(distinct p.ptype,',') ptypes, string_agg(distinct p.protocol_id,',') prots from urs_tc u join pd.val_test_case tc on tc.tc_id=u.tc join pd.val_protocol p using(protocol_id) group by 1)\nselect ri.ri_id, ri.ra_id, ri.risk_class, ri.sev, s.item_id, s.req_category, s.sys_id, sy.sys_class, c.ptypes, c.prots\nfrom pd.val_risk_item ri join pd.trace_link a on a.link_type='ASSESSES' and a.src_id=ri.ri_id join pd.val_spec_item s on s.item_id=a.tgt_id join pd.val_system sy on sy.sys_id=s.sys_id left join cov c on c.urs=s.item_id\nwhere ri.risk_class='HIGH' order by sy.sys_class, s.req_category, ri.ri_id"
+     },
+     "name": "run_sql",
+     "type": "tool_use"
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "toolu_018dCEcZ9pPjjeiTDshFK6rV",
+     "content": "ri_id | ra_id | risk_class | sev | item_id | req_category | sys_id | sys_class | ptypes | prots\nFRA-024 | RA-FRA-EMS | HIGH | 9 | URS-EMS-011 | ALARM | SYS-EMS | COMPUTERIZED | OQ | OQ-EMS-01\nFRA-027 | RA-FRA-EMS | HIGH | 9 | URS-EMS-014 | ALARM | SYS-EMS | COMPUTERIZED | OQ | OQ-EMS-01\nFRA-025 | RA-FRA-EMS | HIGH | 9 | URS-EMS-012 | CONTROL | SYS-EMS | COMPUTERIZED | OQ | OQ-EMS-01\nFRA-031 | RA-FRA-LIMS | HIGH | 9 | URS-LIMS-002 | CONTROL | SYS-LIMS | COMPUTERIZED | OQ | OQ-LIMS-01\nFRA-032 | RA-FRA-LIMS | HIGH | 9 | URS-LIMS-003 | CONTROL | SYS-LIMS | COMPUTERIZED | OQ | OQ-LIMS-01\nFRA-033 | RA-FRA-LIMS | HIGH | 9 | URS-LIMS-004 | CONTROL | SYS-LIMS | COMPUTERIZED | OQ | OQ-LIMS-01\nFRA-037 | RA-FRA-EBR | HIGH | 9 | URS-EBR-001 | CONTROL | SYS-EBR | COMPUTERIZED | OQ | OQ-EBR-01\nFRA-038 | RA-FRA-EBR | HIGH | 9 | URS-EBR-002 | CONTROL | SYS-EBR | COMPUTERIZED | OQ | OQ-EBR-01\nFRA-039 | RA-FRA-EBR | HIGH | 9 | URS-EBR-003 | CONTROL | SYS-EBR | COMPUTERIZED | OQ | OQ-EBR-01\nFRA-040 | RA-FRA-EBR | HIGH | 9 | URS-EBR-007 | CONTROL | SYS-EBR | COMPUTERIZED | OQ | OQ-EBR-01\nFRA-042 | RA-FRA-EBR | HIGH | 9 | URS-EBR-009 | CONTROL | SYS-EBR | COMPUTERIZED | NULL | NULL\nFRA-023 | RA-FRA-EMS | HIGH | 9 | URS-EMS-010 | DATA | SYS-EMS | COMPUTERIZED | IQ,OQ | IQ-EMS-01,OQ-EMS-01\nFRA-026 | RA-FRA-EMS | HIGH | 9 | URS-EMS-013 | DATA | SYS-EMS | COMPUTERIZED | OQ | OQ-EMS-01\nFRA-030 | RA-FRA-LIMS | HIGH | 9 | URS-LIMS-001 | DATA | SYS-LIMS | COMPUTERIZED | OQ | OQ-LIMS-01\nFRA-034 | RA-FRA-LIMS | HIGH | 9 | URS-LIMS-005 | DATA | SYS-LIMS | COMPUTERIZED | OQ | OQ-LIMS-01\nFRA-035 | RA-FRA-LIMS | HIGH | 9 | URS-LIMS-006 | DATA | SYS-LIMS | COMPUTERIZED | OQ | OQ-LIMS-01\nFRA-041 | RA-FRA-EBR | HIGH | 9 | URS-EBR-008 | SECURITY | SYS-EBR | COMPUTERIZED | OQ | OQ-EBR-01\nFRA-003 | RA-FRA-INC | HIGH | 9 | URS-INC-003 | ALARM | SYS-INC | EQUIPMENT | OQ | OQ-INC-01\nFRA-004 | RA-FRA-INC | HIGH | 9 | URS-INC-004 | ALARM | SYS-INC | EQUIPMENT | OQ | OQ-INC-01\nFRA-009 | RA-FRA-ULT | HIGH | 9 | URS-ULT-002 | ALARM | SYS-ULT | EQUIPMENT | OQ | OQ-ULT-01\nFRA-001 | RA-FRA-INC | HIGH | 9 | URS-INC-001 | PERFORMANCE | SYS-INC | EQUIPMENT | OQ,PQ | OQ-INC-01,PQ-INC-01\nFRA-008 | RA-FRA-ULT | HIGH | 9 | URS-ULT-001 | PERFORMANCE | SYS-ULT | EQUIPMENT | OQ,PQ | OQ-ULT-01,PQ-ULT-01\nFRA-013 | RA-FRA-PRDG | HIGH | 9 | URS-PRDG-001 | PERFORMANCE | SYS-PRDG | EQUIPMENT | OQ,PQ | OQ-PRDG-01,PQ-PRDG-01\nFRA-014 | RA-FRA-PRDG | HIGH | 9 | URS-PRDG-002 | PERFORMANCE | SYS-PRDG | EQUIPMENT | OQ | OQ-PRDG-01\nFRA-019 | RA-FRA-LOVO | HIGH | 9 | URS-LOVO-002 | PERFORMANCE | SYS-LOVO | EQUIPMENT | OQ,PQ | OQ-LOVO-01,PQ-LOVO-01\nFRA-020 | RA-FRA-CRF | HIGH | 9 | URS-CRF-001 | PERFORMANCE | SYS-CRF | EQUIPMENT | OQ | OQ-CRF-01\n(26 rows)",
+     "is_error": false
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "signature": "CAQSyQYKEAgSGAI4AUIIdGhpbmtpbmcSDL/LhGOWjz5m4BsjXBoMVouDIlIkuBZ/VqVFIjCuEw1iQXjMvb5d98yebFUkxrNRBiogQN5w1CoccMfoPU2cDNLiApnqwCJA0YRg3lsq5gWGV9XO5ipFsy4Ha3Oew7kEO6nydplITscgV9Mnv7TindjnbQ7x1oV0z3ib0Z445rlfj1ZiMrCrF5qBKeNh7hbUZsuZTo3VImQQKwnxLJXI4/7AzLMb/8Ed6+P7SU8StdZTTDvRNtLGRnHfEO3d6+a2uJc1xWYA2MvK5fOmiWnx4uLgq0vDcZtU10poWLSyTBqGZGUiZ83T7QRNSOst+Gx12EZxTMR2xSQYgQjhuZYKyImChSd0QRZpzNrqp/2qJL+o9GxtBUNLOiZi92U8Q+lo3vsSo95KGZJ9OZBsa2wl05KbVWVP1SeRGHwaCkUky1Kd1oIqDecYP/RuXqfk7lPQWpa9Se3ijZN9jUSyfd95htCjQ1Fgpt+gaZHh+em8hZ1Izs3L7yjny/iVAFMXlO8xuT/H888hJw/WMS55ie7KfEWVXeLQxVaKRmH54uj7OnLX/fzW+EgqeWkeBAiWMR7VVnrzZI3RQbVphEn/1Jukch+K8DuJc7tflbP878CL+Pjzdf9bDMLwHPvYYR1r43PIhyyQd5fDWiASkAZUKPJfCqWjvkSMM3ai999Sm5jefkIUHSOSX1PgHFZ0aJku8Lr5Ib/d87Y/a64rQXWAUjukeFgz+/tDdw+4I7tsOgurA6rtHModbyQ7UjDqAmmj7g95Z5944aQjAQBbMDoncicEi08sCzobJjhvtw6JSBQI4xSql+6jRKdFuv4dTSvRQrM9n6obWUjDn4bKk9Ih1mybeD4m3h3eZm3THpKjGQeiPkfMAh8t8ccvzPETYv8MQGhw7R+m36bc2EbinAN/Su0qKkTzLACco8FS/zfTGBRXAYDvboGsTkpyfCcsBUMK7Mt9Pqhu1XqjdfbimXRLc60gJoV6aZiUL8P5aA+OZ+xd0Rofax4YCjnFpFzQXzJDgorARTbNR0k6gGdnEk1I9y9x+XI9Qe+VTPD6pbkUvz1oxy0Il0rUycbVHb4fV87RRSlvI8zEqxnZGAE=",
+     "thinking": "",
+     "type": "thinking"
+    },
+    {
+     "id": "toolu_01NSXUMXWZHqgJqLFNzwRraY",
+     "caller": {
+      "type": "direct"
+     },
+     "input": {
+      "query": "select ri.ri_id, ri.risk_class, ri.process_step, ri.parameter_txt, l.tgt_id, s.req_category, s.sys_id from pd.val_risk_item ri join pd.trace_link l on l.link_type='MITIGATES' and l.src_id=ri.ri_id left join pd.val_spec_item s on s.item_id=l.tgt_id where ri.ri_id like 'FM%' order by 1"
+     },
+     "name": "run_sql",
+     "type": "tool_use"
+    },
+    {
+     "id": "toolu_01MZsnsbxbcEEfTbuhCf8RfA",
+     "caller": {
+      "type": "direct"
+     },
+     "input": {
+      "query": "select * from pd.val_spec_item where item_id in ('URS-PRDG-002','URS-CRF-001')"
+     },
+     "name": "run_sql",
+     "type": "tool_use"
+    },
+    {
+     "id": "toolu_0158MeKAfvfZ8raKwSM2gS72",
+     "caller": {
+      "type": "direct"
+     },
+     "input": {
+      "query": "select tc.tc_id, tc.protocol_id, tc.method, l.tgt_id from pd.val_test_case tc join pd.trace_link l on l.src_id=tc.tc_id and l.link_type='VERIFIES' where tc.protocol_id like '%CRF%' or tc.protocol_id like '%PRDG%'"
+     },
+     "name": "run_sql",
+     "type": "tool_use"
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "toolu_01NSXUMXWZHqgJqLFNzwRraY",
+     "content": "ri_id | risk_class | process_step | parameter_txt | tgt_id | req_category | sys_id\nFM-01 | MEDIUM | Apheresis receipt | Apheresis hold time | SOP-MFG-101 | NULL | NULL\nFM-02 | HIGH | T cell selection | Selection program parameters | URS-PRDG-002 | PERFORMANCE | SYS-PRDG\nFM-02 | HIGH | T cell selection | Selection program parameters | SOP-MFG-102 | NULL | NULL\nFM-03 | HIGH | T cell selection | Tubing set integrity | URS-PRDG-001 | PERFORMANCE | SYS-PRDG\nFM-04 | MEDIUM | Activation | Seeding density | SOP-MFG-103 | NULL | NULL\nFM-05 | HIGH | Transduction | MOI (TU/cell) | URS-EBR-007 | CONTROL | SYS-EBR\nFM-05 | HIGH | Transduction | MOI (TU/cell) | URS-EBR-009 | CONTROL | SYS-EBR\nFM-05 | HIGH | Transduction | MOI (TU/cell) | SOP-MFG-104 | NULL | NULL\nFM-06 | HIGH | Transduction | MOI (TU/cell) | URS-EBR-007 | CONTROL | SYS-EBR\nFM-06 | HIGH | Transduction | MOI (TU/cell) | SOP-MFG-104 | NULL | NULL\nFM-07 | HIGH | Transduction | Vector storage temperature | URS-ULT-001 | PERFORMANCE | SYS-ULT\nFM-07 | HIGH | Transduction | Vector storage temperature | URS-ULT-002 | ALARM | SYS-ULT\nFM-07 | HIGH | Transduction | Vector storage temperature | URS-EMS-014 | ALARM | SYS-EMS\nFM-07 | HIGH | Transduction | Vector storage temperature | SOP-MAT-401 | NULL | NULL\nFM-08 | MEDIUM | Transduction | Time from activation to transduction | SOP-MFG-104 | NULL | NULL\nFM-09 | HIGH | Expansion | Incubator temperature | URS-INC-001 | PERFORMANCE | SYS-INC\nFM-09 | HIGH | Expansion | Incubator temperature | URS-INC-003 | ALARM | SYS-INC\nFM-09 | HIGH | Expansion | Incubator temperature | URS-EMS-011 | ALARM | SYS-EMS\nFM-09 | HIGH | Expansion | Incubator temperature | URS-EMS-014 | ALARM | SYS-EMS\nFM-09 | HIGH | Expansion | Incubator temperature | SOP-MFG-105 | NULL | NULL\nFM-10 | MEDIUM | Expansion | CO2 % | URS-INC-002 | PERFORMANCE | SYS-INC\nFM-11 | LOW | Expansion | Culture duration | SOP-MFG-106 | NULL | NULL\nFM-12 | MEDIUM | Harvest | Wash | URS-LOVO-001 | PERFORMANCE | SYS-LOVO\nFM-13 | HIGH | Formulation and fill | Freeze profile | URS-CRF-001 | PERFORMANCE | SYS-CRF\nFM-14 | HIGH | QC release | VCN calculation | URS-LIMS-004 | CONTROL | SYS-LIMS\nFM-15 | HIGH | QC release | OOS flagging | URS-LIMS-003 | CONTROL | SYS-LIMS\nFM-15 | HIGH | QC release | OOS flagging | URS-LIMS-002 | CONTROL | SYS-LIMS\nFM-16 | HIGH | Expansion | Incubator door | URS-INC-004 | ALARM | SYS-INC\nFM-16 | HIGH | Expansion | Incubator door | URS-EMS-014 | ALARM | SYS-EMS\nFM-16 | HIGH | Expansion | Incubator door | SOP-MFG-105 | NULL | NULL\n(30 rows)",
+     "is_error": false
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "toolu_01MZsnsbxbcEEfTbuhCf8RfA",
+     "content": "item_id | spec_level | doc_no | doc_ver | sys_id | req_category | item_text | source | approved_dt\nURS-PRDG-002 | URS | URS-PRDG | 1.0 | SYS-PRDG | PERFORMANCE | The CD4/CD8 enrichment program shall run with locked, version-controlled parameters and deliver purity >= 90% CD3+. | SITE | 2025-12-01\nURS-CRF-001 | URS | URS-CRF | 1.0 | SYS-CRF | PERFORMANCE | The freezer shall execute freezing profile CRF-P01 within +/-2 C of the programmed curve with a representative load. | SITE | 2025-12-01\n(2 rows)",
+     "is_error": false
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "toolu_0158MeKAfvfZ8raKwSM2gS72",
+     "content": "tc_id | protocol_id | method | tgt_id\nTC-OQ-PRDG-01 | OQ-PRDG-01 | SCRIPTED | URS-PRDG-001\nTC-OQ-PRDG-02 | OQ-PRDG-01 | SCRIPTED | URS-PRDG-002\nTC-OQ-PRDG-03 | OQ-PRDG-01 | SCRIPTED | URS-PRDG-003\nTC-OQ-PRDG-04 | OQ-PRDG-01 | SCRIPTED | URS-PRDG-004\nTC-OQ-PRDG-05 | OQ-PRDG-01 | SCRIPTED | URS-PRDG-005\nTC-PQ-PRDG-01 | PQ-PRDG-01 | SCRIPTED | URS-PRDG-001\nTC-OQ-CRF-01 | OQ-CRF-01 | SCRIPTED | URS-CRF-001\nTC-OQ-CRF-02 | OQ-CRF-01 | SCRIPTED | URS-CRF-002\nTC-OQ-CRF-03 | OQ-CRF-01 | SCRIPTED | URS-CRF-003\n(9 rows)",
+     "is_error": false
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "signature": "CAQS9gsKEAgSGAI4AUIIdGhpbmtpbmcSDLgK0UsN1sdTZ5wD0hoMqNxMU7UQj9JTJX6HIjBW+ZHSFU7G5xWbeMdjQQZMXbS6pB2JiW6T7+0LuFX+kCoU3oPEvBmcNskvFT/rLrcqkwsISKGYi5GQMKmW6ey+kzaGBTlb7IwtJf+hONvpWAbQlop/XQKgzbYtzhR62o8qablB46KDoONTt71tW3IvLmBwLWTWsKXuTDvWAYEVSk2jGPLt7+b6/Be+pvpwI8hkWM5wuh2NGUK4vwDH3kMI4MYhuUneTF8iexe3xGYv5c+fAQLOf+AHrfRg+keOk+tibf38FK2DZ1YsM3SpfrVQidGjdmWPoOT0+VLr61jKSYGXfPi7qIIKzbdNNtqxPdXIMus0S+tbuhtfTS1Sfi4+E7sHZ3M6zR1D6eEwCpv7NVU7SnDG6O4AH1xkEWFMSIuM10c2hjN3Lk95eGrmOW9182zlGB4pi6DpOU9xIeoIDpldKqIO0/zG1rewmN5PhqA8LsMZZhNRfVEQltpPaAY7DyUscZRPh59kK3pyifwaicixSEVVenV/pbuM3FMHhdtenkdhSHIIrWqHaY9b5j8pQ1bdNpL9VOR+y0YMzyXnBsMIeKbHIIMVGWV+J3mr/gIf1Gw3uFJdMu5Ph5nE+9WFoAZsWNTg338pGLF9a/bEObRwjsbS00tnHsHwu2u8Z2Trcj2tQCVs7VNvM5FHC4WeFDGdUtA2doJSQ2YprJRghPsrlamLfySdcyGFopqSTuQvLRyezh1kFTBY3h3LKM7WjUJCPZFofYlDpllEWVY/WGG7WhosaeihDec08ngoKzsaFawq2qTC/d83ySWa30v2g/pSCpgOhTHweq1yp/rYGuAetmdgr+yaBVeCG6xAA/4/RSlSohKi5i5NnD5ipJja6cKxj5zprksQU3FOEs8F5/3fWLcIwR7VBwA4CjsNx2xw8Ocx1ZaG22j/vKwWC6TsBSTy/jHPqUdYXaWYvaCjydV7wcgSzWo67YGMDLzfqPMahOnarj7NJ3GMWWSjrAVZqTs7vkS/dgBiclSuAP730M5MX9/aY/yxYHk5J1EcSxuqXLqvxJonOZBHHaesaGeecUzuosJdOqXVJK4K+++wyIID7NOwBdYKDTXmloK0rSYWbz9Dih8IG4aahAy8+a2sSHjBAS8opm3JL6PHQk8/C0ON9w81KP1TSjVVJP5hG+nCBJ1rrZOPV+fHkRhim+W29z1QHRztksHtlFuiyhZSL30Q6FzFw1+DwnrfjIBVqwDXS6LJ2EMTJlZsNZtv2YQPTZ8sOMa92CVZR39kW6Ec6Ir+E5qIUvm9Gte8Wtf7Z+VyeM5Eed1fgQp9uFBbwhVCups7iylvkoHWQjtJbj2gJMpXgfhOWZofOjPGXENE76+u7rmxhzsvEFHXirfmj8uurbwydGKe4csXHrv9dpwIcmkiuKFEOCY6IQHcOlA+OUUNNtYVXPamtFWa3cwIHqlQ8h6WTpTt2DzPyAl3NnF4EKItsVoZkOGPyycR3Lg/U1wDLDZBT/uKOcETFwVaP/AZMRks8UtKx63jS6YGHHh0fRCm+hOBWYYrCj2pRO/zXlRUs1qSHYDLs4CSPFkLPgvKgd19sFzAtjTMKm4XYOoIfzW8f62qJ2qQSpMjuGxUwzR1i9sNhvMGm4+zCejdb+gYBio+bm3iuj2mgbevWWirDO1K1eWNsegGY6ZgrZbbBUlcQM9UQQtv6RzNhIUTGhCgON6WRxHN8IAPozTnLvdVPdZVJfl9p6Eciww83jTeutDDM3+9MTlnNtN/TSdSOKsg4yYBRTY+oZCKCnoJPNve48mjViS6UPn50xShZ7/NEdgM8i/ucpuv7K4q6rgZmUQpEVIqlMi8sSI/LuIWlD8cDlUUIg7CHL8RuLC0hnEmq+/dPvJxegUY0UHU+vENz49K9muBUrEYoAjQlao45XNwTva7jTHhTJOtEgp1kXBDOwvrHP52Jtsfg2gFodCrgLRhlcSXZISkZ7hK8HEugC2fKTtfJJ055RgB",
+     "thinking": "",
+     "type": "thinking"
+    },
+    {
+     "text": "Four high-criticality risk items have OQ test coverage but no PQ coverage, where PQ evidence is expected. They come from two underlying performance requirements.\n\n**Method**\n- High criticality means `risk_class = 'HIGH'`. I did not re-derive it from RPN.\n- PQ is expected for requirements with `req_category = 'PERFORMANCE'` on EQUIPMENT systems.\n- A risk is linked to a requirement either through an FRA row (ASSESSES) or through a pFMEA row (MITIGATED_BY).\n- Coverage follows the verification path. A test case verifies the requirement directly, or through its FS, CS or DS children. I then looked at the protocol type of each test case (OQ or PQ).\n\n**Result**\n\n| Risk (pFMEA) | Risk (FRA) | Requirement | System | Coverage |\n|---|---|---|---|---|\n| FM-02, selection program parameters (HIGH) | FRA-014 | URS-PRDG-002 (locked CD4/CD8 enrichment program, purity \u226590% CD3+) | SYS-PRDG | Only TC-OQ-PRDG-02 (OQ-PRDG-01, scripted). No PQ test case. |\n| FM-13, freeze profile (HIGH) | FRA-020 | URS-CRF-001 (CRF-P01 freeze profile within \u00b12 \u00b0C with a representative load) | SYS-CRF | Only TC-OQ-CRF-01 (OQ-CRF-01, scripted). No PQ test case. |\n\n**Comparison with other risks**\n- Other high-criticality risks on equipment performance requirements do have PQ coverage. These are FRA-001 and FM-09 (INC-001), FRA-008 and FM-07 (ULT-001), FRA-013 and FM-03 (PRDG-001), and FRA-019 (LOVO-002).\n- High risks on ALARM requirements on equipment systems have OQ only. These are FRA-003, FRA-004 and FRA-009. They are excluded because alarm requirements are fully verified at OQ, so PQ is not expected.\n- High risks on the EMS, LIMS and EBR systems are excluded because they are computerized systems, so PQ does not apply.\n\nThe four risk IDs in the answer are FM-02, FM-13, FRA-014 and FRA-020. If you only want the process FMEA, that is FM-02 and FM-13. If you only want the functional risk assessment rows, it is FRA-014 and FRA-020.\n\n```json\n{\"answer_ids\": [\"FM-02\", \"FM-13\", \"FRA-014\", \"FRA-020\"]}\n```",
+     "type": "text"
+    }
+   ]
+  }
+ ]
+}

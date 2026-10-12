@@ -1,0 +1,228 @@
+{
+ "model": "haiku",
+ "condition": "semantic",
+ "qid": "q5",
+ "run": 1,
+ "score": 1.0,
+ "recall": 1.0,
+ "precision": 1.0,
+ "missed": [],
+ "extra": [],
+ "answer_ids": [
+  "FM-02",
+  "FRA-014",
+  "FM-13",
+  "FRA-020"
+ ],
+ "id_source": "json",
+ "tool_calls": 6,
+ "sql_errors": 0,
+ "turns": 4,
+ "hit_turn_limit": false,
+ "stop_reason": "end_turn",
+ "seconds": 21.8,
+ "cost_usd": 0.0073,
+ "tok_input": 12,
+ "tok_output": 4989,
+ "tok_cache_write": 31121,
+ "tok_cache_read": 94923,
+ "final_answer": "Four HIGH-criticality FMEA risks map to requirements that have OQ coverage but no PQ coverage, where PQ is expected.\n\n**Affected risks**\n- **FM-13** (sev 8, RPN 120) and **FRA-020** mitigate/assess **URS-CRF-001** (Freeze/CRF equipment, PERFORMANCE). Its only verifying test is TC-OQ-CRF-01 (SCRIPTED, PASS on CRF-01, OQ-CRF-01). No PQ protocol exists for SYS-CRF, and no PQ test verifies this requirement.\n- **FM-02** (sev 8, RPN 120) and **FRA-014** mitigate/assess **URS-PRDG-002** (PRDG equipment, PERFORMANCE). Its only verifying test is TC-OQ-PRDG-02 (SCRIPTED, PASS on PRDG-01 and PRDG-02, OQ-PRDG-01). PQ-PRDG-01 exists but verifies only URS-PRDG-001, not URS-PRDG-002.\n\n**How I determined this**\n- \"High-criticality\" uses the team's `risk_class = 'HIGH'` flag on the failure-mode rows, not an RPN threshold. That gives 50 HIGH rows: FM-* rows (MITIGATES links) and FRA-* rows (ASSESSES links).\n- \"PQ expected\" applies to requirements with `req_category = 'PERFORMANCE'` on EQUIPMENT systems. Among the requirements behind HIGH risks, that leaves six: URS-CRF-001, URS-INC-001, URS-LOVO-002, URS-PRDG-001, URS-PRDG-002 and URS-ULT-001. The COMPUTERIZED-system requirements (EBR, EMS, LIMS) are excluded because PQ is not expected for them.\n- Coverage follows the verification path (test case \u2192 FS/CS/DS \u2192 URS). Of the six requirements, four have PQ tests: URS-INC-001, URS-LOVO-002, URS-PRDG-001 and URS-ULT-001. Only the two above lack one.\n\nCaveat: I checked coverage by existence of test cases, which is what the question asks for. Every linked execution I looked at passed, but I did not re-run the currently-verified check against change-control dates.\n\n```json\n{\"answer_ids\": [\"FM-02\", \"FRA-014\", \"FM-13\", \"FRA-020\"]}\n```",
+ "transcript": [
+  {
+   "role": "user",
+   "content": "Which high-criticality FMEA risks have OQ test coverage but no PQ coverage, where PQ evidence would be expected?"
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "signature": "CAQSqAgKEAgSGAI4AUIIdGhpbmtpbmcSDDvzwwq+WDNeIriKBxoMiL65T0XmA0xpMWIkIjBs0OgZCnWfwqtjrm5tlbwJWy/TRtn4ZcKBn/9DmhTbCvXOerR87RVuAR4DpMTO3rAqxQdtTYcS6Rh4mZfZLIZQc/5fvNi9WLzwh3VcQ40Po0GbKfkjHj4OHElkkOZxeoVuTWXfpJYUKb37xi15drwGT5eV/l/oeyGNlhtAv5tBtP65M1nBntnI+EikQSyD2AEVdTAk0fT1U6wHdCubdTLTTJjUfaliAqUVrYNDojZ/JTYImmSYYQcADfPamsPdSPlw55hkvu8AlcbmF9prW4bVA+QDmJwyNrKpyosm/ST8bUNkSJG1eZ99WWNcx8rtnsZk8HAo/Yud8mQoQm86L/R827PFEvKqCQcsMeX1h4/t3JBFDLBGHaOaPsPCFhXSdRHHdKE6pEMvQLJiI+QZcuyIa034crO9J7YuO+Z2zkBPnKnxQY5cR/9hed/6iV29uhqcUFiQMC7mxukRwUT9cC3QBOyOOWWTJJsoqXXSvlVmKEIbFA2640cqd03v+S2gT4VC4thY19Roq0lIKxf3TkjBz8XDaHvGe23QO8nrWUV5Bu/zu/0/ytFSrRGF9zDhKCe90Fq3wNgGYKoEC1j83unj0pUAZhh9vnLWiCl4jgcr9nk5nFRV+j/ca7xCVk+HPwsNQkLfE3M6L9SnTDCUfnltUxZQuyGuFG2wcZw281P5NZo/14JMlDfpyKZoU3zdensVnUGYfbp5Yi6+MUcul/k+JAmtwV8v69M3YPVcUcz9cuk0OdXx9LXIOXVJICZBlsY0zkvCVHGc3HeDLCMqdYPsqRY5wWNkzxA/kxHTEDwF64OIl5C+oD26ml0uvAaSEmfLjugtFSOOabhJLvuiwMBKYiqt7Z0tPBwnLUUbaDzqLiCP79ZFDUZXwNWePSFc21fu2C+SnGjvVPllSKLQvu3KGPW8zpgN0dvHmK4BwoJHcuiHfQdpEyta/FAueTFjHlp9vi7I10LgYuI67R0fqh22f+XFHbLFjlzSEIOdiFO1U5YzFPnxGF8hkkB7sBvIo7sNjGpiEq/6bieWPg8VrXpVTCeQG9VqaIwJ/8kXIu5Kw4tk/sKkN0LC249KtEkeTOvGaGUOLL1qb2rN/sHQJlQXtMH6yeSofDWnrRQOou2FVD1IgxqNRX1BR2OhC7R1Mv9S3707qDyVSei0LEYT1Eic8+c3o3n9NyjF9w1bxScw1mj2rltcLg4myQGLd/BVAd8yOkX8asjIcbQmpPakGUjZRsGolkxKOEMK0WeySbzCte0vHdq+/K7+xn1X+FD47cPbbCASNW8mzkZSSAbCr+bN9cy/p+tOGdXIINT3EQObcAZ4ySAYq5E1rbTeHpLn7RD5E9JgYAmXXBgB",
+     "thinking": "",
+     "type": "thinking"
+    },
+    {
+     "text": "I'll start by checking the risk, requirement and protocol data, then trace the links.",
+     "type": "text"
+    },
+    {
+     "id": "toolu_01EugCBBnDaPSPYnoBV4w9iN",
+     "caller": {
+      "type": "direct"
+     },
+     "input": {
+      "query": "SELECT ri.ri_id, ri.risk_class, ri.sev, ri.rpn, t.link_type, t.tgt_type, t.tgt_id\nFROM pd.val_risk_item ri LEFT JOIN pd.trace_link t ON t.src_id = ri.ri_id\nWHERE ri.risk_class = 'HIGH' ORDER BY ri.ri_id;"
+     },
+     "name": "run_sql",
+     "type": "tool_use"
+    },
+    {
+     "id": "toolu_01AuavzpTob6mLRyzMGT6oJo",
+     "caller": {
+      "type": "direct"
+     },
+     "input": {
+      "query": "SELECT p.protocol_id, p.ptype, p.sys_id, p.status, s.sys_class, s.gxp_area FROM pd.val_protocol p LEFT JOIN pd.val_system s ON s.sys_id=p.sys_id ORDER BY 1;"
+     },
+     "name": "run_sql",
+     "type": "tool_use"
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "toolu_01EugCBBnDaPSPYnoBV4w9iN",
+     "content": "ri_id | risk_class | sev | rpn | link_type | tgt_type | tgt_id\nFM-02 | HIGH | 8 | 120 | MITIGATES | SPEC | URS-PRDG-002\nFM-02 | HIGH | 8 | 120 | MITIGATES | SOP | SOP-MFG-102\nFM-03 | HIGH | 10 | 80 | MITIGATES | SPEC | URS-PRDG-001\nFM-05 | HIGH | 9 | 108 | MITIGATES | SPEC | URS-EBR-007\nFM-05 | HIGH | 9 | 108 | MITIGATES | SPEC | URS-EBR-009\nFM-05 | HIGH | 9 | 108 | MITIGATES | SOP | SOP-MFG-104\nFM-06 | HIGH | 8 | 128 | MITIGATES | SPEC | URS-EBR-007\nFM-06 | HIGH | 8 | 128 | MITIGATES | SOP | SOP-MFG-104\nFM-07 | HIGH | 8 | 96 | MITIGATES | SPEC | URS-ULT-001\nFM-07 | HIGH | 8 | 96 | MITIGATES | SPEC | URS-ULT-002\nFM-07 | HIGH | 8 | 96 | MITIGATES | SPEC | URS-EMS-014\nFM-07 | HIGH | 8 | 96 | MITIGATES | SOP | SOP-MAT-401\nFM-09 | HIGH | 8 | 96 | MITIGATES | SPEC | URS-INC-001\nFM-09 | HIGH | 8 | 96 | MITIGATES | SPEC | URS-INC-003\nFM-09 | HIGH | 8 | 96 | MITIGATES | SPEC | URS-EMS-011\nFM-09 | HIGH | 8 | 96 | MITIGATES | SPEC | URS-EMS-014\nFM-09 | HIGH | 8 | 96 | MITIGATES | SOP | SOP-MFG-105\nFM-13 | HIGH | 8 | 120 | MITIGATES | SPEC | URS-CRF-001\nFM-14 | HIGH | 9 | 90 | MITIGATES | SPEC | URS-LIMS-004\nFM-15 | HIGH | 10 | 80 | MITIGATES | SPEC | URS-LIMS-003\nFM-15 | HIGH | 10 | 80 | MITIGATES | SPEC | URS-LIMS-002\nFM-16 | HIGH | 8 | 96 | MITIGATES | SPEC | URS-INC-004\nFM-16 | HIGH | 8 | 96 | MITIGATES | SPEC | URS-EMS-014\nFM-16 | HIGH | 8 | 96 | MITIGATES | SOP | SOP-MFG-105\nFRA-001 | HIGH | 9 | NULL | ASSESSES | SPEC | URS-INC-001\nFRA-003 | HIGH | 9 | NULL | ASSESSES | SPEC | URS-INC-003\nFRA-004 | HIGH | 9 | NULL | ASSESSES | SPEC | URS-INC-004\nFRA-008 | HIGH | 9 | NULL | ASSESSES | SPEC | URS-ULT-001\nFRA-009 | HIGH | 9 | NULL | ASSESSES | SPEC | URS-ULT-002\nFRA-013 | HIGH | 9 | NULL | ASSESSES | SPEC | URS-PRDG-001\nFRA-014 | HIGH | 9 | NULL | ASSESSES | SPEC | URS-PRDG-002\nFRA-019 | HIGH | 9 | NULL | ASSESSES | SPEC | URS-LOVO-002\nFRA-020 | HIGH | 9 | NULL | ASSESSES | SPEC | URS-CRF-001\nFRA-023 | HIGH | 9 | NULL | ASSESSES | SPEC | URS-EMS-010\nFRA-024 | HIGH | 9 | NULL | ASSESSES | SPEC | URS-EMS-011\nFRA-025 | HIGH | 9 | NULL | ASSESSES | SPEC | URS-EMS-012\nFRA-026 | HIGH | 9 | NULL | ASSESSES | SPEC | URS-EMS-013\nFRA-027 | HIGH | 9 | NULL | ASSESSES | SPEC | URS-EMS-014\nFRA-030 | HIGH | 9 | NULL | ASSESSES | SPEC | URS-LIMS-001\nFRA-031 | HIGH | 9 | NULL | ASSESSES | SPEC | URS-LIMS-002\nFRA-032 | HIGH | 9 | NULL | ASSESSES | SPEC | URS-LIMS-003\nFRA-033 | HIGH | 9 | NULL | ASSESSES | SPEC | URS-LIMS-004\nFRA-034 | HIGH | 9 | NULL | ASSESSES | SPEC | URS-LIMS-005\nFRA-035 | HIGH | 9 | NULL | ASSESSES | SPEC | URS-LIMS-006\nFRA-037 | HIGH | 9 | NULL | ASSESSES | SPEC | URS-EBR-001\nFRA-038 | HIGH | 9 | NULL | ASSESSES | SPEC | URS-EBR-002\nFRA-039 | HIGH | 9 | NULL | ASSESSES | SPEC | URS-EBR-003\nFRA-040 | HIGH | 9 | NULL | ASSESSES | SPEC | URS-EBR-007\nFRA-041 | HIGH | 9 | NULL | ASSESSES | SPEC | URS-EBR-008\nFRA-042 | HIGH | 9 | NULL | ASSESSES | SPEC | URS-EBR-009\n(50 rows)",
+     "is_error": false
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "toolu_01AuavzpTob6mLRyzMGT6oJo",
+     "content": "protocol_id | ptype | sys_id | status | sys_class | gxp_area\nAMV-CD3-01 | AMV | NULL | APPROVED - REPORT APPROVED | NULL | NULL\nAMV-FC-CAR-01 | AMV | NULL | APPROVED - REPORT APPROVED | NULL | NULL\nAMV-POT-01 | AMV | NULL | APPROVED - REPORT APPROVED | NULL | NULL\nAMV-VCN-01 | AMV | NULL | APPROVED - REPORT APPROVED | NULL | NULL\nAMV-VIAB-01 | AMV | NULL | APPROVED - REPORT APPROVED | NULL | NULL\nIQ-CRF-01 | IQ | SYS-CRF | APPROVED - REPORT APPROVED | EQUIPMENT | GMP\nIQ-EMS-01 | IQ | SYS-EMS | APPROVED - REPORT APPROVED | COMPUTERIZED | GMP\nIQ-INC-01 | IQ | SYS-INC | APPROVED - REPORT APPROVED | EQUIPMENT | GMP\nIQ-LOVO-01 | IQ | SYS-LOVO | APPROVED - REPORT APPROVED | EQUIPMENT | GMP\nIQ-PRDG-01 | IQ | SYS-PRDG | APPROVED - REPORT APPROVED | EQUIPMENT | GMP\nIQ-ULT-01 | IQ | SYS-ULT | APPROVED - REPORT APPROVED | EQUIPMENT | GMP\nOQ-CRF-01 | OQ | SYS-CRF | APPROVED - REPORT APPROVED | EQUIPMENT | GMP\nOQ-EBR-01 | OQ | SYS-EBR | APPROVED - REPORT APPROVED | COMPUTERIZED | GMP\nOQ-EMS-01 | OQ | SYS-EMS | APPROVED - REPORT APPROVED | COMPUTERIZED | GMP\nOQ-INC-01 | OQ | SYS-INC | REPORT APPROVED WITH EXCEPTION (INC-03 TC-OQ-INC-04, DEV-26-011) | EQUIPMENT | GMP\nOQ-LIMS-01 | OQ | SYS-LIMS | APPROVED - REPORT APPROVED | COMPUTERIZED | GMP\nOQ-LOVO-01 | OQ | SYS-LOVO | APPROVED - REPORT APPROVED | EQUIPMENT | GMP\nOQ-PRDG-01 | OQ | SYS-PRDG | APPROVED - REPORT APPROVED | EQUIPMENT | GMP\nOQ-ULT-01 | OQ | SYS-ULT | APPROVED - REPORT APPROVED | EQUIPMENT | GMP\nPPQ-001 | PPQ | NULL | EXECUTION COMPLETE - REPORT PENDING | NULL | NULL\nPQ-INC-01 | PQ | SYS-INC | APPROVED - REPORT APPROVED | EQUIPMENT | GMP\nPQ-LOVO-01 | PQ | SYS-LOVO | APPROVED - REPORT APPROVED | EQUIPMENT | GMP\nPQ-PRDG-01 | PQ | SYS-PRDG | APPROVED - REPORT APPROVED | EQUIPMENT | GMP\nPQ-ULT-01 | PQ | SYS-ULT | APPROVED - REPORT APPROVED | EQUIPMENT | GMP\n(24 rows)",
+     "is_error": false
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "signature": "CAQS8AkKEAgSGAI4AUIIdGhpbmtpbmcSDMgiW1Hp9HdIPG/gUhoMNWWEb1QF7DOXUSFXIjDAR/NCsvddbeUokQqkEJNCRAak93X5a9lcjdMVmy/A8/f5tuAKKvW14DeiWSlnidsqjQkgijaAJp8dtVgXlDMh9uAkz4xJQHJEgxm5kxihM7tjbKee5NMHM7Fu/3coEKAN30F00oN0KT6Sc14nZuUmQ/nzEKlX/LGRxjfsqLPRqyPF7/OFjbknFCD6c7eKAE0kSXsTMsbL03axMZjvY0eK8dgPiJNYv6tUYGlTrDIR/HdILX9D5J6e6Mu4G3rOUNdiywQ2eBug2XKJ63V4NlwH6/7Aql//nZP8PHwwGNoivi6AlzmGGvlFAV9Kf7t9kNlbaQfuY5DQSaoXpYNrfeGBYqoEOAX76Q2XRgM5rrJaW1RqK49+Hzy5M4/pim1Sl5oJhM8gz9CELYVALSmrTjCxGJhi1zmJjUwxnCsU90OIR5ZEvsA3PZ6vHaq9a+7nfnpTYatB/58Kmc+sAgiAqQiq/cY7nOS9MX7FjaGdjI08sS5GlPGIuu+9DdXPLHjpbkA/A6H54il1fvTVpt79lP3psqcI5MD75LiioOMC7RtesoSFBZ5ksGWJ/NyqdQnMFkfBq7LTzPuqYbqaDdx1krgpCo5dM6fJ3uqJpwlwwS2yOnjQMe8WSyqT/rx15+ZYVfdxS338chSbC3jMMXqq7XP7fIZN4Dzyf3rvzToBqoTc7ojR9geYrV/LqksRObo3iVh3W+FqKkhj2g2HwbLApqNBu17S3oxxrp0RG5gSfpKQMYwVYMkGiBgczGzDCR5gROuJz+BxTNOBkVIaWmSIRIHX4caadxu9DcroIVV+bQ1lxDUWshM6SH/gkdBlBfm4Do3GhMEwpOpIDT3k58VIUOVgOGLwCL8TdqSXZpsUuKa+fqbdOPq5Sqet2OSwPhKp/XMmhzEWSiVz+6f3fe/Jd06w7I4biIXcHQSt0r2PHmEn/Ku6C3/R1DDiqyXyLFm6apN+30yX9JbrmAgTBfCtN45f9y6We1qWVSaPpaQZirwMKh7HKHXi4WIVdNUc/kb4RFTf2pUPfMzsnY23UaKxjEbopUPsSxjz9Y5UNgID6yFwTjffyjCxiO2ySUNCadkfj+xRvhMk4szYLZi7N0mgDabJBUwphkgCqDg75yPRpGFxVg8LidJm3Uh47Zd8x9r30fBc/uUVykYC+q8Xt4AgB4S7a/lkWsZj0BgFl+0YNB4ZQeN27ELuJOPc+a9p5R0Ef5vVVyS43p/rSjhIHj8+lodP5vFNCwuWPpxUiXTbynQ0Ist3O+YmLZZwocjpvNzy7Rg3ccsLPvheXofCcREmIeFmclafEhfr2scX2/+9OWt0lWRc8PwIxkeqSW0eENRxie2BiNaqGNfFmpeJfQ3ZUpmBOCSndFVP9InWvI7h3o8uToJ8UphSUsxiRD0gTU4mY3fd/R4Zzn9+ZW4ILLrd6YsNRdHlwJDjLzlrZS6r9uhAMbahZBTFmj61wqCNeE2zEO4cxosnITRn/zeGEZi9e4FTHsT0985hwcehzcDonyVFH2YbmrLmK9xzgdp494ZyqbctHTiWveRbNSvhnXTAK6ear5nJjRbAQv6nFB6YR23zK0JeYQwvBtPQT+u2aaSJ/R95ltYFWittxmkeKgZM4iOfGAE=",
+     "thinking": "",
+     "type": "thinking"
+    },
+    {
+     "text": "Next, the requirements behind the HIGH risks: their category, system, and class.",
+     "type": "text"
+    },
+    {
+     "id": "toolu_01NE62JJHUmbMcdPT1Zqdb4r",
+     "caller": {
+      "type": "direct"
+     },
+     "input": {
+      "query": "SELECT u.item_id, u.req_category, u.sys_id, s.sys_class, s.gxp_area, u.doc_no, u.doc_ver FROM pd.val_spec_item u LEFT JOIN pd.val_system s ON s.sys_id=u.sys_id WHERE u.spec_level='URS' AND u.item_id IN (SELECT tgt_id FROM pd.trace_link WHERE src_id LIKE 'FM-%' OR src_id LIKE 'FRA-%') ORDER BY 1;"
+     },
+     "name": "run_sql",
+     "type": "tool_use"
+    },
+    {
+     "id": "toolu_01PauMyX4dCfpMozwnrFXNKm",
+     "caller": {
+      "type": "direct"
+     },
+     "input": {
+      "query": "SELECT l.src_id AS spec, l.tgt_id AS urs, l.link_type, s.spec_level, s.req_category FROM pd.trace_link l LEFT JOIN pd.val_spec_item s ON s.item_id=l.src_id WHERE l.link_type='TRACE' ORDER BY 2,1;"
+     },
+     "name": "run_sql",
+     "type": "tool_use"
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "toolu_01NE62JJHUmbMcdPT1Zqdb4r",
+     "content": "item_id | req_category | sys_id | sys_class | gxp_area | doc_no | doc_ver\nURS-CRF-001 | PERFORMANCE | SYS-CRF | EQUIPMENT | GMP | URS-CRF | 1.0\nURS-CRF-002 | DATA | SYS-CRF | EQUIPMENT | GMP | URS-CRF | 1.0\nURS-CRF-003 | ALARM | SYS-CRF | EQUIPMENT | GMP | URS-CRF | 1.0\nURS-EBR-001 | CONTROL | SYS-EBR | COMPUTERIZED | GMP | URS-EBR | 1.0\nURS-EBR-002 | CONTROL | SYS-EBR | COMPUTERIZED | GMP | URS-EBR | 1.0\nURS-EBR-003 | CONTROL | SYS-EBR | COMPUTERIZED | GMP | URS-EBR | 1.0\nURS-EBR-007 | CONTROL | SYS-EBR | COMPUTERIZED | GMP | URS-EBR | 1.0\nURS-EBR-008 | SECURITY | SYS-EBR | COMPUTERIZED | GMP | URS-EBR | 1.0\nURS-EBR-009 | CONTROL | SYS-EBR | COMPUTERIZED | GMP | URS-EBR | 1.0\nURS-EBR-010 | DATA | SYS-EBR | COMPUTERIZED | GMP | URS-EBR | 1.0\nURS-EMS-010 | DATA | SYS-EMS | COMPUTERIZED | GMP | URS-EMS | 1.0\nURS-EMS-011 | ALARM | SYS-EMS | COMPUTERIZED | GMP | URS-EMS | 1.0\nURS-EMS-012 | CONTROL | SYS-EMS | COMPUTERIZED | GMP | URS-EMS | 1.0\nURS-EMS-013 | DATA | SYS-EMS | COMPUTERIZED | GMP | URS-EMS | 1.0\nURS-EMS-014 | ALARM | SYS-EMS | COMPUTERIZED | GMP | URS-EMS | 1.0\nURS-EMS-015 | DATA | SYS-EMS | COMPUTERIZED | GMP | URS-EMS | 1.0\nURS-EMS-016 | DATA | SYS-EMS | COMPUTERIZED | GMP | URS-EMS | 1.0\nURS-INC-001 | PERFORMANCE | SYS-INC | EQUIPMENT | GMP | URS-INC | 1.0\nURS-INC-002 | PERFORMANCE | SYS-INC | EQUIPMENT | GMP | URS-INC | 1.0\nURS-INC-003 | ALARM | SYS-INC | EQUIPMENT | GMP | URS-INC | 1.0\nURS-INC-004 | ALARM | SYS-INC | EQUIPMENT | GMP | URS-INC | 1.0\nURS-INC-005 | PERFORMANCE | SYS-INC | EQUIPMENT | GMP | URS-INC | 1.0\nURS-INC-006 | PHYSICAL | SYS-INC | EQUIPMENT | GMP | URS-INC | 1.0\nURS-INC-007 | INTERFACE | SYS-INC | EQUIPMENT | GMP | URS-INC | 1.0\nURS-LIMS-001 | DATA | SYS-LIMS | COMPUTERIZED | GMP | URS-LIMS | 1.0\nURS-LIMS-002 | CONTROL | SYS-LIMS | COMPUTERIZED | GMP | URS-LIMS | 1.0\nURS-LIMS-003 | CONTROL | SYS-LIMS | COMPUTERIZED | GMP | URS-LIMS | 1.0\nURS-LIMS-004 | CONTROL | SYS-LIMS | COMPUTERIZED | GMP | URS-LIMS | 1.0\nURS-LIMS-005 | DATA | SYS-LIMS | COMPUTERIZED | GMP | URS-LIMS | 1.0\nURS-LIMS-006 | DATA | SYS-LIMS | COMPUTERIZED | GMP | URS-LIMS | 1.0\nURS-LIMS-007 | DATA | SYS-LIMS | COMPUTERIZED | GMP | URS-LIMS | 1.0\nURS-LOVO-001 | PERFORMANCE | SYS-LOVO | EQUIPMENT | GMP | URS-LOVO | 1.0\nURS-LOVO-002 | PERFORMANCE | SYS-LOVO | EQUIPMENT | GMP | URS-LOVO | 1.0\nURS-PRDG-001 | PERFORMANCE | SYS-PRDG | EQUIPMENT | GMP | URS-PRDG | 1.0\nURS-PRDG-002 | PERFORMANCE | SYS-PRDG | EQUIPMENT | GMP | URS-PRDG | 1.0\nURS-PRDG-003 | SECURITY | SYS-PRDG | EQUIPMENT | GMP | URS-PRDG | 1.0\nURS-PRDG-004 | DATA | SYS-PRDG | EQUIPMENT | GMP | URS-PRDG | 1.0\nURS-PRDG-005 | PERFORMANCE | SYS-PRDG | EQUIPMENT | GMP | URS-PRDG | 1.0\nURS-ULT-001 | PERFORMANCE | SYS-ULT | EQUIPMENT | GMP | URS-ULT | 1.0\nURS-ULT-002 | ALARM | SYS-ULT | EQUIPMENT | GMP | URS-ULT | 1.0\nURS-ULT-003 | PERFORMANCE | SYS-ULT | EQUIPMENT | GMP | URS-ULT | 1.0\nURS-ULT-004 | PHYSICAL | SYS-ULT | EQUIPMENT | GMP | URS-ULT | 1.0\nURS-ULT-005 | PHYSICAL | SYS-ULT | EQUIPMENT | GMP | URS-ULT | 1.0\n(43 rows)",
+     "is_error": false
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "toolu_01PauMyX4dCfpMozwnrFXNKm",
+     "content": "spec | urs | link_type | spec_level | req_category\nDS-LIMS-01 | FS-LIMS-01 | TRACE | DS | CONTROL\nCS-EBR-01 | URS-EBR-001 | TRACE | CS | CONTROL\nCS-EBR-02 | URS-EBR-007 | TRACE | CS | CONTROL\nCS-EBR-03 | URS-EBR-009 | TRACE | CS | CONTROL\nCS-EMS-01 | URS-EMS-010 | TRACE | CS | DATA\nCS-EMS-02 | URS-EMS-011 | TRACE | CS | ALARM\nCS-EMS-02 | URS-EMS-012 | TRACE | CS | ALARM\nCS-EMS-04 | URS-EMS-013 | TRACE | CS | DATA\nCS-EMS-03 | URS-EMS-014 | TRACE | CS | ALARM\nFS-INC-01 | URS-INC-001 | TRACE | FS | PERFORMANCE\nFS-INC-03 | URS-INC-002 | TRACE | FS | PERFORMANCE\nFS-INC-02 | URS-INC-003 | TRACE | FS | ALARM\nFS-INC-04 | URS-INC-004 | TRACE | FS | ALARM\nCS-LIMS-02 | URS-LIMS-002 | TRACE | CS | CONTROL\nCS-LIMS-01 | URS-LIMS-003 | TRACE | CS | CONTROL\nFS-LIMS-01 | URS-LIMS-004 | TRACE | FS | CONTROL\n(16 rows)",
+     "is_error": false
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "signature": "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",
+     "thinking": "",
+     "type": "thinking"
+    },
+    {
+     "text": "Six HIGH-risk requirements are PERFORMANCE on EQUIPMENT systems. Now I'll trace which test cases verify each one, directly or through FS/CS/DS, and which protocol each test case belongs to.",
+     "type": "text"
+    },
+    {
+     "id": "toolu_01XTTAndwWyJ1gEdMYZfj8bX",
+     "caller": {
+      "type": "direct"
+     },
+     "input": {
+      "query": "WITH hi AS (\n  SELECT DISTINCT t.tgt_id AS urs FROM pd.trace_link t WHERE (t.src_id LIKE 'FM-%' AND t.link_type='MITIGATES' AND t.tgt_type='SPEC')\n  UNION SELECT DISTINCT t.tgt_id FROM pd.trace_link t JOIN pd.val_risk_item r ON r.ri_id=t.src_id WHERE r.risk_class='HIGH' AND t.link_type='ASSESSES'\n),\ncand AS (SELECT u.item_id AS urs, u.sys_id FROM pd.val_spec_item u JOIN hi ON hi.urs=u.item_id JOIN pd.val_system s ON s.sys_id=u.sys_id WHERE u.spec_level='URS' AND u.req_category='PERFORMANCE' AND s.sys_class='EQUIPMENT'),\nver AS (\n  SELECT l.src_id AS tc, l.tgt_id AS spec FROM pd.trace_link l WHERE l.link_type='VERIFIES'\n),\nchild AS (\n  SELECT l.src_id AS spec_child, l.tgt_id AS parent FROM pd.trace_link l WHERE l.link_type='TRACE'\n)\nSELECT c.urs, v.tc, v.spec, tc.protocol_id, p.ptype, tc.method\nFROM cand c\nLEFT JOIN (\n  SELECT ver.tc, ver.spec, ch.parent AS urs FROM ver LEFT JOIN child ch ON ch.spec_child=ver.spec\n  UNION\n  SELECT ver.tc, ver.spec, ver.spec AS urs FROM ver\n) v ON v.urs=c.urs\nLEFT JOIN pd.val_test_case tc ON tc.tc_id=v.tc\nLEFT JOIN pd.val_protocol p ON p.protocol_id=tc.protocol_id\nORDER BY 1,2;"
+     },
+     "name": "run_sql",
+     "type": "tool_use"
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "toolu_01XTTAndwWyJ1gEdMYZfj8bX",
+     "content": "urs | tc | spec | protocol_id | ptype | method\nURS-CRF-001 | TC-OQ-CRF-01 | URS-CRF-001 | OQ-CRF-01 | OQ | SCRIPTED\nURS-INC-001 | TC-OQ-INC-01 | FS-INC-01 | OQ-INC-01 | OQ | SCRIPTED\nURS-INC-001 | TC-OQ-INC-01 | URS-INC-001 | OQ-INC-01 | OQ | SCRIPTED\nURS-INC-001 | TC-PQ-INC-01 | URS-INC-001 | PQ-INC-01 | PQ | SCRIPTED\nURS-INC-002 | TC-OQ-INC-02 | URS-INC-002 | OQ-INC-01 | OQ | SCRIPTED\nURS-INC-002 | TC-OQ-INC-02 | FS-INC-03 | OQ-INC-01 | OQ | SCRIPTED\nURS-LOVO-001 | TC-PQ-LOVO-01 | URS-LOVO-001 | PQ-LOVO-01 | PQ | SCRIPTED\nURS-LOVO-002 | TC-OQ-LOVO-01 | URS-LOVO-002 | OQ-LOVO-01 | OQ | SCRIPTED\nURS-LOVO-002 | TC-PQ-LOVO-01 | URS-LOVO-002 | PQ-LOVO-01 | PQ | SCRIPTED\nURS-PRDG-001 | TC-OQ-PRDG-01 | URS-PRDG-001 | OQ-PRDG-01 | OQ | SCRIPTED\nURS-PRDG-001 | TC-PQ-PRDG-01 | URS-PRDG-001 | PQ-PRDG-01 | PQ | SCRIPTED\nURS-PRDG-002 | TC-OQ-PRDG-02 | URS-PRDG-002 | OQ-PRDG-01 | OQ | SCRIPTED\nURS-ULT-001 | TC-OQ-ULT-01 | URS-ULT-001 | OQ-ULT-01 | OQ | SCRIPTED\nURS-ULT-001 | TC-PQ-ULT-01 | URS-ULT-001 | PQ-ULT-01 | PQ | SCRIPTED\n(14 rows)",
+     "is_error": false
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "signature": "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",
+     "thinking": "",
+     "type": "thinking"
+    },
+    {
+     "text": "Two requirements have OQ coverage with no PQ test: URS-CRF-001 and URS-PRDG-002. Before concluding, I'll check the execution results and look for any PQ test cases linked to them by other link types.",
+     "type": "text"
+    },
+    {
+     "id": "toolu_01WYc8nCyoUA4BzjDC4feyBc",
+     "caller": {
+      "type": "direct"
+     },
+     "input": {
+      "query": "SELECT tc.tc_id, tc.protocol_id, tc.method, l.link_type, l.src_type, l.tgt_id, e.exec_id, e.target_id, e.exec_dt, e.result\nFROM pd.val_test_case tc\nLEFT JOIN pd.trace_link l ON l.src_id=tc.tc_id OR l.tgt_id=tc.tc_id\nLEFT JOIN pd.val_test_exec e ON e.tc_id=tc.tc_id\nWHERE tc.protocol_id LIKE 'PQ%' OR tc.tc_id IN (SELECT tc_id FROM pd.val_test_case WHERE protocol_id LIKE 'OQ-CRF%' OR protocol_id LIKE 'OQ-PRDG%')\n   OR l.tgt_id IN ('URS-CRF-001','URS-PRDG-002','FS-PRDG-002')\nORDER BY 1;"
+     },
+     "name": "run_sql",
+     "type": "tool_use"
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "toolu_01WYc8nCyoUA4BzjDC4feyBc",
+     "content": "tc_id | protocol_id | method | link_type | src_type | tgt_id | exec_id | target_id | exec_dt | result\nTC-OQ-CRF-01 | OQ-CRF-01 | SCRIPTED | VERIFIES | TC | URS-CRF-001 | TX-0063 | CRF-01 | 2026-02-11 | PASS\nTC-OQ-CRF-02 | OQ-CRF-01 | SCRIPTED | VERIFIES | TC | URS-CRF-002 | TX-0064 | CRF-01 | 2026-02-11 | PASS\nTC-OQ-CRF-03 | OQ-CRF-01 | SCRIPTED | VERIFIES | TC | URS-CRF-003 | TX-0065 | CRF-01 | 2026-02-12 | PASS\nTC-OQ-PRDG-01 | OQ-PRDG-01 | SCRIPTED | VERIFIES | TC | URS-PRDG-001 | TX-0048 | PRDG-02 | 2026-02-04 | PASS\nTC-OQ-PRDG-01 | OQ-PRDG-01 | SCRIPTED | VERIFIES | TC | URS-PRDG-001 | TX-0047 | PRDG-01 | 2026-02-04 | PASS\nTC-OQ-PRDG-02 | OQ-PRDG-01 | SCRIPTED | VERIFIES | TC | URS-PRDG-002 | TX-0050 | PRDG-02 | 2026-02-04 | PASS\nTC-OQ-PRDG-02 | OQ-PRDG-01 | SCRIPTED | VERIFIES | TC | URS-PRDG-002 | TX-0049 | PRDG-01 | 2026-02-04 | PASS\nTC-OQ-PRDG-03 | OQ-PRDG-01 | SCRIPTED | VERIFIES | TC | URS-PRDG-003 | TX-0052 | PRDG-02 | 2026-02-05 | PASS\nTC-OQ-PRDG-03 | OQ-PRDG-01 | SCRIPTED | VERIFIES | TC | URS-PRDG-003 | TX-0051 | PRDG-01 | 2026-02-05 | PASS\nTC-OQ-PRDG-04 | OQ-PRDG-01 | SCRIPTED | VERIFIES | TC | URS-PRDG-004 | TX-0054 | PRDG-02 | 2026-02-05 | PASS\nTC-OQ-PRDG-04 | OQ-PRDG-01 | SCRIPTED | VERIFIES | TC | URS-PRDG-004 | TX-0053 | PRDG-01 | 2026-02-05 | PASS\nTC-OQ-PRDG-05 | OQ-PRDG-01 | SCRIPTED | VERIFIES | TC | URS-PRDG-005 | TX-0056 | PRDG-02 | 2026-02-06 | PASS\nTC-OQ-PRDG-05 | OQ-PRDG-01 | SCRIPTED | VERIFIES | TC | URS-PRDG-005 | TX-0055 | PRDG-01 | 2026-02-06 | PASS\nTC-PQ-INC-01 | PQ-INC-01 | SCRIPTED | VERIFIES | TC | URS-INC-001 | TX-0029 | INC-01 | 2026-03-03 | PASS\nTC-PQ-INC-01 | PQ-INC-01 | SCRIPTED | VERIFIES | TC | URS-INC-001 | TX-0030 | INC-02 | 2026-03-03 | PASS\nTC-PQ-INC-01 | PQ-INC-01 | SCRIPTED | VERIFIES | TC | URS-INC-001 | TX-0031 | INC-03 | 2026-03-04 | PASS\nTC-PQ-INC-01 | PQ-INC-01 | SCRIPTED | VERIFIES | TC | URS-INC-001 | TX-0032 | INC-04 | 2026-03-04 | PASS\nTC-PQ-LOVO-01 | PQ-LOVO-01 | SCRIPTED | VERIFIES | TC | URS-LOVO-001 | TX-0061 | LOVO-01 | 2026-03-10 | PASS\nTC-PQ-LOVO-01 | PQ-LOVO-01 | SCRIPTED | VERIFIES | TC | URS-LOVO-002 | TX-0061 | LOVO-01 | 2026-03-10 | PASS\nTC-PQ-PRDG-01 | PQ-PRDG-01 | SCRIPTED | VERIFIES | TC | URS-PRDG-001 | TX-0057 | PRDG-01 | 2026-03-05 | PASS\nTC-PQ-PRDG-01 | PQ-PRDG-01 | SCRIPTED | VERIFIES | TC | URS-PRDG-001 | TX-0058 | PRDG-02 | 2026-03-05 | PASS\nTC-PQ-ULT-01 | PQ-ULT-01 | SCRIPTED | VERIFIES | TC | URS-ULT-001 | TX-0044 | FRZ-80-02 | 2026-02-12 | PASS\nTC-PQ-ULT-01 | PQ-ULT-01 | SCRIPTED | VERIFIES | TC | URS-ULT-001 | TX-0043 | FRZ-80-01 | 2026-02-12 | PASS\n(23 rows)",
+     "is_error": false
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "signature": "CAQS/QwKEAgSGAI4AUIIdGhpbmtpbmcSDBVkrYVbPy8c91VQBxoM2zObZnRgZQ0UTjAOIjDQCkW0O/S8ljNHflNUpLj3FjTGa4uYrfbf5dr671QpXJPHXrNAkeSRjuQompTAZpsqmgynTwbqhtjr2SH01c+keeK3nPAZIb08XEj8x6bEq8YrIgn3FKiNvpsqujrTEUe3IbfzkA4auwiOpITdOrpeguWym3ysjc2sMTfklq06DA9pImhkDMobVgzxrYaPCfUlngpw3ILAvJ1+SySOQVutBRcO0+qn1CDAzw/pdcndxzqFEky1UatzwX4f4wpLJEd8McjyeZ9Ag+phbBsjVpiK3p/TiG9kLTN2tlBHfKuZWuGqJAzvMkzIiPrZl/LTDGJZbLWch9JU7hENfojOracyXEkLCnnQ5emVhWMZzGgBRyZoyEo15T7Ivnas1vWWa/Ik8CiCcMSSUG4QL1D0fU4WaJb4svBiNRzHhC3kyCV6zYClEYA2aMjvE1TOJOu7Y4Hjqzsk9M/LKbm3P+L50d8uSVvS+w1FrZzAbNEA3epU/UaDKjtlovpjPYYXvLJHjPZMdrmT0k6YpglB8PhRn25HXJ5SR8p9LKaIigFZVFJHSaji099N6ybYTuGv04Fnl/lN65ssZT+y9/FGyFf/NVlvleABE/btJ3XpuI7sPdsmXR13z8i/BY43Gjn4zR0SQft0wURP0Fj6+t1VjQq+PgFhtidHSqXMGfegng+m4xLBcJRD7SbdDlVslrJzFZjJcpGL6EuGIhrxSP2BPyJnGHmNfARpVgmDppkUMqqeURtormm1JzvBqOUjMrv2l+ssksdBi8GOh0/UICOVllF0lcY7KT7ksDsve0X+KTJuK5UfuLjw87+OqIAd+S9juJpVJYaygwUhFYKAmOmlKi3a0VRYhQJOsmhK3cpqVFPTx7rzL8eHRKRoOpcwx4TOkB/tPlrnyhs5RYJ3oKWcV233Q5cv+7EjY6stE3PGx1AeUImiWYVU9f+eqI/B/u9LfalffKX0CBR2v+8e5KSunWfdmPALbDdXC6gW9v6hj5TLNI89BnJ5L5pgGkR82CpFscI1AgFAWBirnB27gvLILFfKf8/MpzzWdZnvxHSF+Rz8PN1jcOuDNWJFYBt04zRpYwBw2t41YHnvWlHgXDrABnJsqsKLhGEqxeefG6WIVVIhlq8avjQEKQpasyroT2BemgLFA8wV8iSqB47P0u12BxPyIMrIK6/OwlixYTySit1og1ekrE8PJ+M8UBTTgd+uE1koRZbBoEkFm5Hjjfxog1/Jyu1uuw6mj7sZNpND0BtADT/duQWNVRG/mCPX3pcr+Qc4j3t/2DmD/Zu9MOY+zLKAjb9hu+qNZyn77Pqg53j+bqcgS/CXeKcsC48js4x7gq/OXeA+bOu1R77eVjjvgtrrWYnfmpRpGSt4V7JhHjyrRA9jKlHemnZcddkFi3FqMFmh4Iif0LwQbEs3RBOVRh2QeQR9/tgZjwKVHUMhB/TDaSCZH7lEFmDHnHc4EDBUlQBdavSU0OOJAI3VoZ+ie+2hOdHRU5LaYvyyX3waaIv4eVaqV1LU7HYyBM0ZEDdxhnl419LYY0WXes+BwLnb55Q52dzosUwvWg3jTNEFoEU72L53IhxAqm+ZeXt6BExL/uIL0kGBxA1RnMZp8jZ7OoKVr9h9SZsDYMODVN1NZcEYumjoMVlanalPUDFYAJDgNWjso+WaNQXXu8Lw8L55ct0gtXjksAQ+v/oHML3hxFW6MjvLhITe0AjVf3YN1bUgVHJIR12XoVUf1NCsOe2nfegUq3XoWIH1JzHP0QDIpR7eDNOW6ePrD2lpMa1BUc/Qf/aQyEzLf+z/oWmBCUd3wDFqGS59LL8omhmU8SCxWkecjwOwKDAQ3UDyi78B3wxssKES5gc6qGaMr6zib++XTJG3LKKnRWvZ0w/7CoXJuLfTsHwOZLhGCfI704Stc9R6ezRsKF/zmZh45QRvhcmU7fLWz+GQIdmkohYsliUYRwypaV9c27eQNspjmtxZw4hcyLfFQCHkGaXDnqLfIj0Tu8HH4XwnrNxnJBe/A1egstmRijgAQj5c3gryhSNq+4IIAkKBQgnNNv8eDVbMYWN88eO49VgNeMCTWqdd59Dn6HHFERAfH30qXavSt4mZxNheqD4jL0ycD3sH3Z8DSkVErS0YyIj3kylhZIxpwjb/Wdg90BgB",
+     "thinking": "",
+     "type": "thinking"
+    },
+    {
+     "text": "Four HIGH-criticality FMEA risks map to requirements that have OQ coverage but no PQ coverage, where PQ is expected.\n\n**Affected risks**\n- **FM-13** (sev 8, RPN 120) and **FRA-020** mitigate/assess **URS-CRF-001** (Freeze/CRF equipment, PERFORMANCE). Its only verifying test is TC-OQ-CRF-01 (SCRIPTED, PASS on CRF-01, OQ-CRF-01). No PQ protocol exists for SYS-CRF, and no PQ test verifies this requirement.\n- **FM-02** (sev 8, RPN 120) and **FRA-014** mitigate/assess **URS-PRDG-002** (PRDG equipment, PERFORMANCE). Its only verifying test is TC-OQ-PRDG-02 (SCRIPTED, PASS on PRDG-01 and PRDG-02, OQ-PRDG-01). PQ-PRDG-01 exists but verifies only URS-PRDG-001, not URS-PRDG-002.\n\n**How I determined this**\n- \"High-criticality\" uses the team's `risk_class = 'HIGH'` flag on the failure-mode rows, not an RPN threshold. That gives 50 HIGH rows: FM-* rows (MITIGATES links) and FRA-* rows (ASSESSES links).\n- \"PQ expected\" applies to requirements with `req_category = 'PERFORMANCE'` on EQUIPMENT systems. Among the requirements behind HIGH risks, that leaves six: URS-CRF-001, URS-INC-001, URS-LOVO-002, URS-PRDG-001, URS-PRDG-002 and URS-ULT-001. The COMPUTERIZED-system requirements (EBR, EMS, LIMS) are excluded because PQ is not expected for them.\n- Coverage follows the verification path (test case \u2192 FS/CS/DS \u2192 URS). Of the six requirements, four have PQ tests: URS-INC-001, URS-LOVO-002, URS-PRDG-001 and URS-ULT-001. Only the two above lack one.\n\nCaveat: I checked coverage by existence of test cases, which is what the question asks for. Every linked execution I looked at passed, but I did not re-run the currently-verified check against change-control dates.\n\n```json\n{\"answer_ids\": [\"FM-02\", \"FRA-014\", \"FM-13\", \"FRA-020\"]}\n```",
+     "type": "text"
+    }
+   ]
+  }
+ ]
+}

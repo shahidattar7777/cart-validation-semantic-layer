@@ -1,0 +1,324 @@
+# =====================================================================
+# Semantic layer: validation, qualification and QMS
+#
+# Same format as process.yaml. Adds:
+#   vocabulary     -> terms QA / validation / manufacturing people use,
+#                     with aliases and the record type each maps to
+#   definitions    -> how computed concepts ("verified", "high
+#                     criticality", "stale") are decided. The agent must use
+#                     these instead of inventing its own rule.
+#   entities / relationships -> graph mapping
+#
+# Lifecycle framing used throughout (see docs/terminology_review.md):
+#   * equipment qualification (IQ/OQ/PQ, ASTM E2500 "verification")
+#   * computerized system validation (GAMP 5 2nd ed.; CSA concepts used as
+#     good practice only, the FDA CSA guidance is device-scoped)
+#   * analytical method validation (ICH Q2(R2))
+#   * process validation (FDA 2011 PV guidance: stage 1 design,
+#     stage 2 PPQ, stage 3 CPV)
+# These are different lifecycles that meet in the control strategy.
+# =====================================================================
+version: "0.3"
+schema: pd
+
+vocabulary:
+  UserRequirement:
+    aliases: ["URS", "user requirement", "user requirement specification", "requirement", "user req"]
+    table: pd.val_spec_item
+    filter: "spec_level = 'URS'"
+    note: One row per requirement line item. doc_no is the URS document.
+  FunctionalSpec:
+    aliases: ["FS", "functional specification", "functional spec"]
+    table: pd.val_spec_item
+    filter: "spec_level = 'FS'"
+    note: Often supplier-provided for equipment. GAMP 5 scales specifications to risk and category.
+  ConfigurationSpec:
+    aliases: ["CS", "configuration specification", "config spec"]
+    table: pd.val_spec_item
+    filter: "spec_level = 'CS'"
+    note: Typical for GAMP Category 4 configured products (EMS, LIMS, EBR here).
+  DesignSpec:
+    aliases: ["DS", "design specification", "SDS", "software design specification"]
+    table: pd.val_spec_item
+    filter: "spec_level = 'DS'"
+    note: Mainly for Category 5 custom code (here, the LIMS VCN calculation script).
+  RiskAssessment:
+    aliases: ["risk assessment", "RA", "FMEA", "pFMEA", "process FMEA", "FRA", "functional risk assessment"]
+    table: pd.val_risk_assessment
+    note: The document. Its rows are FailureMode records.
+  FailureMode:
+    aliases: ["failure mode", "FMEA line", "risk item", "risk", "hazard"]
+    table: pd.val_risk_item
+    note: >
+      pFMEA rows (ri_id FM-*) carry free-text process_step / parameter_txt /
+      cqa_impacted copied from the spreadsheet; FRA rows (FRA-*) assess one
+      requirement each. Scores (sev, occ, det, rpn) and risk_class are content.
+  Protocol:
+    aliases: ["protocol", "qualification protocol", "validation protocol", "IQ", "OQ", "PQ", "IOQ", "PPQ protocol", "AMV protocol", "test protocol"]
+    table: pd.val_protocol
+    types:
+      IQ: Installation qualification (equipment) / installation verification (software)
+      OQ: Operational qualification (equipment) / functional and configuration testing (software)
+      PQ: "Performance qualification of EQUIPMENT under routine load. NOT process performance qualification."
+      PPQ: "Process performance qualification: FDA PV stage 2, run on commercial-scale batches"
+      AMV: Analytical method validation (ICH Q2(R2))
+  TestCase:
+    aliases: ["test case", "test script", "test", "TC"]
+    table: pd.val_test_case
+    note: >
+      method = SCRIPTED | UNSCRIPTED | SUPPLIER_DOC | INSPECTION. All four are
+      verification evidence; only SCRIPTED is acceptable for HIGH risk here.
+      tested_lo / tested_hi = the range the test challenged.
+  TestExecution:
+    aliases: ["test execution", "executed test", "test run", "execution record", "test result"]
+    table: pd.val_test_exec
+    note: One row per test case per unit (equipment) or system. target_id = the unit.
+  Deviation:
+    aliases: ["deviation", "DEV", "nonconformance", "NC", "event", "incident", "test incident", "discrepancy", "protocol deviation", "atypical result", "OOS investigation"]
+    table: pd.qms_deviation
+    types:
+      DEVIATION: Unplanned departure from an approved procedure or specification (GMP event)
+      PROTOCOL_DEVIATION: Departure from an approved validation / PPQ protocol or its acceptance criteria
+      TEST_INCIDENT: Failed test step during qualification / validation execution
+      ATYPICAL_RESULT: Unexpected result on a non-release (ENG / PD) test; not a formal OOS
+    note: rc_category is a picklist chosen by the investigator; root_cause is free text.
+  CAPA:
+    aliases: ["CAPA", "corrective action", "preventive action", "CA/PA"]
+    table: pd.qms_capa
+    note: Not every deviation needs a CAPA. eff_check = effectiveness check outcome.
+  ChangeControl:
+    aliases: ["change control", "CC", "change request", "CR", "change"]
+    table: pd.qms_change_control
+  SOP:
+    aliases: ["SOP", "procedure", "work instruction", "standard operating procedure"]
+    table: pd.sop
+  AnalyticalMethod:
+    aliases: ["analytical method", "test method", "assay", "method"]
+    table: pd.analytical_method
+    note: val_range_lo/hi = validated range (ICH Q2(R2) "range").
+  System:
+    aliases: ["system", "validated system", "computerized system", "equipment family", "asset"]
+    table: pd.val_system
+    note: The boundary requirements, risk assessments and protocols are written against. Equipment units belong to an EQUIPMENT system.
+  RTM:
+    aliases: ["RTM", "traceability matrix", "requirements traceability matrix", "trace matrix"]
+    note: Not stored. It is a view over the graph (URS -> FS/CS/DS -> test case -> execution).
+
+link_table:
+  table: pd.trace_link
+  note: >
+    Exported "related records" from the validation and QMS tools. link_type is
+    coarse (TRACE, VERIFIES, MITIGATES, ASSESSES, IMPACTS, RELATED, MONITORS);
+    the meaning of a RELATED link depends on (src_type, tgt_type). The graph
+    relationships below give each pair its real meaning.
+  types: {SPEC: pd.val_spec_item, TC: pd.val_test_case, RISK: pd.val_risk_item, CC: pd.qms_change_control,
+          DEV: pd.qms_deviation, CAPA: pd.qms_capa, PROTOCOL: pd.val_protocol, BATCH: pd.batch_master,
+          EQUIP: pd.equipment, SYS: pd.val_system, EXEC: pd.val_test_exec, SOP: pd.sop, RA: pd.val_risk_assessment,
+          LOT: pd.material_lot}
+
+# Free-text values in FMEA columns that are deliberately NOT ontology parameters
+not_parameters: ["Tubing set integrity", "Wash", "VCN calculation", "OOS flagging", "Incubator door"]
+
+definitions:
+  high_criticality_failure_mode:
+    rule: "pd.val_risk_item.risk_class = 'HIGH' (team-assigned; the team's documented rule is severity-led, sev >= 8)"
+    do_not: "Do not re-derive from RPN. RPN thresholds disagree with the approved assessment (ICH Q9(R1) cautions on scoring)."
+  high_risk_requirement:
+    rule: "A URS that an FRA row (link ASSESSES) rates risk_class = 'HIGH'."
+  verification_path:
+    rule: >
+      A test case verifies a URS directly, or through its children:
+      TestCase -VERIFIES-> FS/CS -SATISFIES-> URS, or
+      TestCase -VERIFIES-> DS -IMPLEMENTS-> FS -SATISFIES-> URS.
+  currently_verified_requirement:
+    rule: >
+      For every unit the requirement applies to (each Equipment PART_OF the
+      system, or the system itself for software), at least one verifying test
+      case has its LATEST execution on that unit = PASS, dated on or after the
+      implementation of any change control that MODIFIES the requirement, one
+      of its child specs (FS/CS/DS), or that equipment unit. HIGH risk requires
+      method SCRIPTED; MEDIUM/LOW may be met by UNSCRIPTED, SUPPLIER_DOC or
+      INSPECTION.
+    note: >
+      A change control that MODIFIES a whole System (software upgrade, patch)
+      does not make every requirement stale automatically; it requires a
+      documented regression assessment. Report such changes separately.
+  stale_verification:
+    rule: "Last passing execution predates the impl_dt of a change control that MODIFIES the requirement or a child spec."
+  pq_expected:
+    rule: >
+      PQ evidence is expected for requirements with req_category = 'PERFORMANCE'
+      on EQUIPMENT systems (behaviour under routine load). Alarm, data and
+      security requirements are fully verified at OQ.
+  control_strategy_link:
+    rule: >
+      A CPP reaches test evidence through the risk assessment, never directly:
+      Parameter <-INVOLVES- FailureMode -MITIGATED_BY-> UserRequirement
+      <-(SATISFIES)- spec <-VERIFIES- TestCase -PART_OF-> Protocol, and
+      Parameter <-EVALUATES- Protocol(PPQ) -INCLUDES_BATCH-> Batch.
+  cpp_excursion:
+    rule: "A CPP value outside its PPQ-001 acceptance range during the step where it is set (uses historian data for culture_temp)."
+  gmp_record_scope:
+    rule: "Deviations, CAPAs and release pass/fail apply to ENG and PPQ runs and GMP equipment only. PD runs have none by design."
+
+# ---------------------------------------------------------------------
+# Graph mapping
+# ---------------------------------------------------------------------
+entities:
+  System:            {source: "SELECT sys_id AS id, sys_class FROM pd.val_system"}
+  UserRequirement:   {source: "SELECT item_id AS id, req_category FROM pd.val_spec_item WHERE spec_level = 'URS'"}
+  FunctionalSpec:    {source: "SELECT item_id AS id FROM pd.val_spec_item WHERE spec_level = 'FS'"}
+  ConfigurationSpec: {source: "SELECT item_id AS id FROM pd.val_spec_item WHERE spec_level = 'CS'"}
+  DesignSpec:        {source: "SELECT item_id AS id FROM pd.val_spec_item WHERE spec_level = 'DS'"}
+  RiskAssessment:    {source: "SELECT ra_id AS id, ra_type FROM pd.val_risk_assessment"}
+  FailureMode:       {source: "SELECT ri_id AS id FROM pd.val_risk_item"}
+  Protocol:          {source: "SELECT protocol_id AS id, ptype FROM pd.val_protocol"}
+  TestCase:          {source: "SELECT tc_id AS id FROM pd.val_test_case"}
+  TestExecution:     {source: "SELECT exec_id AS id FROM pd.val_test_exec"}
+  AnalyticalMethod:  {source: "SELECT method_id AS id FROM pd.analytical_method"}
+  SOP:               {source: "SELECT sop_id AS id FROM pd.sop"}
+  Deviation:         {source: "SELECT dev_no AS id, record_type FROM pd.qms_deviation"}
+  CAPA:              {source: "SELECT capa_no AS id FROM pd.qms_capa"}
+  ChangeControl:     {source: "SELECT cc_no AS id FROM pd.qms_change_control"}
+  RootCauseCategory: {source: "SELECT DISTINCT rc_category AS id FROM pd.qms_deviation WHERE rc_category IS NOT NULL"}
+
+relationships:
+  PART_OF:
+    description: Equipment unit belongs to a validated system; test case belongs to a protocol.
+    variants:
+      - {from: Equipment, to: System, source: "SELECT equip_id, sys_id FROM pd.equipment WHERE sys_id IS NOT NULL"}
+      - {from: TestCase, to: Protocol, source: "SELECT tc_id, protocol_id FROM pd.val_test_case"}
+  MONITORS:
+    from: System
+    to: Equipment
+    source: "SELECT src_id, tgt_id FROM pd.trace_link WHERE link_type = 'MONITORS'"
+  APPLIES_TO:
+    from: UserRequirement
+    to: System
+    source: "SELECT item_id, sys_id FROM pd.val_spec_item WHERE spec_level = 'URS'"
+  SATISFIES:
+    description: FS or CS item satisfies a URS.
+    source: >
+      SELECT l.src_id, l.tgt_id,
+             CASE s.spec_level WHEN 'FS' THEN 'FunctionalSpec' ELSE 'ConfigurationSpec' END AS from_label,
+             'UserRequirement' AS to_label
+      FROM pd.trace_link l JOIN pd.val_spec_item s ON s.item_id = l.src_id
+      WHERE l.link_type = 'TRACE' AND s.spec_level IN ('FS','CS')
+  IMPLEMENTS:
+    from: DesignSpec
+    to: FunctionalSpec
+    source: >
+      SELECT l.src_id, l.tgt_id FROM pd.trace_link l JOIN pd.val_spec_item s ON s.item_id = l.src_id
+      WHERE l.link_type = 'TRACE' AND s.spec_level = 'DS'
+  VERIFIES:
+    from: TestCase
+    source: >
+      SELECT l.src_id, l.tgt_id, 'TestCase' AS from_label,
+             CASE s.spec_level WHEN 'URS' THEN 'UserRequirement' WHEN 'FS' THEN 'FunctionalSpec'
+                               WHEN 'CS' THEN 'ConfigurationSpec' ELSE 'DesignSpec' END AS to_label
+      FROM pd.trace_link l JOIN pd.val_spec_item s ON s.item_id = l.tgt_id
+      WHERE l.link_type = 'VERIFIES'
+  COVERS:
+    description: Protocol or risk assessment scope.
+    variants:
+      - {from: Protocol, to: System, source: "SELECT protocol_id, sys_id FROM pd.val_protocol WHERE sys_id IS NOT NULL"}
+      - {from: RiskAssessment, to: System, source: "SELECT ra_id, sys_id FROM pd.val_risk_assessment WHERE sys_id IS NOT NULL"}
+  VALIDATES:
+    from: Protocol
+    to: AnalyticalMethod
+    source: "SELECT protocol_id, method_id FROM pd.val_protocol WHERE method_id IS NOT NULL"
+  INCLUDES_BATCH:
+    from: Protocol
+    to: Batch
+    source: "SELECT src_id, tgt_id FROM pd.trace_link WHERE src_type = 'PROTOCOL' AND tgt_type = 'BATCH'"
+  EVALUATES:
+    description: PPQ acceptance criterion on a parameter or quality attribute (limits in pd.val_ppq_criterion).
+    from: Protocol
+    source: "SELECT protocol_id, attribute_txt, crit_no FROM pd.val_ppq_criterion"
+    resolve_to: [Parameter, QualityAttribute]
+    edge_properties: [crit_no]     # key into pd.val_ppq_criterion for the limits
+  EXECUTES:
+    from: TestExecution
+    to: TestCase
+    source: "SELECT exec_id, tc_id FROM pd.val_test_exec"
+  PERFORMED_ON:
+    from: TestExecution
+    source: >
+      SELECT exec_id, target_id, 'TestExecution' AS from_label,
+             CASE WHEN target_id LIKE 'SYS-%' THEN 'System'
+                  WHEN target_id LIKE 'AM-%' THEN 'AnalyticalMethod' ELSE 'Equipment' END AS to_label
+      FROM pd.val_test_exec
+  IDENTIFIES:
+    from: RiskAssessment
+    to: FailureMode
+    source: "SELECT ra_id, ri_id FROM pd.val_risk_item"
+  AT_STEP:
+    from: FailureMode
+    to: UnitOperation
+    source: "SELECT ri_id, process_step FROM pd.val_risk_item WHERE process_step IS NOT NULL"
+    resolve_to: [UnitOperation]
+  INVOLVES:
+    from: FailureMode
+    to: Parameter
+    source: "SELECT ri_id, parameter_txt FROM pd.val_risk_item WHERE parameter_txt IS NOT NULL"
+    resolve_to: [Parameter]
+  AFFECTS:
+    description: Failure mode effect on a quality attribute; deviation impact on a batch, unit or lot.
+    variants:
+      - from: FailureMode
+        source: "SELECT ri_id, trim(x) FROM pd.val_risk_item, unnest(string_to_array(cqa_impacted, ';')) x WHERE cqa_impacted IS NOT NULL"
+        resolve_to: [QualityAttribute]
+      - from: Deviation
+        source: >
+          SELECT src_id, tgt_id, 'Deviation' AS from_label,
+                 CASE tgt_type WHEN 'BATCH' THEN 'Batch' WHEN 'EQUIP' THEN 'Equipment' ELSE 'MaterialLot' END AS to_label
+          FROM pd.trace_link WHERE src_type = 'DEV' AND tgt_type IN ('BATCH','EQUIP','LOT')
+  MITIGATED_BY:
+    from: FailureMode
+    source: >
+      SELECT src_id, tgt_id, 'FailureMode' AS from_label,
+             CASE tgt_type WHEN 'SOP' THEN 'SOP' ELSE 'UserRequirement' END AS to_label
+      FROM pd.trace_link WHERE link_type = 'MITIGATES'
+  ASSESSES:
+    from: FailureMode
+    to: UserRequirement
+    source: "SELECT src_id, tgt_id FROM pd.trace_link WHERE link_type = 'ASSESSES'"
+  GOVERNS:
+    variants:
+      - {from: SOP, source: "SELECT sop_id, process_step FROM pd.sop WHERE process_step IS NOT NULL", resolve_to: [UnitOperation]}
+      - {from: SOP, to: System, source: "SELECT sop_id, sys_id FROM pd.sop WHERE sys_id IS NOT NULL"}
+  AGAINST:
+    from: Deviation
+    to: Protocol
+    source: "SELECT src_id, tgt_id FROM pd.trace_link WHERE src_type = 'DEV' AND tgt_type = 'PROTOCOL'"
+  RAISED:
+    from: TestExecution
+    to: Deviation
+    source: "SELECT src_id, tgt_id FROM pd.trace_link WHERE src_type = 'EXEC' AND tgt_type = 'DEV'"
+  RESULTED_IN:
+    from: Deviation
+    to: CAPA
+    source: "SELECT src_id, tgt_id FROM pd.trace_link WHERE src_type = 'DEV' AND tgt_type = 'CAPA'"
+  CATEGORIZED_AS:
+    from: Deviation
+    to: RootCauseCategory
+    source: "SELECT dev_no, rc_category FROM pd.qms_deviation WHERE rc_category IS NOT NULL"
+  IMPLEMENTED_BY:
+    from: CAPA
+    to: ChangeControl
+    source: "SELECT src_id, tgt_id FROM pd.trace_link WHERE src_type = 'CAPA' AND tgt_type = 'CC'"
+  MODIFIES:
+    description: Items listed in the change control's impact assessment.
+    from: ChangeControl
+    source: >
+      SELECT l.src_id, l.tgt_id, 'ChangeControl' AS from_label,
+             CASE l.tgt_type WHEN 'SYS' THEN 'System' WHEN 'EQUIP' THEN 'Equipment' WHEN 'SOP' THEN 'SOP'
+                             WHEN 'RA' THEN 'RiskAssessment'
+                             ELSE CASE s.spec_level WHEN 'URS' THEN 'UserRequirement' WHEN 'FS' THEN 'FunctionalSpec'
+                                                    WHEN 'CS' THEN 'ConfigurationSpec' ELSE 'DesignSpec' END END AS to_label
+      FROM pd.trace_link l LEFT JOIN pd.val_spec_item s ON s.item_id = l.tgt_id
+      WHERE l.link_type = 'IMPACTS'
+  VERIFIED_BY:
+    from: ChangeControl
+    to: TestExecution
+    source: "SELECT src_id, tgt_id FROM pd.trace_link WHERE src_type = 'CC' AND tgt_type = 'EXEC'"

@@ -1,0 +1,392 @@
+# =====================================================================
+# Semantic layer: CAR-T process ontology
+#
+# Single source of truth for:
+#   1. the agent's context (what concepts exist, what they're called,
+#      where each one lives in the database), and
+#   2. the AGE graph builder (graph/build_graph.py), which turns the
+#      `entities` and `relationships` below into vertices and edges.
+#
+# Format (same as the earlier sketch, extended):
+#   unit_operations / parameters / quality_attributes  -> ontology nodes
+#   aliases            -> what scientists and QA actually type or say
+#   source             -> where the value lives (table.column + filter)
+#   set_at / influenced_by -> ontology edges
+#   entities / relationships -> graph mapping (identity + links only)
+# =====================================================================
+version: "0.3"
+schema: pd
+
+unit_operations:
+  APH:
+    name: Apheresis receipt
+    aliases: ["Apheresis receipt", "apheresis", "leukopak receipt", "starting material receipt"]
+    fact_table: pd.uo01_aph_receipt
+    next: SEL
+  SEL:
+    name: T cell selection
+    aliases: ["T cell selection", "selection", "CD4/CD8 selection", "enrichment"]
+    fact_table: pd.uo02_tcell_sel
+    next: ACT
+  ACT:
+    name: Activation
+    aliases: ["Activation", "T cell activation", "seeding"]
+    fact_table: pd.uo03_activation
+    next: TD
+  TD:
+    name: Transduction
+    aliases: ["Transduction", "LV transduction", "gene transfer"]
+    fact_table: pd.uo04_transduction
+    next: EXP
+  EXP:
+    name: Expansion
+    aliases: ["Expansion", "culture", "G-Rex culture"]
+    fact_table: pd.uo05_expansion
+    grain: one row per batch per sampling day (day_no counted from activation, day 0)
+    next: HVST
+  HVST:
+    name: Harvest
+    aliases: ["Harvest", "harvest and wash", "wash"]
+    fact_table: pd.uo06_harvest
+    next: FF
+  FF:
+    name: Formulation and fill
+    aliases: ["Formulation and fill", "formulation", "fill", "cryopreservation", "fill/finish"]
+    fact_table: pd.uo07_form_fill
+  QC:
+    name: QC release
+    aliases: ["QC release", "release testing", "QC"]
+    fact_table: pd.qc_rel_results
+    grain: one row per batch per test_code (LIMS export)
+
+parameters:
+  aph_hold_time:
+    name: Apheresis hold time
+    aliases: ["Apheresis hold time", "hold time", "collection-to-processing time"]
+    criticality: KPP
+    set_at: APH
+    unit: h
+    source: pd.uo01_aph_receipt.hold_hrs
+  selection_program:
+    name: Selection program parameters
+    aliases: ["Selection program parameters", "Prodigy program", "selection program"]
+    criticality: CPP
+    set_at: SEL
+    unit: program/version
+    source: equipment configuration (not stored per batch)
+  seed_density:
+    name: Seeding density
+    aliases: ["Seeding density", "seed density", "Seeding density (x10^6 cells/mL)", "seeding concentration"]
+    criticality: CPP
+    set_at: ACT
+    unit: x10^6 cells/mL
+    source: pd.uo03_activation.seed_dens_e6_ml
+  moi:
+    name: Multiplicity of infection
+    aliases: ["MOI", "MOI (TU/cell)", "multiplicity of infection", "target MOI"]
+    criticality: CPP
+    set_at: TD
+    unit: TU/cell
+    source: pd.uo04_transduction.moi_tgt
+    note: >
+      Target MOI. Vector volume is calculated from it using the CoA functional
+      titer (pd.material_coa test_code FT_TU_ML). If the vector has lost potency,
+      the effective MOI is lower than moi_tgt and nothing in uo04 shows it.
+  hrs_post_act:
+    name: Time from activation to transduction
+    aliases: ["Time from activation to transduction", "hours post activation", "transduction timing"]
+    criticality: CPP
+    set_at: TD
+    unit: h
+    source: pd.uo04_transduction.hrs_post_act
+  vector_storage_temp:
+    name: Vector storage temperature
+    aliases: ["Vector storage temperature", "vector storage", "LV storage temperature"]
+    criticality: KPP
+    set_at: TD
+    unit: C
+    source:
+      historian: "{tag}.TEMP.PV for the freezer in pd.material_lot.storage_loc"
+    note: Material handling condition upstream of transduction.
+  culture_temp:
+    name: Incubator temperature during expansion
+    aliases: ["Incubator temperature", "Incubator temperature during expansion", "culture temperature", "expansion temperature"]
+    criticality: CPP
+    set_at: EXP
+    unit: C
+    setpoint: 37.0
+    source:
+      historian: "{tag}.TEMP.PV for each equip_id in pd.uo05_expansion"
+      tag_rule: "tag = equip_id with '-' removed (INC-01 -> INC01.TEMP.PV)"
+    note: Only GMP incubators (INC-01..04) are on the EMS. PD lab incubators have no historian data.
+  culture_co2:
+    name: Incubator CO2 during expansion
+    aliases: ["CO2 %", "CO2", "incubator CO2", "CO2 concentration"]
+    criticality: KPP
+    set_at: EXP
+    unit: "%"
+    setpoint: 5.0
+    source:
+      historian: "{tag}.CO2.PV for each equip_id in pd.uo05_expansion"
+  culture_duration:
+    name: Culture duration
+    aliases: ["Culture duration", "Culture duration (days)", "harvest day", "days in culture"]
+    criticality: CPP
+    set_at: EXP
+    unit: days
+    source: pd.uo06_harvest.hvst_day
+  freeze_profile:
+    name: Freeze profile
+    aliases: ["Freeze profile", "freezing profile", "CRF profile", "controlled-rate freeze curve"]
+    criticality: CPP
+    set_at: FF
+    unit: profile ID
+    source: pd.uo07_form_fill.crf_profile
+
+quality_attributes:
+  transduction_efficiency:
+    name: Transduction efficiency (release)
+    aliases: ["%CAR+", "TE", "Transduction efficiency", "CAR expression", "CAR expression (% CAR+ of CD3+)", "CAR+ %", "FC-CAR"]
+    criticality: CQA
+    unit: "% of CD3+"
+    source: {table: pd.qc_rel_results, filter: "test_code = 'FC-CAR'", column: result_val}
+    test_code: FC-CAR
+    not_to_be_confused_with: [ipc_car_pos]
+    influenced_by: [moi, hrs_post_act, vector_storage_temp]
+  ipc_car_pos:
+    name: In-process CAR expression (day 5)
+    aliases: ["in-process %CAR+", "day 5 CAR", "IPC CAR"]
+    criticality: IPC
+    unit: "% of CD3+"
+    source: {table: pd.uo05_expansion, filter: "day_no = 5", column: car_pos_pct}
+    note: Early read, typically a few points below release. Not the release value.
+  vcn:
+    name: Vector copy number per transduced cell
+    aliases: ["VCN", "Vector copy number", "Vector copy number (per CAR+ cell)", "VCN per transduced cell",
+              "copies per CAR+ cell", "VCN-PER-CAR"]
+    criticality: CQA
+    unit: copies/CAR+ cell
+    source: {table: pd.qc_rel_results, filter: "test_code = 'VCN-PER-CAR'", column: result_val}
+    test_code: VCN-PER-CAR
+    formula: "VCN-DDPCR / (FC-CAR / 100), calculated in LIMS"
+    measured_by: [AM-VCN, AM-FC-CAR]
+    spec_note: >
+      Internal limit <= 5.0 copies per CAR+ cell, justified by risk assessment. The FDA CAR-T
+      guidance (2024) asks for VCN to be reported with a risk-justified limit; it sets no number.
+    influenced_by: [moi, vector_storage_temp]
+  vcn_bulk:
+    name: Vector copy number, all cells
+    aliases: ["bulk VCN", "average VCN", "VCN-DDPCR", "copies per cell"]
+    criticality: KQA
+    unit: copies/cell (all cells)
+    source: {table: pd.qc_rel_results, filter: "test_code = 'VCN-DDPCR'", column: result_val}
+    test_code: VCN-DDPCR
+    note: The ddPCR result as measured; reported, no limit. Depends on %CAR+ as well as integrations per cell.
+    influenced_by: [moi, vector_storage_temp]
+  viability_release:
+    name: Viability (release)
+    aliases: ["Viability", "Viability (release)", "release viability", "drug product viability"]
+    criticality: CQA
+    unit: "%"
+    source: {table: pd.qc_rel_results, filter: "test_code = 'VIAB-NC200'", column: result_val}
+    test_code: VIAB-NC200
+    influenced_by: [culture_temp, aph_hold_time]
+  harvest_viability:
+    name: Viability at harvest
+    aliases: ["Viability at harvest", "harvest viability"]
+    criticality: IPC
+    unit: "%"
+    source: pd.uo06_harvest.via_pct
+    influenced_by: [culture_temp, culture_co2]
+  post_thaw_viability:
+    name: Post-thaw viability
+    aliases: ["Post-thaw viability", "PTV"]
+    criticality: KQA
+    unit: "%"
+    source: pd.uo07_form_fill.post_thaw_via_pct
+    influenced_by: [freeze_profile]
+  cd3_purity:
+    name: CD3+ purity
+    aliases: ["CD3 purity", "CD3+ purity", "T cell purity", "FC-CD3"]
+    criticality: CQA
+    unit: "%"
+    source: {table: pd.qc_rel_results, filter: "test_code = 'FC-CD3'", column: result_val}
+    test_code: FC-CD3
+    influenced_by: [selection_program]
+  cd4_cd8_ratio:
+    name: CD4/CD8 ratio
+    aliases: ["CD4/CD8 ratio", "CD4:CD8"]
+    criticality: KQA
+    unit: ratio
+    source: {table: pd.qc_rel_results, filter: "test_code = 'FC-CD4CD8'", column: result_val}
+    influenced_by: [selection_program]
+  tscm:
+    name: Stem cell memory T cells
+    aliases: ["Tscm", "stem cell memory", "FC-TSCM"]
+    criticality: KQA
+    unit: "% of CD3+"
+    source: {table: pd.qc_rel_results, filter: "test_code = 'FC-TSCM'", column: result_val}
+    influenced_by: [seed_density, culture_duration]
+  potency:
+    name: Potency (IFN-gamma release)
+    aliases: ["Potency", "Potency (IFN-g release)", "IFN-g", "POT-IFNG"]
+    criticality: CQA
+    unit: pg/mL
+    source: {table: pd.qc_rel_results, filter: "test_code = 'POT-IFNG'", column: result_val}
+    test_code: POT-IFNG
+    influenced_by: [moi]
+  sterility:
+    name: Sterility
+    aliases: ["Sterility", "STER-BACT"]
+    criticality: CQA
+    source: {table: pd.qc_rel_results, filter: "test_code = 'STER-BACT'", column: result_txt}
+    test_code: STER-BACT
+  endotoxin:
+    name: Endotoxin
+    aliases: ["Endotoxin", "ENDO-LAL"]
+    criticality: CQA
+    unit: EU/mL
+    source: {table: pd.qc_rel_results, filter: "test_code = 'ENDO-LAL'", column: result_val}
+    test_code: ENDO-LAL
+  fold_expansion:
+    name: Fold expansion
+    aliases: ["Fold expansion", "expansion", "FE"]
+    criticality: PERFORMANCE
+    unit: fold
+    formula: "pd.uo06_harvest.tvc_e9 * 1000 / pd.uo03_activation.seed_cells_e6"
+    note: Units differ (x10^9 vs x10^6). Seeded cells at activation, not cells at transduction.
+    influenced_by: [culture_temp, culture_co2, seed_density, culture_duration, aph_hold_time]
+  car_pos_viable_dose:
+    name: CAR+ viable cell dose
+    aliases: ["CAR+ viable cell dose", "dose", "CAR+ viable cells"]
+    criticality: PERFORMANCE
+    unit: x10^9 cells
+    formula: "h.post_wash_tvc_e9 * (viab.result_val/100) * (car.result_val/100), viab = VIAB-NC200, car = FC-CAR"
+    influenced_by: [culture_duration, moi]
+
+# Ambiguous words the agent must resolve before querying
+ambiguous_terms:
+  viability:
+    candidates: [viability_release, harvest_viability, post_thaw_viability]
+    also_in: [pd.uo01_aph_receipt.via_pct, pd.uo02_tcell_sel.via_pct, pd.uo05_expansion.via_pct]
+    default: viability_release
+  transduction efficiency:
+    candidates: [transduction_efficiency, ipc_car_pos]
+    default: transduction_efficiency
+  vcn:
+    candidates: [vcn, vcn_bulk]
+    default: vcn
+    note: "Specification applies per CAR+ cell (VCN-PER-CAR). VCN-DDPCR is the bulk ddPCR result."
+  cd3:
+    candidates: [cd3_purity, "pd.uo01_aph_receipt.cd3_pct (starting material, not purity)"]
+    default: cd3_purity
+  cell count:
+    note: "tnc = total nucleated cells (apheresis, selection), tvc = total viable cells; e6 vs e9 units differ by table"
+
+historian:
+  table: pd.hist_tag_data
+  tag_rule: "<equip_id without '-'>.<MEASURE>.PV   e.g. INC-01 -> INC01.TEMP.PV, FRZ-80-01 -> FRZ8001.TEMP.PV"
+  measures: {TEMP: C, CO2: "%"}
+  quality: "qual = 'BAD' rows have NULL val; exclude them"
+  monitored_by: SYS-EMS
+
+run_types:
+  PD: Process development run (non-GMP). QC is characterization; no pass/fail, no deviations.
+  ENG: Engineering run in the GMP suite. Tested against release panel for information.
+  PPQ: Process performance qualification run under protocol PPQ-001.
+
+# ---------------------------------------------------------------------
+# Graph mapping: identity + relationships only. Every node carries `id`;
+# extra properties are classification codes used to filter traversals.
+# ---------------------------------------------------------------------
+entities:
+  Donor:          {source: "SELECT donor_id AS id FROM pd.donor"}
+  Leukopak:       {source: "SELECT lp_id AS id FROM pd.leukopak"}
+  Batch:          {source: "SELECT batch_id AS id, run_type FROM pd.batch_master"}
+  UnitOperation:  {from_yaml: unit_operations}
+  StepRun:
+    source: >
+      SELECT batch_id || ':APH' AS id FROM pd.uo01_aph_receipt UNION ALL
+      SELECT batch_id || ':SEL' FROM pd.uo02_tcell_sel UNION ALL
+      SELECT batch_id || ':ACT' FROM pd.uo03_activation UNION ALL
+      SELECT batch_id || ':TD'  FROM pd.uo04_transduction UNION ALL
+      SELECT DISTINCT batch_id || ':EXP' FROM pd.uo05_expansion UNION ALL
+      SELECT batch_id || ':HVST' FROM pd.uo06_harvest UNION ALL
+      SELECT batch_id || ':FF'  FROM pd.uo07_form_fill
+    description: One execution of a unit operation for one batch. id = <batch_id>:<UO code>; the row is in that UO's fact_table.
+  Equipment:      {source: "SELECT equip_id AS id FROM pd.equipment"}
+  MaterialLot:    {source: "SELECT lot_no AS id, matl_code FROM pd.material_lot"}
+  Parameter:      {from_yaml: parameters}
+  QualityAttribute: {from_yaml: quality_attributes}
+
+relationships:
+  PROVIDED:
+    from: Donor
+    to: Leukopak
+    source: "SELECT donor_id, lp_id FROM pd.leukopak"
+  STARTING_MATERIAL_FOR:
+    from: Leukopak
+    to: Batch
+    source: "SELECT lp_id, batch_id FROM pd.batch_master"
+  HAS_STEP:
+    from: Batch
+    to: StepRun
+    source: >
+      SELECT batch_id, batch_id || ':' || uo FROM pd.batch_master
+      CROSS JOIN (VALUES ('APH'),('SEL'),('ACT'),('TD'),('EXP'),('HVST'),('FF')) v(uo)
+  INSTANCE_OF:
+    from: StepRun
+    to: UnitOperation
+    source: >
+      SELECT batch_id || ':' || uo, uo FROM pd.batch_master
+      CROSS JOIN (VALUES ('APH'),('SEL'),('ACT'),('TD'),('EXP'),('HVST'),('FF')) v(uo)
+  NEXT:
+    from: StepRun
+    to: StepRun
+    source: >
+      SELECT batch_id || ':' || a, batch_id || ':' || b FROM pd.batch_master
+      CROSS JOIN (VALUES ('APH','SEL'),('SEL','ACT'),('ACT','TD'),('TD','EXP'),('EXP','HVST'),('HVST','FF')) v(a,b)
+  USED:
+    from: StepRun
+    to: MaterialLot
+    description: Material lot consumed at that step.
+    source: >
+      SELECT batch_id || ':SEL', bead_lot_cd4 FROM pd.uo02_tcell_sel UNION
+      SELECT batch_id || ':SEL', bead_lot_cd8 FROM pd.uo02_tcell_sel UNION
+      SELECT batch_id || ':ACT', act_lot FROM pd.uo03_activation UNION
+      SELECT batch_id || ':ACT', media_lot FROM pd.uo03_activation UNION
+      SELECT batch_id || ':ACT', cyto_lot_1 FROM pd.uo03_activation UNION
+      SELECT batch_id || ':ACT', cyto_lot_2 FROM pd.uo03_activation WHERE cyto_lot_2 IS NOT NULL UNION
+      SELECT batch_id || ':TD', vec_lot FROM pd.uo04_transduction UNION
+      SELECT batch_id || ':TD', enh_lot FROM pd.uo04_transduction UNION
+      SELECT batch_id || ':FF', cryo_lot FROM pd.uo07_form_fill
+  RAN_ON:
+    from: StepRun
+    to: Equipment
+    source: >
+      SELECT batch_id || ':SEL', equip_id FROM pd.uo02_tcell_sel UNION
+      SELECT DISTINCT batch_id || ':EXP', equip_id FROM pd.uo05_expansion UNION
+      SELECT batch_id || ':HVST', equip_id FROM pd.uo06_harvest UNION
+      SELECT batch_id || ':FF', equip_id FROM pd.uo07_form_fill
+  STORED_IN:
+    from: MaterialLot
+    to: Equipment
+    source: "SELECT lot_no, storage_loc FROM pd.material_lot WHERE storage_loc IN (SELECT equip_id FROM pd.equipment)"
+  SET_AT:
+    from: Parameter
+    to: UnitOperation
+    from_yaml: parameters.*.set_at
+  INFLUENCES:
+    from: Parameter
+    to: QualityAttribute
+    from_yaml: quality_attributes.*.influenced_by
+    reverse: true          # listed on the QA, edge points parameter -> QA
+  MEASURED_BY:
+    variants:
+      - from: QualityAttribute
+        to: AnalyticalMethod
+        source: "SELECT qc_test_code, method_id FROM pd.analytical_method"
+        resolve_from: test_code
+      - from: QualityAttribute
+        to: AnalyticalMethod
+        from_yaml: quality_attributes.*.measured_by     # derived attributes (calculated from several methods)

@@ -1,0 +1,119 @@
+{
+ "source": "agent/results/combined/report_rescored.md (runs 20261008-123658, -124926, -130133; current answer key)",
+ "mean_score": {
+  "haiku": {
+   "raw": 0.88,
+   "semantic": 0.92
+  },
+  "sonnet": {
+   "raw": 0.91,
+   "semantic": 0.97
+  }
+ },
+ "by_question": {
+  "Q1": {
+   "haiku": [
+    0.83,
+    1.0
+   ],
+   "sonnet": [
+    0.87,
+    1.0
+   ]
+  },
+  "Q2": {
+   "haiku": [
+    1,
+    1
+   ],
+   "sonnet": [
+    1,
+    1
+   ]
+  },
+  "Q3": {
+   "haiku": [
+    0.6,
+    0.55
+   ],
+   "sonnet": [
+    0.6,
+    0.8
+   ]
+  },
+  "Q4": {
+   "haiku": [
+    0.85,
+    1.0
+   ],
+   "sonnet": [
+    1,
+    1
+   ]
+  },
+  "Q5": {
+   "haiku": [
+    1,
+    1
+   ],
+   "sonnet": [
+    1,
+    1
+   ]
+  },
+  "Q6": {
+   "haiku": [
+    1,
+    1
+   ],
+   "sonnet": [
+    1,
+    1
+   ]
+  }
+ },
+ "cost_per_run_usd": {
+  "haiku_raw": 0.0201,
+  "haiku_semantic": 0.0131,
+  "sonnet_raw": 0.1602,
+  "sonnet_semantic": 0.1636
+ },
+ "valid_runs": {
+  "haiku_raw": 20,
+  "haiku_semantic": 18,
+  "sonnet_raw": 12,
+  "sonnet_semantic": 12
+ },
+ "findings": {
+  "stale_verification_URS-EMS-014": {
+   "raw": [
+    2,
+    9
+   ],
+   "semantic": [
+    6,
+    6
+   ]
+  },
+  "vocabulary_FM-07_FM-08_haiku_q4": {
+   "raw": [
+    2,
+    5
+   ],
+   "semantic": [
+    6,
+    6
+   ]
+  },
+  "ems_cause_CC-26-011_q3": {
+   "raw": [
+    0,
+    9
+   ],
+   "semantic": [
+    0,
+    9
+   ]
+  }
+ }
+}

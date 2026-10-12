@@ -1,0 +1,245 @@
+{
+ "model": "sonnet",
+ "condition": "semantic",
+ "qid": "q1",
+ "run": 1,
+ "score": 1.0,
+ "recall": 1.0,
+ "precision": 1.0,
+ "missed": [],
+ "extra": [],
+ "answer_ids": [
+  "URS-EBR-009",
+  "URS-EMS-014",
+  "URS-INC-004"
+ ],
+ "id_source": "json",
+ "tool_calls": 8,
+ "sql_errors": 0,
+ "turns": 4,
+ "hit_turn_limit": false,
+ "stop_reason": "end_turn",
+ "seconds": 28.6,
+ "cost_usd": 0.126,
+ "tok_input": 12,
+ "tok_output": 3954,
+ "tok_cache_write": 30946,
+ "tok_cache_read": 90876,
+ "final_answer": "Three of the 26 high-risk requirements are not currently verified.\n\nA requirement counts as high-risk when an FRA row that ASSESSES it has risk_class = 'HIGH'. I applied the \"currently verified\" rule from the semantic layer to each of the 26. That rule needs a SCRIPTED verifying test case whose latest execution on every unit is PASS, dated on or after any change control that modifies the requirement, a child spec, or the unit. I followed verification paths from the URS directly, through FS/CS, and through DS\u2192FS.\n\n| Requirement | Reason |\n|---|---|\n| **URS-EBR-009** (target MOI outside 4.0\u20136.0 shall be rejected, SYS-EBR) | No test case verifies it, directly or through its child spec CS-EBR-03. There is no execution at all. |\n| **URS-EMS-014** (unacknowledged critical alarms escalated by SMS and voice within 15 min, SYS-EMS) | The verification is stale. It is verified only through CS-EMS-03, by TC-OQ-EMS-04, last passed on 2026-01-20 (TX-0070). CC-26-011 changed CS-EMS-03 (paging provider change) and was implemented on 2026-03-16. The test has not been re-run since. |\n| **URS-INC-004** (door-open alarm after 60 s, SYS-INC) | The latest execution on INC-03 is a FAIL (TX-0023, TC-OQ-INC-04, 2026-02-10), with no passing re-test. INC-01, INC-02 and INC-04 passed. CC-26-019, the INC-03 door switch replacement, is approved but not yet implemented, so the failure is still open. |\n\nThe other 23 are currently verified. Each has a SCRIPTED test with a passing latest execution on every unit, dated after any relevant change. URS-ULT-001 and URS-ULT-002 on FRZ-80-02 were re-executed on 2026-04-24, after the compressor replacement CC-26-014 on 2026-04-23.\n\nURS-CRF-001 and URS-PRDG-002 are PERFORMANCE requirements on equipment systems with only OQ evidence and no PQ. I did not list them because the \"currently verified\" rule doesn't require PQ. The separate `pq_expected` rule would flag them as PQ gaps. For URS-CRF-001 in particular, the OQ test ran on an empty chamber, while the requirement says \"representative load\".\n\n```json\n{\"answer_ids\": [\"URS-EBR-009\", \"URS-EMS-014\", \"URS-INC-004\"]}\n```",
+ "transcript": [
+  {
+   "role": "user",
+   "content": "Which high-risk user requirements are not currently verified? For each one, give the requirement ID and the reason."
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "signature": "CAQS0QUKEAgSGAI4AUIIdGhpbmtpbmcSDN50rbyCr+2iD8iVCRoMjz36JQPgSdvI2Xd5IjB3s/sb4aEx3hQN1TeykoN/eSiKUFp3wSi6mLXk6VagJeDBV5yJb4ZXQ2wYnQlxHk0q7gSGvgZa10cowKOQILjCiEcH53g/olXC8B9WvIQPVxkufA8Yb7XdDtl6k7IYg+JN5EYtOzSjZq90TZppQpaakwvE2my2WTy14d5yMy7IwdibfRAvNEoWs+jEqpls93CoIgLRFgnoxhoPvWoegMN1fKVlHoE1T4Yx3DkvdBGQC55ghnVecz1QdkykkB0gHNVLCMSGvWEsN4j+57bUxczxTMYeGtXmAGEI1LpJW/vf6w98ONKeSz699PnQsLaw8WltzaS0BE78Wd64JESQB+7bgYZNR5nzXoCfJ2IABsm3HjSEgsoltj1vPuYk98So9/sr+Uah2kqWinQxfcdFrhcDLBChT9iOHDfs8vdT6uA17+RbaVOcSVA2iLsAX5vmdKQYmBml46IzhMQIPov4925ovrNmRbGGVEza1GjjHteqrTRwbN4vAqY7n9szmkgLfbMWjrVRzbYUsbBbIC8nJLcqA1JYzN8iwdJEe+jHroyXaq5Yw/QddfnPNRswBK86oPLyZXxMeQSG72E39DkkCEVz0q3ZDd08I22J+d9Paex1UKPGtbtJ5b2gRR+omXYOAjfRCJ8FujODTKczoTs9NzH9zxUSrvrbwJyEoBx2oWC9D1KftMoeg3s3HJS091rMauJ7u4gXa4ZxZf4oN2z6/SGnOSHXcbr5MS8Tziba8WzCqWMp/Szi0E9+rn8bX+2gPvkJjlnQnw0zdlLCrGVx+3SuORzn+IoqWoIIg2I6ZnzUbQQWyM57esRDiJq1BvIM0EYsW75L0I3BAYBj59y/jKUqrbyByYCkdL+JFuR3+gjN79kU6kpNzUqsi7qjNtIbKt+1GAE=",
+     "thinking": "",
+     "type": "thinking"
+    },
+    {
+     "id": "toolu_019HnFu3532rnyjoeXD5p6QA",
+     "caller": {
+      "type": "direct"
+     },
+     "input": {
+      "query": "select l.src_id, l.tgt_id, r.risk_class, r.ra_id, s.sys_id, s.req_category, s.item_text from pd.trace_link l join pd.val_risk_item r on r.ri_id=l.src_id join pd.val_spec_item s on s.item_id=l.tgt_id where l.link_type='ASSESSES' and r.risk_class='HIGH' order by l.tgt_id"
+     },
+     "name": "run_sql",
+     "type": "tool_use"
+    },
+    {
+     "id": "toolu_01WamxKVBxTZte2U9ByUsrfv",
+     "caller": {
+      "type": "direct"
+     },
+     "input": {
+      "query": "select link_type, src_type, tgt_type, count(*) from pd.trace_link group by 1,2,3 order by 1,2,3"
+     },
+     "name": "run_sql",
+     "type": "tool_use"
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "toolu_019HnFu3532rnyjoeXD5p6QA",
+     "content": "src_id | tgt_id | risk_class | ra_id | sys_id | req_category | item_text\nFRA-020 | URS-CRF-001 | HIGH | RA-FRA-CRF | SYS-CRF | PERFORMANCE | The freezer shall execute freezing profile CRF-P01 within +/-2 C of the programmed curve with a representative load.\nFRA-037 | URS-EBR-001 | HIGH | RA-FRA-EBR | SYS-EBR | CONTROL | The EBR shall enforce step sequence per the master batch record.\nFRA-038 | URS-EBR-002 | HIGH | RA-FRA-EBR | SYS-EBR | CONTROL | Material scans shall verify released status and expiry.\nFRA-039 | URS-EBR-003 | HIGH | RA-FRA-EBR | SYS-EBR | CONTROL | Equipment scans shall verify qualification and calibration status.\nFRA-040 | URS-EBR-007 | HIGH | RA-FRA-EBR | SYS-EBR | CONTROL | Vector volume shall be calculated from target MOI, viable cell count and CoA functional titer.\nFRA-041 | URS-EBR-008 | HIGH | RA-FRA-EBR | SYS-EBR | SECURITY | Electronic signatures shall meet 21 CFR Part 11.\nFRA-042 | URS-EBR-009 | HIGH | RA-FRA-EBR | SYS-EBR | CONTROL | Target MOI outside 4.0-6.0 TU/cell shall be rejected for GMP runs.\nFRA-023 | URS-EMS-010 | HIGH | RA-FRA-EMS | SYS-EMS | DATA | The EMS shall acquire temperature and CO2 from monitored equipment at intervals of 1 min or less.\nFRA-024 | URS-EMS-011 | HIGH | RA-FRA-EMS | SYS-EMS | ALARM | The EMS shall raise an alarm when a value exceeds its configured limit for the configured delay.\nFRA-025 | URS-EMS-012 | HIGH | RA-FRA-EMS | SYS-EMS | CONTROL | Alarm limits and delays shall be configured per equipment as defined in the configuration specification.\nFRA-026 | URS-EMS-013 | HIGH | RA-FRA-EMS | SYS-EMS | DATA | The EMS shall keep an audit trail of configuration changes and alarm acknowledgements.\nFRA-027 | URS-EMS-014 | HIGH | RA-FRA-EMS | SYS-EMS | ALARM | Unacknowledged critical alarms shall be escalated to on-call personnel by SMS and voice call within 15 min, 24/7.\nFRA-001 | URS-INC-001 | HIGH | RA-FRA-INC | SYS-INC | PERFORMANCE | Chamber temperature shall be controlled at 37.0 C with uniformity of +/-0.5 C across the usable volume under loaded conditions.\nFRA-003 | URS-INC-003 | HIGH | RA-FRA-INC | SYS-INC | ALARM | High and low temperature alarms shall activate at +/-1.0 C from setpoint, locally and via dry contact to the EMS.\nFRA-004 | URS-INC-004 | HIGH | RA-FRA-INC | SYS-INC | ALARM | A door-open alarm shall activate when the door is open for more than 60 s.\nFRA-030 | URS-LIMS-001 | HIGH | RA-FRA-LIMS | SYS-LIMS | DATA | Results shall be recorded with analyst, date/time and instrument ID.\nFRA-031 | URS-LIMS-002 | HIGH | RA-FRA-LIMS | SYS-LIMS | CONTROL | Results shall require second-person review before approval.\nFRA-032 | URS-LIMS-003 | HIGH | RA-FRA-LIMS | SYS-LIMS | CONTROL | Results shall be compared to specification and out-of-specification results flagged automatically.\nFRA-033 | URS-LIMS-004 | HIGH | RA-FRA-LIMS | SYS-LIMS | CONTROL | VCN shall be calculated from ddPCR transgene and reference copies per SOP-QC-201.\nFRA-034 | URS-LIMS-005 | HIGH | RA-FRA-LIMS | SYS-LIMS | DATA | A certificate of analysis shall be generated from approved results only.\nFRA-035 | URS-LIMS-006 | HIGH | RA-FRA-LIMS | SYS-LIMS | DATA | Changes to results shall be captured in an audit trail.\nFRA-019 | URS-LOVO-002 | HIGH | RA-FRA-LOVO | SYS-LOVO | PERFORMANCE | Processing shall be closed.\nFRA-013 | URS-PRDG-001 | HIGH | RA-FRA-PRDG | SYS-PRDG | PERFORMANCE | Cell selection shall be performed in a closed, single-use tubing set without breach of sterility.\nFRA-014 | URS-PRDG-002 | HIGH | RA-FRA-PRDG | SYS-PRDG | PERFORMANCE | The CD4/CD8 enrichment program shall run with locked, version-controlled parameters and deliver purity >= 90% CD3+.\nFRA-008 | URS-ULT-001 | HIGH | RA-FRA-ULT | SYS-ULT | PERFORMANCE | Chamber shall be maintained at or below -70 C (setpoint -80 C) at all mapped locations under load.\nFRA-009 | URS-ULT-002 | HIGH | RA-FRA-ULT | SYS-ULT | ALARM | A high-temperature alarm shall activate at -70 C, locally and via the EMS.\n(26 rows)",
+     "is_error": false
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "toolu_01WamxKVBxTZte2U9ByUsrfv",
+     "content": "link_type | src_type | tgt_type | count\nASSESSES | RISK | SPEC | 43\nIMPACTS | CC | EQUIP | 2\nIMPACTS | CC | RA | 1\nIMPACTS | CC | SOP | 4\nIMPACTS | CC | SPEC | 1\nMITIGATES | RISK | SOP | 10\nMITIGATES | RISK | SPEC | 20\nMONITORS | SYS | EQUIP | 6\nRELATED | CAPA | CC | 2\nRELATED | CC | EXEC | 2\nRELATED | DEV | BATCH | 5\nRELATED | DEV | CAPA | 5\nRELATED | DEV | EQUIP | 4\nRELATED | DEV | PROTOCOL | 2\nRELATED | EXEC | DEV | 1\nRELATED | PROTOCOL | BATCH | 5\nTRACE | SPEC | SPEC | 16\nVERIFIES | TC | SPEC | 53\n(18 rows)",
+     "is_error": false
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "signature": "CAQS/AcKEAgSGAI4AUIIdGhpbmtpbmcSDBFfewdkniPU8ujETxoM6Pb3Cn1Id4ooIHi+IjBm4ZdK7cCoEsnrnpeh6Eqbhe9flX6K9Oj1+0DTp0q16uqVgAWi6eHzoX6Oj8zQZ3QqmQdDo5SMLcwG6vsQaNx0roGTdrHv23E0wceGXE1djRz09cS82elLJUtlriLBWvjWK+7nl/GrCeE1rwDtbl6NSNu1Kw5R7sJBkJjac8eufSUxkudQb60LMWiNBLU9mD5vrHN6G9fNglsr1VLkScX/+qEgAVAJQr5h0inN0R52ZDJeFfaegYbKEkDvK7xFiVa735nXbL28Ec0696kBo9+ZukWrOManFbnT1Sjx4Iwvnyg5UcSHy4QrL8DcUlNLnYK8qhzBohJ9CB1bsYIKF42IOJYTmoJHGeLnwM2MqJmYus4Jbf/nOOIXS/j6uALUHd+tEbG/sYePQvAHV9L5AImkiuGpIZZa9GYNAa2bTkat7MdWZW0QMXMLgFi7BnZJszg5TIhxCYeAsLDn0U5FoL2q2qIeqh6hC/HoOXEJIWwd1pR8kDrOfGk/y4H3xqU+XH2BkhZLU0MJxIsD3Zc5pgg9UGTvRYnNx3wwSqISy1iZAm6dSPbUjsTTsfblkypgTKSFUZes152l7JRdFcwSguv1aa19SXPZS+uDerhvxOmzDF4UekKjAaO/ablGoKKK1amUKNh3axNaOS1wnAklBHA9g0oeFBnwpgb9QKgseURW/Xw5mYzc5zSLO/tOGcrQEDMj/z2YZHn9yIfRPG11fZ61uYzrvU15thAV1nL5QXYaIxzDrV399sUfWSKH0XUUaCYf/Vh9jLIARAYi9Du77NCKkkLUY3DQnmVBCsbRjXuKR+awpM9n87U28oJXlqLQPgoeOaMrYfdharvTGWsJUwR6rcCu2z5Zcq2FfxmYOG4HnDmxgap0DEoE+4/0n15DkoDyVbp5ImMCTn8HiSselG/6oZzZrJaJQCfTM0k2X28NahyCvjpIbuih5ABKclc18Jsd/J1hhUlibW+5ppi1N+Ub9tTMltJzrZNi6vq10UFnCFaaV0YlrGqUkqd6vaIqfLMazNMvHXgVFNP4nAU9H9rXQTVM7VXy+3vU7iT608Rf8qUUQ5EJPwXINSrL1UVN3kUqR32UosJ9JnEd+VgPwE3e4N0/y1rorOLptSkLbdwCjPz8d1mitWqb9FLM6xr96nIKMtFZ6YRjJiUWYXDIuY/b263JFiygo8IhAv3y7r5czd9iPDMTiVhVpyFP0yZmF1B88dhRwh/Uj9reUg1MbX19fuv45JhvJWI2g+VvfLx/PwShSLk8tgfn1khntkHeUqcD1Rz7urWOzgdgDCwYAQ==",
+     "thinking": "",
+     "type": "thinking"
+    },
+    {
+     "id": "toolu_013SSow7egTaSuhc8k9YqyV6",
+     "caller": {
+      "type": "direct"
+     },
+     "input": {
+      "query": "select l.src_id, l.tgt_id, l.tgt_type, c.title, c.status, c.impl_dt, c.change_class from pd.trace_link l join pd.qms_change_control c on c.cc_no=l.src_id where l.link_type='IMPACTS' order by 1"
+     },
+     "name": "run_sql",
+     "type": "tool_use"
+    },
+    {
+     "id": "toolu_01UpbQ5CmckH53XtYyh1xhuq",
+     "caller": {
+      "type": "direct"
+     },
+     "input": {
+      "query": "select equip_id, sys_id, equip_type, cal_due_dt from pd.equipment where sys_id is not null order by sys_id, equip_id"
+     },
+     "name": "run_sql",
+     "type": "tool_use"
+    },
+    {
+     "id": "toolu_01Gc46VKkTKuK9NDymDWH7cR",
+     "caller": {
+      "type": "direct"
+     },
+     "input": {
+      "query": "select * from pd.val_system order by 1"
+     },
+     "name": "run_sql",
+     "type": "tool_use"
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "toolu_013SSow7egTaSuhc8k9YqyV6",
+     "content": "src_id | tgt_id | tgt_type | title | status | impl_dt | change_class\nCC-26-004 | RA-PFMEA-001 | RA | Process version PV2.0 | CLOSED | 2026-05-01 | MAJOR\nCC-26-004 | SOP-MFG-106 | SOP | Process version PV2.0 | CLOSED | 2026-05-01 | MAJOR\nCC-26-004 | SOP-MFG-105 | SOP | Process version PV2.0 | CLOSED | 2026-05-01 | MAJOR\nCC-26-004 | SOP-MFG-103 | SOP | Process version PV2.0 | CLOSED | 2026-05-01 | MAJOR\nCC-26-011 | CS-EMS-03 | SPEC | EMS notification group restructure (paging provider change) | CLOSED | 2026-03-16 | MINOR\nCC-26-014 | FRZ-80-02 | EQUIP | FRZ-80-02 compressor replacement | CLOSED | 2026-04-23 | MINOR\nCC-26-019 | INC-03 | EQUIP | INC-03 door switch replacement | APPROVED - NOT IMPLEMENTED | NULL | MINOR\nCC-26-022 | SOP-MFG-104 | SOP | Increase transduction target MOI to 8.0 TU/cell | IMPACT ASSESSMENT | NULL | MAJOR\n(8 rows)",
+     "is_error": false
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "toolu_01UpbQ5CmckH53XtYyh1xhuq",
+     "content": "equip_id | sys_id | equip_type | cal_due_dt\nCRF-01 | SYS-CRF | Controlled-rate freezer | 2026-12-15\nINC-01 | SYS-INC | CO2 incubator | 2026-12-15\nINC-02 | SYS-INC | CO2 incubator | 2026-12-15\nINC-03 | SYS-INC | CO2 incubator | 2026-12-15\nINC-04 | SYS-INC | CO2 incubator | 2026-12-15\nLOVO-01 | SYS-LOVO | Cell processing system | 2026-12-15\nPRDG-01 | SYS-PRDG | Cell processing system | 2026-12-15\nPRDG-02 | SYS-PRDG | Cell processing system | 2026-12-15\nFRZ-80-01 | SYS-ULT | ULT freezer -80C | 2026-12-15\nFRZ-80-02 | SYS-ULT | ULT freezer -80C | 2026-12-15\n(10 rows)",
+     "is_error": false
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "toolu_01Gc46VKkTKuK9NDymDWH7cR",
+     "content": "sys_id | sys_name | sys_class | gamp_cat | gxp_area | owner_dept | val_status\nSYS-CRF | Controlled-rate freezer | EQUIPMENT | 4 | GMP | Manufacturing | QUALIFIED\nSYS-EBR | Electronic batch record (MES) | COMPUTERIZED | 4 | GMP | QA / IT | VALIDATED\nSYS-EMS | Equipment monitoring system (EMS) | COMPUTERIZED | 4 | GMP | QA / IT | VALIDATED\nSYS-INC | CO2 incubators, GMP Suite 2 | EQUIPMENT | 3 | GMP | Manufacturing | QUALIFIED\nSYS-LIMS | QC laboratory information management system | COMPUTERIZED | 4+5 | GMP | QA / IT | VALIDATED\nSYS-LOVO | LOVO cell processing system | EQUIPMENT | 4 | GMP | Manufacturing | QUALIFIED\nSYS-PRDG | CliniMACS Prodigy, GMP Suite 2 | EQUIPMENT | 4 | GMP | Manufacturing | QUALIFIED\nSYS-ULT | -80 C ULT freezers, warehouse | EQUIPMENT | 3 | GMP | Manufacturing | QUALIFIED\n(8 rows)",
+     "is_error": false
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "signature": "CAQSuAcKEAgSGAI4AUIIdGhpbmtpbmcSDB907DFT4G15VLO2+BoMSN/6/QT/DRGdHCk0IjAx/BQyHk4E6+XN9CwseqhDrMIzi4q7u9+M1lzHBPag36y9/HBpGwQCDpZAaOLJddwq1QYy81TA5EElbWWQFyIp3PGpDQM1Cizc2uB6zM6hhqDiG94ao0vy0bTIc0HpJEWqfHHzP6OokMhMpiRTryociJ4Ak+d/cobJxpjBmhHwQNs2AhrPbTUktGSB7qs5uX1XT9A0yD2qjm4eItY7O6tgYt7VRXhvmkLLcZPnoE0lo+hco3payLP/iLGeX1HjR7dce7Jet4lIkTlu/CtheadCgQwcayNE7p+fd0mXAuySYTKbCSKMC5oYVmWk/0GlJSvYBvnmquS3yzAfHujGr1R8K7RrGV2tgcFSPP08LJ5KkmoK3EAlNtO5DCcQYExBRnON3Gtai0P1SkYR92QZISSlrjCHis+lVJ18QWgQk5syghcGaif/n6t4A6T1NW0u/kNtpYK4XkWHWVU5hcJKN7qZmPMq7XnO3ZH+Bkyn5+LY9tMbzZJbnJhYa4ZX43jeSpec1tYktCXXAVAvkHxXfpS+lly1PLVAv9/wX81egYDrDebmbh09WvdUd6eDzPVE2VmArJU9f1iuZNMPh10H1p09dbMArQ4KIgmy4nDB9f0tKC2kcDe8+N3/e3tqGP19Hq9uRb8gb0SbiOXwCYhSSSonSIkvY0Du6nLWVf3QSuQO8pMqjKqHUE+muxvRmplBTbT/mGrtv36sdf9SYfG7pHPs0geCcyOJK3nE8IdVr6TBAISdOyTZ9LxKPN3jfl5Jb60vM1ELgre8oJmGZuhzWkcV5p6n1OajxNdOyH8TsWdMTPpLXOQl1tALT3IbjH5cwIqMi+gZ1wOmVIMghpaDkwBjWC9V/m+sZjxyvBhdFFpaz+DmXgAY6Z8G/+25cba2OD6Jtx8isdSP2pEf+3mPvaW2ZYeL9j1ZRZMnlqugJa8ujA4iFitq6RKF6FOhRr7aAemCl+WuqaGfAgxy+Wexuwrt/2j0kRm7D7jH9ZHWEVRhfNV+CXJScP5U9ein65NptagSaz8u/a5qdw6THyWrUJwh8pvTqR+OmqZysCYeoe/RzT7V8MGAY5XCsFFtKo6BvF/QLnkvM61l8w4Gf0sil4pGr3szcH+BU2j7mA6dgQFsg0Hq1B+vwSrPIXgjpwbOydIRcRELKOKK20k+JMt7ubAI9S+udX+rl0yX26ahkbsy5CKlMl+VvnxFGAE=",
+     "thinking": "",
+     "type": "thinking"
+    },
+    {
+     "id": "toolu_01Fdhh5uaoL5x8Z1Vxdx8VUa",
+     "caller": {
+      "type": "direct"
+     },
+     "input": {
+      "query": "with high as (\n select distinct l.tgt_id urs, s.sys_id from pd.trace_link l join pd.val_risk_item r on r.ri_id=l.src_id join pd.val_spec_item s on s.item_id=l.tgt_id where l.link_type='ASSESSES' and r.risk_class='HIGH'),\nchildren as (\n select h.urs, h.urs spec, 'URS' lvl from high h\n union select h.urs, t.src_id, 'child' from high h join pd.trace_link t on t.link_type='TRACE' and t.tgt_id=h.urs\n union select h.urs, t2.src_id, 'DS' from high h join pd.trace_link t on t.link_type='TRACE' and t.tgt_id=h.urs join pd.trace_link t2 on t2.link_type='TRACE' and t2.tgt_id=t.src_id),\ntcs as (\n select c.urs, c.spec, c.lvl, v.src_id tc from children c join pd.trace_link v on v.link_type='VERIFIES' and v.tgt_id=c.spec)\nselect t.urs, t.spec, t.lvl, t.tc, tc.method, e.exec_id, e.target_id, e.exec_dt, e.result\nfrom tcs t join pd.val_test_case tc on tc.tc_id=t.tc left join pd.val_test_exec e on e.tc_id=t.tc\norder by t.urs, t.tc, e.target_id, e.exec_dt"
+     },
+     "name": "run_sql",
+     "type": "tool_use"
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "toolu_01Fdhh5uaoL5x8Z1Vxdx8VUa",
+     "content": "urs | spec | lvl | tc | method | exec_id | target_id | exec_dt | result\nURS-CRF-001 | URS-CRF-001 | URS | TC-OQ-CRF-01 | SCRIPTED | TX-0063 | CRF-01 | 2026-02-11 | PASS\nURS-EBR-001 | CS-EBR-01 | child | TC-OQ-EBR-01 | SCRIPTED | TX-0080 | SYS-EBR | 2026-03-16 | PASS\nURS-EBR-002 | URS-EBR-002 | URS | TC-OQ-EBR-02 | SCRIPTED | TX-0081 | SYS-EBR | 2026-03-16 | PASS\nURS-EBR-003 | URS-EBR-003 | URS | TC-OQ-EBR-03 | SCRIPTED | TX-0082 | SYS-EBR | 2026-03-17 | PASS\nURS-EBR-007 | URS-EBR-007 | URS | TC-OQ-EBR-04 | SCRIPTED | TX-0083 | SYS-EBR | 2026-03-17 | PASS\nURS-EBR-007 | CS-EBR-02 | child | TC-OQ-EBR-04 | SCRIPTED | TX-0083 | SYS-EBR | 2026-03-17 | PASS\nURS-EBR-008 | URS-EBR-008 | URS | TC-OQ-EBR-05 | SCRIPTED | TX-0084 | SYS-EBR | 2026-03-18 | PASS\nURS-EMS-010 | CS-EMS-01 | child | TC-IQ-EMS-01 | SCRIPTED | TX-0066 | SYS-EMS | 2026-01-07 | PASS\nURS-EMS-010 | URS-EMS-010 | URS | TC-OQ-EMS-01 | SCRIPTED | TX-0067 | SYS-EMS | 2026-01-14 | PASS\nURS-EMS-010 | CS-EMS-01 | child | TC-OQ-EMS-01 | SCRIPTED | TX-0067 | SYS-EMS | 2026-01-14 | PASS\nURS-EMS-011 | CS-EMS-02 | child | TC-OQ-EMS-02 | SCRIPTED | TX-0068 | SYS-EMS | 2026-01-15 | PASS\nURS-EMS-012 | CS-EMS-02 | child | TC-OQ-EMS-02 | SCRIPTED | TX-0068 | SYS-EMS | 2026-01-15 | PASS\nURS-EMS-013 | CS-EMS-04 | child | TC-OQ-EMS-03 | SCRIPTED | TX-0069 | SYS-EMS | 2026-01-16 | PASS\nURS-EMS-013 | URS-EMS-013 | URS | TC-OQ-EMS-03 | SCRIPTED | TX-0069 | SYS-EMS | 2026-01-16 | PASS\nURS-EMS-014 | CS-EMS-03 | child | TC-OQ-EMS-04 | SCRIPTED | TX-0070 | SYS-EMS | 2026-01-20 | PASS\nURS-INC-001 | URS-INC-001 | URS | TC-OQ-INC-01 | SCRIPTED | TX-0009 | INC-01 | 2026-02-03 | PASS\nURS-INC-001 | FS-INC-01 | child | TC-OQ-INC-01 | SCRIPTED | TX-0009 | INC-01 | 2026-02-03 | PASS\nURS-INC-001 | URS-INC-001 | URS | TC-OQ-INC-01 | SCRIPTED | TX-0010 | INC-02 | 2026-02-03 | PASS\nURS-INC-001 | FS-INC-01 | child | TC-OQ-INC-01 | SCRIPTED | TX-0010 | INC-02 | 2026-02-03 | PASS\nURS-INC-001 | URS-INC-001 | URS | TC-OQ-INC-01 | SCRIPTED | TX-0011 | INC-03 | 2026-02-04 | PASS\nURS-INC-001 | FS-INC-01 | child | TC-OQ-INC-01 | SCRIPTED | TX-0011 | INC-03 | 2026-02-04 | PASS\nURS-INC-001 | FS-INC-01 | child | TC-OQ-INC-01 | SCRIPTED | TX-0012 | INC-04 | 2026-02-04 | PASS\nURS-INC-001 | URS-INC-001 | URS | TC-OQ-INC-01 | SCRIPTED | TX-0012 | INC-04 | 2026-02-04 | PASS\nURS-INC-001 | URS-INC-001 | URS | TC-PQ-INC-01 | SCRIPTED | TX-0029 | INC-01 | 2026-03-03 | PASS\nURS-INC-001 | URS-INC-001 | URS | TC-PQ-INC-01 | SCRIPTED | TX-0030 | INC-02 | 2026-03-03 | PASS\nURS-INC-001 | URS-INC-001 | URS | TC-PQ-INC-01 | SCRIPTED | TX-0031 | INC-03 | 2026-03-04 | PASS\nURS-INC-001 | URS-INC-001 | URS | TC-PQ-INC-01 | SCRIPTED | TX-0032 | INC-04 | 2026-03-04 | PASS\nURS-INC-003 | URS-INC-003 | URS | TC-OQ-INC-03 | SCRIPTED | TX-0017 | INC-01 | 2026-02-05 | PASS\nURS-INC-003 | FS-INC-02 | child | TC-OQ-INC-03 | SCRIPTED | TX-0017 | INC-01 | 2026-02-05 | PASS\nURS-INC-003 | FS-INC-02 | child | TC-OQ-INC-03 | SCRIPTED | TX-0018 | INC-02 | 2026-02-05 | PASS\nURS-INC-003 | URS-INC-003 | URS | TC-OQ-INC-03 | SCRIPTED | TX-0018 | INC-02 | 2026-02-05 | PASS\nURS-INC-003 | FS-INC-02 | child | TC-OQ-INC-03 | SCRIPTED | TX-0019 | INC-03 | 2026-02-06 | PASS\nURS-INC-003 | URS-INC-003 | URS | TC-OQ-INC-03 | SCRIPTED | TX-0019 | INC-03 | 2026-02-06 | PASS\nURS-INC-003 | URS-INC-003 | URS | TC-OQ-INC-03 | SCRIPTED | TX-0020 | INC-04 | 2026-02-06 | PASS\nURS-INC-003 | FS-INC-02 | child | TC-OQ-INC-03 | SCRIPTED | TX-0020 | INC-04 | 2026-02-06 | PASS\nURS-INC-004 | URS-INC-004 | URS | TC-OQ-INC-04 | SCRIPTED | TX-0021 | INC-01 | 2026-02-10 | PASS\nURS-INC-004 | URS-INC-004 | URS | TC-OQ-INC-04 | SCRIPTED | TX-0022 | INC-02 | 2026-02-10 | PASS\nURS-INC-004 | URS-INC-004 | URS | TC-OQ-INC-04 | SCRIPTED | TX-0023 | INC-03 | 2026-02-10 | FAIL\nURS-INC-004 | URS-INC-004 | URS | TC-OQ-INC-04 | SCRIPTED | TX-0024 | INC-04 | 2026-02-11 | PASS\nURS-LIMS-001 | URS-LIMS-001 | URS | TC-OQ-LIMS-01 | SCRIPTED | TX-0073 | SYS-LIMS | 2026-02-09 | PASS\nURS-LIMS-002 | CS-LIMS-02 | child | TC-OQ-LIMS-02 | SCRIPTED | TX-0074 | SYS-LIMS | 2026-02-09 | PASS\nURS-LIMS-003 | CS-LIMS-01 | child | TC-OQ-LIMS-03 | SCRIPTED | TX-0075 | SYS-LIMS | 2026-02-10 | PASS\nURS-LIMS-004 | DS-LIMS-01 | DS | TC-OQ-LIMS-04 | SCRIPTED | TX-0076 | SYS-LIMS | 2026-02-11 | PASS\nURS-LIMS-004 | FS-LIMS-01 | child | TC-OQ-LIMS-04 | SCRIPTED | TX-0076 | SYS-LIMS | 2026-02-11 | PASS\nURS-LIMS-005 | URS-LIMS-005 | URS | TC-OQ-LIMS-05 | SCRIPTED | TX-0077 | SYS-LIMS | 2026-02-11 | PASS\nURS-LIMS-006 | URS-LIMS-006 | URS | TC-OQ-LIMS-06 | SCRIPTED | TX-0078 | SYS-LIMS | 2026-02-12 | PASS\nURS-LOVO-002 | URS-LOVO-002 | URS | TC-OQ-LOVO-01 | SCRIPTED | TX-0060 | LOVO-01 | 2026-02-06 | PASS\nURS-LOVO-002 | URS-LOVO-002 | URS | TC-PQ-LOVO-01 | SCRIPTED | TX-0061 | LOVO-01 | 2026-03-10 | PASS\nURS-PRDG-001 | URS-PRDG-001 | URS | TC-OQ-PRDG-01 | SCRIPTED | TX-0047 | PRDG-01 | 2026-02-04 | PASS\nURS-PRDG-001 | URS-PRDG-001 | URS | TC-OQ-PRDG-01 | SCRIPTED | TX-0048 | PRDG-02 | 2026-02-04 | PASS\nURS-PRDG-001 | URS-PRDG-001 | URS | TC-PQ-PRDG-01 | SCRIPTED | TX-0057 | PRDG-01 | 2026-03-05 | PASS\nURS-PRDG-001 | URS-PRDG-001 | URS | TC-PQ-PRDG-01 | SCRIPTED | TX-0058 | PRDG-02 | 2026-03-05 | PASS\nURS-PRDG-002 | URS-PRDG-002 | URS | TC-OQ-PRDG-02 | SCRIPTED | TX-0049 | PRDG-01 | 2026-02-04 | PASS\nURS-PRDG-002 | URS-PRDG-002 | URS | TC-OQ-PRDG-02 | SCRIPTED | TX-0050 | PRDG-02 | 2026-02-04 | PASS\nURS-ULT-001 | URS-ULT-001 | URS | TC-OQ-ULT-01 | SCRIPTED | TX-0037 | FRZ-80-01 | 2026-01-21 | PASS\nURS-ULT-001 | URS-ULT-001 | URS | TC-OQ-ULT-01 | SCRIPTED | TX-0038 | FRZ-80-02 | 2026-01-21 | PASS\nURS-ULT-001 | URS-ULT-001 | URS | TC-OQ-ULT-01 | SCRIPTED | TX-0091 | FRZ-80-02 | 2026-04-24 | PASS\nURS-ULT-001 | URS-ULT-001 | URS | TC-PQ-ULT-01 | SCRIPTED | TX-0043 | FRZ-80-01 | 2026-02-12 | PASS\nURS-ULT-001 | URS-ULT-001 | URS | TC-PQ-ULT-01 | SCRIPTED | TX-0044 | FRZ-80-02 | 2026-02-12 | PASS\nURS-ULT-002 | URS-ULT-002 | URS | TC-OQ-ULT-02 | SCRIPTED | TX-0039 | FRZ-80-01 | 2026-01-22 | PASS\nURS-ULT-002 | URS-ULT-002 | URS | TC-OQ-ULT-02 | SCRIPTED | TX-0040 | FRZ-80-02 | 2026-01-22 | PASS\nURS-ULT-002 | URS-ULT-002 | URS | TC-OQ-ULT-02 | SCRIPTED | TX-0092 | FRZ-80-02 | 2026-04-24 | PASS\n(62 rows)",
+     "is_error": false
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "signature": "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",
+     "thinking": "",
+     "type": "thinking"
+    },
+    {
+     "id": "toolu_016CtWsHxJh6HcTZfM2sEkrj",
+     "caller": {
+      "type": "direct"
+     },
+     "input": {
+      "query": "select tc.tc_id, tc.protocol_id, tc.title, tc.method, p.ptype, p.sys_id, p.status from pd.val_test_case tc join pd.val_protocol p using(protocol_id) where p.sys_id in ('SYS-CRF','SYS-PRDG','SYS-EBR') order by 1"
+     },
+     "name": "run_sql",
+     "type": "tool_use"
+    },
+    {
+     "id": "toolu_01W6MWhef4vFp7k5pRKM5VZy",
+     "caller": {
+      "type": "direct"
+     },
+     "input": {
+      "query": "select * from pd.trace_link where tgt_id in ('URS-EBR-009','URS-PRDG-002','URS-CRF-001') or src_id in ('URS-EBR-009')"
+     },
+     "name": "run_sql",
+     "type": "tool_use"
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "toolu_016CtWsHxJh6HcTZfM2sEkrj",
+     "content": "tc_id | protocol_id | title | method | ptype | sys_id | status\nTC-IQ-CRF-01 | IQ-CRF-01 | Installation and LN2 supply per supplier checklist | SCRIPTED | IQ | SYS-CRF | APPROVED - REPORT APPROVED\nTC-IQ-PRDG-01 | IQ-PRDG-01 | Installation per supplier checklist | SCRIPTED | IQ | SYS-PRDG | APPROVED - REPORT APPROVED\nTC-OQ-CRF-01 | OQ-CRF-01 | Profile CRF-P01 execution (empty chamber) | SCRIPTED | OQ | SYS-CRF | APPROVED - REPORT APPROVED\nTC-OQ-CRF-02 | OQ-CRF-01 | Temperature data recording | SCRIPTED | OQ | SYS-CRF | APPROVED - REPORT APPROVED\nTC-OQ-CRF-03 | OQ-CRF-01 | LN2 supply failure alarm | SCRIPTED | OQ | SYS-CRF | APPROVED - REPORT APPROVED\nTC-OQ-EBR-01 | OQ-EBR-01 | Step sequence enforcement | SCRIPTED | OQ | SYS-EBR | APPROVED - REPORT APPROVED\nTC-OQ-EBR-02 | OQ-EBR-01 | Material status and expiry check | SCRIPTED | OQ | SYS-EBR | APPROVED - REPORT APPROVED\nTC-OQ-EBR-03 | OQ-EBR-01 | Equipment status check | SCRIPTED | OQ | SYS-EBR | APPROVED - REPORT APPROVED\nTC-OQ-EBR-04 | OQ-EBR-01 | Vector volume calculation | SCRIPTED | OQ | SYS-EBR | APPROVED - REPORT APPROVED\nTC-OQ-EBR-05 | OQ-EBR-01 | Electronic signatures | SCRIPTED | OQ | SYS-EBR | APPROVED - REPORT APPROVED\nTC-OQ-EBR-06 | OQ-EBR-01 | Incubator ID capture | SCRIPTED | OQ | SYS-EBR | APPROVED - REPORT APPROVED\nTC-OQ-PRDG-01 | OQ-PRDG-01 | Tubing set integrity / pressure test | SCRIPTED | OQ | SYS-PRDG | APPROVED - REPORT APPROVED\nTC-OQ-PRDG-02 | OQ-PRDG-01 | Program lock and version check | SCRIPTED | OQ | SYS-PRDG | APPROVED - REPORT APPROVED\nTC-OQ-PRDG-03 | OQ-PRDG-01 | Role-based access | SCRIPTED | OQ | SYS-PRDG | APPROVED - REPORT APPROVED\nTC-OQ-PRDG-04 | OQ-PRDG-01 | Process log export and audit trail | SCRIPTED | OQ | SYS-PRDG | APPROVED - REPORT APPROVED\nTC-OQ-PRDG-05 | OQ-PRDG-01 | Centrifugation and wash function | SCRIPTED | OQ | SYS-PRDG | APPROVED - REPORT APPROVED\nTC-PQ-PRDG-01 | PQ-PRDG-01 | Closed processing, 3 consecutive media runs | SCRIPTED | PQ | SYS-PRDG | APPROVED - REPORT APPROVED\n(17 rows)",
+     "is_error": false
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "toolu_01W6MWhef4vFp7k5pRKM5VZy",
+     "content": "link_id | src_type | src_id | link_type | tgt_type | tgt_id\n22 | SPEC | CS-EBR-03 | TRACE | SPEC | URS-EBR-009\n24 | RISK | FM-02 | MITIGATES | SPEC | URS-PRDG-002\n29 | RISK | FM-05 | MITIGATES | SPEC | URS-EBR-009\n46 | RISK | FM-13 | MITIGATES | SPEC | URS-CRF-001\n66 | RISK | FRA-014 | ASSESSES | SPEC | URS-PRDG-002\n72 | RISK | FRA-020 | ASSESSES | SPEC | URS-CRF-001\n94 | RISK | FRA-042 | ASSESSES | SPEC | URS-EBR-009\n114 | TC | TC-OQ-PRDG-02 | VERIFIES | SPEC | URS-PRDG-002\n122 | TC | TC-OQ-CRF-01 | VERIFIES | SPEC | URS-CRF-001\n(9 rows)",
+     "is_error": false
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "signature": "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",
+     "thinking": "",
+     "type": "thinking"
+    },
+    {
+     "text": "Three of the 26 high-risk requirements are not currently verified.\n\nA requirement counts as high-risk when an FRA row that ASSESSES it has risk_class = 'HIGH'. I applied the \"currently verified\" rule from the semantic layer to each of the 26. That rule needs a SCRIPTED verifying test case whose latest execution on every unit is PASS, dated on or after any change control that modifies the requirement, a child spec, or the unit. I followed verification paths from the URS directly, through FS/CS, and through DS\u2192FS.\n\n| Requirement | Reason |\n|---|---|\n| **URS-EBR-009** (target MOI outside 4.0\u20136.0 shall be rejected, SYS-EBR) | No test case verifies it, directly or through its child spec CS-EBR-03. There is no execution at all. |\n| **URS-EMS-014** (unacknowledged critical alarms escalated by SMS and voice within 15 min, SYS-EMS) | The verification is stale. It is verified only through CS-EMS-03, by TC-OQ-EMS-04, last passed on 2026-01-20 (TX-0070). CC-26-011 changed CS-EMS-03 (paging provider change) and was implemented on 2026-03-16. The test has not been re-run since. |\n| **URS-INC-004** (door-open alarm after 60 s, SYS-INC) | The latest execution on INC-03 is a FAIL (TX-0023, TC-OQ-INC-04, 2026-02-10), with no passing re-test. INC-01, INC-02 and INC-04 passed. CC-26-019, the INC-03 door switch replacement, is approved but not yet implemented, so the failure is still open. |\n\nThe other 23 are currently verified. Each has a SCRIPTED test with a passing latest execution on every unit, dated after any relevant change. URS-ULT-001 and URS-ULT-002 on FRZ-80-02 were re-executed on 2026-04-24, after the compressor replacement CC-26-014 on 2026-04-23.\n\nURS-CRF-001 and URS-PRDG-002 are PERFORMANCE requirements on equipment systems with only OQ evidence and no PQ. I did not list them because the \"currently verified\" rule doesn't require PQ. The separate `pq_expected` rule would flag them as PQ gaps. For URS-CRF-001 in particular, the OQ test ran on an empty chamber, while the requirement says \"representative load\".\n\n```json\n{\"answer_ids\": [\"URS-EBR-009\", \"URS-EMS-014\", \"URS-INC-004\"]}\n```",
+     "type": "text"
+    }
+   ]
+  }
+ ]
+}
